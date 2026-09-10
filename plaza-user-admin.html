@@ -780,15 +780,6 @@
       border-color: #1890ff;
     }
 
-    .tag-item.selected {
-      border-color: #1890ff;
-      background: #e6f7ff;
-      color: #1890ff;
-    }
-
-    .tag-item.selected .tag-status-dot {
-      background: #1890ff;
-    }
 
     .tag-item.disabled {
       color: #999;
@@ -1363,7 +1354,7 @@
             <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
           </div>
           <div class="tag-list">
-            <div class="tag-item selected" onclick="toggleTagSelect(this)" data-users="3">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="3">
               <span class="tag-status-dot"></span>
               <span class="tag-name">链上分析师</span>
               <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
@@ -1403,7 +1394,7 @@
               <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
               <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 5)">删除</span>
             </div>
-            <div class="tag-item selected" onclick="toggleTagSelect(this)" data-users="4">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="4">
               <span class="tag-status-dot"></span>
               <span class="tag-name">Web3 创作者</span>
               <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
