@@ -772,6 +772,30 @@
       font-size: 13px;
       color: #333;
       background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag-item:hover {
+      border-color: #1890ff;
+    }
+
+    .tag-item.selected {
+      border-color: #1890ff;
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    .tag-item.selected .tag-status-dot {
+      background: #1890ff;
+    }
+
+    .tag-item.disabled {
+      color: #999;
+    }
+
+    .tag-item.disabled .tag-status-dot {
+      background: #d9d9d9;
     }
 
     .tag-item.active {
@@ -795,6 +819,35 @@
       color: #1890ff;
       cursor: pointer;
       font-size: 12px;
+      margin-left: auto;
+    }
+
+    .tag-edit-btn:hover {
+      text-decoration: underline;
+    }
+
+    .tag-delete-btn {
+      color: #ff4d4f;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .tag-delete-btn:hover {
+      text-decoration: underline;
+    }
+
+    .tag-name {
+      flex: 1;
+    }
+
+    .tag-name-input {
+      border: 1px solid #1890ff;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 13px;
+      outline: none;
+      width: 100px;
     }
 
     .tag-config-box {
@@ -1310,25 +1363,29 @@
             <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
           </div>
           <div class="tag-list">
-            <div class="tag-item active">
+            <div class="tag-item selected" onclick="toggleTagSelect(this)" data-users="3">
               <span class="tag-status-dot"></span>
-              <span>链上分析师</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">链上分析师</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 3)">删除</span>
             </div>
-            <div class="tag-item">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="2">
               <span class="tag-status-dot"></span>
-              <span>量化交易员</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">量化交易员</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 2)">删除</span>
             </div>
-            <div class="tag-item">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="1">
               <span class="tag-status-dot"></span>
-              <span>长线投资者</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">长线投资者</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 1)">删除</span>
             </div>
-            <div class="tag-item">
-              <span class="tag-status-dot disabled"></span>
-              <span style="color: #999;">短线玩家</span>
-              <span class="tag-edit-btn">编辑</span>
+            <div class="tag-item disabled" onclick="toggleTagSelect(this)" data-users="0">
+              <span class="tag-status-dot"></span>
+              <span class="tag-name">短线玩家</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
             </div>
           </div>
         </div>
@@ -1340,25 +1397,29 @@
             <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
           </div>
           <div class="tag-list">
-            <div class="tag-item">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="5">
               <span class="tag-status-dot"></span>
-              <span>加密市场研究员</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">加密市场研究员</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 5)">删除</span>
             </div>
-            <div class="tag-item active">
+            <div class="tag-item selected" onclick="toggleTagSelect(this)" data-users="4">
               <span class="tag-status-dot"></span>
-              <span>Web3 创作者</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">Web3 创作者</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 4)">删除</span>
             </div>
-            <div class="tag-item">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="0">
               <span class="tag-status-dot"></span>
-              <span>NFT 收藏家</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">NFT 收藏家</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
             </div>
-            <div class="tag-item">
+            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="0">
               <span class="tag-status-dot"></span>
-              <span>DeFi 玩家</span>
-              <span class="tag-edit-btn">编辑</span>
+              <span class="tag-name">DeFi 玩家</span>
+              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
+              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
             </div>
           </div>
         </div>
@@ -1464,6 +1525,90 @@
     // 隐藏弹窗
     function hideModal(type) {
       document.getElementById(type + 'Modal').classList.remove('show');
+    }
+
+    // 标签选中/取消选中
+    function toggleTagSelect(tagItem) {
+      if (tagItem.querySelector('.tag-name-input')) return; // 编辑中不切换
+      tagItem.classList.toggle('selected');
+    }
+
+    // 编辑标签
+    function editTag(editBtn) {
+      const tagItem = editBtn.closest('.tag-item');
+      const tagNameSpan = tagItem.querySelector('.tag-name');
+
+      // 如果已经在编辑状态，保存并退出
+      if (tagNameSpan.tagName === 'INPUT') {
+        return;
+      }
+
+      const currentName = tagNameSpan.textContent;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tag-name-input';
+      input.value = currentName;
+
+      tagNameSpan.replaceWith(input);
+      input.focus();
+      input.select();
+
+      // 修改按钮文字为"保存"
+      editBtn.textContent = '保存';
+      editBtn.onclick = function(e) {
+        e.stopPropagation();
+        saveTag(editBtn, input.value);
+      };
+
+      // 回车保存
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          saveTag(editBtn, input.value);
+        }
+        if (e.key === 'Escape') {
+          saveTag(editBtn, currentName);
+        }
+      });
+
+      // 失焦保存
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          if (document.contains(input)) {
+            saveTag(editBtn, input.value);
+          }
+        }, 100);
+      });
+    }
+
+    // 保存标签编辑
+    function saveTag(editBtn, newName) {
+      const tagItem = editBtn.closest('.tag-item');
+      const input = tagItem.querySelector('.tag-name-input');
+      if (!input) return;
+
+      const span = document.createElement('span');
+      span.className = 'tag-name';
+      span.textContent = newName || '未命名标签';
+
+      input.replaceWith(span);
+      editBtn.textContent = '编辑';
+      editBtn.onclick = function(e) {
+        e.stopPropagation();
+        editTag(editBtn);
+      };
+    }
+
+    // 删除标签
+    function deleteTag(deleteBtn, userCount) {
+      if (userCount > 0) {
+        alert('当前标签存在关联数据，无法删除');
+        return;
+      }
+
+      if (confirm('确定要删除该标签吗？')) {
+        const tagItem = deleteBtn.closest('.tag-item');
+        tagItem.remove();
+      }
     }
 
     // 点击遮罩关闭
