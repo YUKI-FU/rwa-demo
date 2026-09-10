@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户管理 - ETZ Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+      background: #f5f6f8;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* 左侧导航 */
+    .sidebar {
+      width: 200px;
+      background: #001529;
+      min-height: 100vh;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo-text {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav-menu {
+      padding: 8px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-item .icon {
+      font-size: 16px;
+    }
+
+    .nav-group .nav-item.parent {
+      justify-content: space-between;
+    }
+
+    .nav-group .nav-item.parent .arrow {
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .nav-group:not(.expanded) .nav-item.parent .arrow {
+      transform: rotate(180deg);
+    }
+
+    .nav-submenu {
+      display: none;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .nav-group.expanded .nav-submenu {
+      display: block;
+    }
+
+    .nav-subitem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px 12px 48px;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-subitem:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-subitem.active {
+      color: #fff;
+      background: #1890ff;
+    }
+
+    .nav-subitem .icon {
+      font-size: 14px;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .header {
+      height: 56px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .breadcrumb a {
+      color: #1890ff;
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1890ff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow: auto;
+    }
+
+    /* 顶部Tab导航 */
+    .top-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .top-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .top-tab:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .top-tab.active {
+      background: #1890ff;
+      border-color: #1890ff;
+      color: #fff;
+    }
+
+    /* 筛选区域 */
+    .filter-bar {
+      background: #fff;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 14px;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .filter-input {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      width: 160px;
+    }
+
+    .filter-input:focus {
+      border-color: #1890ff;
+    }
+
+    .filter-select {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+      cursor: pointer;
+      min-width: 100px;
+    }
+
+    .filter-btn {
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .filter-btn.primary {
+      background: #1890ff;
+      color: #fff;
+      border: none;
+    }
+
+    .filter-btn.default {
+      background: #fff;
+      color: #666;
+      border: 1px solid #d9d9d9;
+    }
+
+    .filter-btn.orange {
+      background: #fff;
+      border: 1px solid #ff9500;
+      color: #ff9500;
+    }
+
+    .filter-btn.cyan {
+      background: #fff;
+      border: 1px solid #13c2c2;
+      color: #13c2c2;
+    }
+
+    /* 表格 */
+    .table-container {
+      background: #fff;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 1600px;
+    }
+
+    .data-table th {
+      background: #fafafa;
+      padding: 12px 8px;
+      text-align: left;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 1px solid #f0f0f0;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .data-table tr:hover {
+      background: #f5f5f5;
+    }
+
+    .data-table .link {
+      color: #1890ff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .data-table .link:hover {
+      text-decoration: underline;
+    }
+
+    .id-cell {
+      color: #999;
+      font-family: monospace;
+    }
+
+    .num-cell {
+      text-align: center;
+    }
+
+    /* 头像 */
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* 状态标签 */
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .status-tag.success {
+      background: #f6ffed;
+      color: #52c41a;
+    }
+
+    .status-tag.warning {
+      background: #fffbe6;
+      color: #faad14;
+    }
+
+    .status-tag.error {
+      background: #fff2f0;
+      color: #ff4d4f;
+    }
+
+    .status-tag.default {
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .status-tag.blue {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    /* 操作链接 */
+    .op-link {
+      color: #1890ff;
+      cursor: pointer;
+      margin-right: 12px;
+      font-size: 13px;
+    }
+
+    .op-link:hover {
+      text-decoration: underline;
+    }
+
+    .op-link.danger {
+      color: #ff4d4f;
+    }
+
+    /* 更多下拉 */
+    .more-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .more-btn {
+      color: #1890ff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      min-width: 100px;
+      z-index: 100;
+      display: none;
+    }
+
+    .more-dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 10px 16px;
+      text-align: left;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background: #f5f5f5;
+      color: #1890ff;
+    }
+
+    /* 分页 */
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .page-info {
+      font-size: 14px;
+      color: #666;
+      margin-right: 16px;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .page-btn:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .page-btn.active {
+      background: #1890ff;
+      border-color: #1890ff;
+      color: #fff;
+    }
+
+    /* 弹窗 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 1000;
+      padding: 40px 20px;
+      overflow: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 8px;
+      width: 1100px;
+      max-width: 100%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .modal.small {
+      width: 560px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-icon-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #999;
+      border-radius: 4px;
+    }
+
+    .modal-icon-btn:hover {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .modal-btn {
+      height: 36px;
+      padding: 0 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .modal-btn.default {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      color: #666;
+    }
+
+    .modal-btn.primary {
+      background: #1890ff;
+      border: none;
+      color: #fff;
+    }
+
+    /* 用户详情弹窗 - 用户卡片 */
+    .user-detail-card {
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .user-detail-left {
+      min-width: 200px;
+    }
+
+    .user-detail-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    .user-detail-nickname {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .user-detail-meta {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .user-detail-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100px;
+    }
+
+    .user-tags-area {
+      border: 2px solid #ff4d4f;
+      border-radius: 8px;
+      padding: 16px 20px;
+      min-height: 80px;
+    }
+
+    .user-tags-title {
+      font-size: 13px;
+      color: #ff4d4f;
+      margin-bottom: 12px;
+    }
+
+    .user-tags {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .user-tag {
+      padding: 6px 16px;
+      border: 1px solid #ff4d4f;
+      border-radius: 4px;
+      color: #ff4d4f;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .user-tags-empty {
+      color: #ccc;
+      font-size: 13px;
+    }
+
+    .user-detail-right {
+      display: flex;
+      gap: 48px;
+    }
+
+    .user-stat {
+      text-align: center;
+    }
+
+    .user-stat-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .user-stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1890ff;
+    }
+
+    /* 弹窗内筛选 */
+    .modal-filter {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .modal-filter .filter-input {
+      width: 140px;
+    }
+
+    /* 弹窗内表格 */
+    .modal-table-wrap {
+      border: 1px solid #f0f0f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .modal-table th {
+      background: #fafafa;
+      padding: 12px 12px;
+      text-align: left;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-table td {
+      padding: 12px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+
+    .modal-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .modal-table tr:hover {
+      background: #f9f9f9;
+    }
+
+    /* 标签管理 */
+    .tag-manage-section {
+      margin-bottom: 24px;
+    }
+
+    .tag-manage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tag-manage-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .tag-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      background: #fafafa;
+    }
+
+    .tag-item.active {
+      border-color: #1890ff;
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    .tag-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #52c41a;
+    }
+
+    .tag-status-dot.disabled {
+      background: #d9d9d9;
+    }
+
+    .tag-edit-btn {
+      color: #1890ff;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .tag-config-box {
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .tag-config-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tag-config-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .tag-config-label {
+      font-size: 14px;
+      color: #666;
+      width: 140px;
+    }
+
+    .tag-config-input {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 80px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 左侧导航 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-text">📋 ETZ Admin</span>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item"><span class="icon">🏠</span> 首页</div>
+      <div class="nav-item"><span class="icon">👤</span> 会员管理</div>
+      <div class="nav-item"><span class="icon">📊</span> API管理</div>
+      <div class="nav-item"><span class="icon">💰</span> RWA管理</div>
+      <div class="nav-item"><span class="icon">🔄</span> OTC系统</div>
+      <div class="nav-group expanded">
+        <div class="nav-item parent"><span class="icon">📢</span> 广场管理 <span class="arrow">∧</span></div>
+        <div class="nav-submenu">
+          <a href="plaza-user-admin.html" class="nav-subitem active"><span class="icon">👤</span> 用户管理</a>
+          <a href="plaza-post-admin.html" class="nav-subitem"><span class="icon">📄</span> 贴文管理</a>
+          <div class="nav-subitem"><span class="icon">💬</span> 话题管理</div>
+          <div class="nav-subitem"><span class="icon">🔒</span> 内容审核</div>
+          <a href="official-post-admin.html" class="nav-subitem"><span class="icon">📘</span> 官方贴文</a>
+        </div>
+      </div>
+      <div class="nav-item"><span class="icon">⚙️</span> 运营管理</div>
+      <div class="nav-item"><span class="icon">📝</span> 文章管理</div>
+      <div class="nav-item"><span class="icon">👥</span> 平台邀请</div>
+    </nav>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <!-- 顶部栏 -->
+    <header class="header">
+      <div class="breadcrumb">
+        <a href="#">广场管理</a> / 用户管理
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <span class="avatar">A</span>
+          <span>admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <div class="content">
+      <!-- 顶部Tab -->
+      <div class="top-tabs">
+        <span style="color: #999; margin-right: 8px;">‹‹</span>
+        <div class="top-tab"><span>🏠</span> 首页</div>
+        <a href="plaza-post-admin.html" class="top-tab"><span>📄</span> 贴文管理</a>
+        <div class="top-tab"><span>🔒</span> 内容审核</div>
+        <a href="plaza-user-admin.html" class="top-tab active"><span>👤</span> 用户管理</a>
+        <a href="official-post-admin.html" class="top-tab"><span>📘</span> 官方贴文</a>
+      </div>
+
+      <!-- 筛选区域 -->
+      <div class="filter-bar">
+        <div class="filter-item">
+          <span class="filter-label">UID/昵称</span>
+          <input type="text" class="filter-input" placeholder="请输入UID或昵称">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">昵称</span>
+          <input type="text" class="filter-input" placeholder="请输入昵称">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">用户类型</span>
+          <select class="filter-select">
+            <option>全部</option>
+            <option>普通用户</option>
+            <option>KOL</option>
+            <option>官方账号</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">状态</span>
+          <select class="filter-select">
+            <option>全部</option>
+            <option>正常</option>
+            <option>禁用</option>
+          </select>
+        </div>
+        <button class="filter-btn primary">🔍 查询</button>
+        <button class="filter-btn default">↻ 重置</button>
+        <button class="filter-btn cyan">↻ 刷新KYC</button>
+        <button class="filter-btn orange" onclick="showTagManageModal()">📋 用户标签管理</button>
+      </div>
+
+      <!-- 表格 -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>社区用户ID</th>
+              <th>UID</th>
+              <th>头像</th>
+              <th>昵称</th>
+              <th>邮箱</th>
+              <th>用户类型</th>
+              <th>账号状态</th>
+              <th>是否KYC</th>
+              <th>国家/IP</th>
+              <th>粉丝数</th>
+              <th>关注数</th>
+              <th>发帖数</th>
+              <th>点赞数</th>
+              <th>推荐</th>
+              <th>推荐码</th>
+              <th>处方类型</th>
+              <th>处方截止</th>
+              <th>处理周期</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>509</td>
+              <td class="id-cell">1700822363</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>ETZ-Y66Rsp</td>
+              <td>C4@gmail.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>中国台湾</td>
+              <td>—</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>SELFAA56AH</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-09-03 10:45:15</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(1)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>508</td>
+              <td class="id-cell">1700428288</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>1test8288</td>
+              <td>test@gmail.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>新加坡</td>
+              <td>—</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">2</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>XXKYGANN#8</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-08-31 15:21:20</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(2)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>507</td>
+              <td class="id-cell">1700561766</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>ETZ-Owly84</td>
+              <td>3o9ksq.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>中国</td>
+              <td>—</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>ZNWAZCHOKN</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-06-28 14:46:13</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(3)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>506</td>
+              <td class="id-cell">1700819757</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>ETZ-ReNrf</td>
+              <td>xito-agent@gamil.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>—</td>
+              <td>中国-无锡</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>PVSPISTTYKO</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-08-25 11:03:08</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(4)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>505</td>
+              <td class="id-cell">1700749706</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>ETZ-LmUK930</td>
+              <td>bug3018@gmail.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>—</td>
+              <td>—</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>PPONVKGFUV</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-08-05 17:48:38</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(5)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>504</td>
+              <td class="id-cell">1700772563</td>
+              <td><div class="user-avatar">🧑</div></td>
+              <td>yanon</td>
+              <td>79295876189@qq.com</td>
+              <td><span class="status-tag blue">普通</span></td>
+              <td><span class="status-tag success">正常</span></td>
+              <td>—</td>
+              <td>—</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td>—</td>
+              <td>VONBA4S3BLO</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>2026-08-05 12:28:15</td>
+              <td>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showUserDetailModal(6)">详情</button>
+                    <button class="dropdown-item">身份管理</button>
+                    <button class="dropdown-item">用户处理</button>
+                    <button class="dropdown-item">推荐</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 分页 -->
+        <div class="pagination">
+          <span class="page-info">共 126 条</span>
+          <span style="margin-right: 8px;">10条/页</span>
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">6</button>
+          <span style="margin: 0 4px;">...</span>
+          <button class="page-btn">13</button>
+          <button class="page-btn">›</button>
+          <span style="margin-left: 8px;">前往</span>
+          <input type="text" value="1" style="width: 40px; height: 28px; text-align: center; border: 1px solid #d9d9d9; border-radius: 4px; margin: 0 4px;">
+          <span>页</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 用户详情弹窗 -->
+  <div class="modal-overlay" id="userDetailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">用户贴文</span>
+        <div class="modal-actions">
+          <button class="modal-icon-btn">⤢</button>
+          <button class="modal-icon-btn" onclick="hideModal('userDetail')">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- 用户信息卡片 -->
+        <div class="user-detail-card">
+          <div class="user-detail-left">
+            <div class="user-detail-label">昵称</div>
+            <div class="user-detail-nickname" id="detailNickname">1test8288</div>
+            <div class="user-detail-meta" id="detailIds">社区用户ID 508 · UID 1700428288</div>
+            <div class="user-detail-meta" id="detailEmail">test@gmail.com</div>
+            <div class="user-detail-meta">简介</div>
+            <div class="user-detail-meta">—</div>
+          </div>
+          <div class="user-detail-center">
+            <div class="user-tags-area">
+              <div class="user-tags-title">用户标签</div>
+              <div class="user-tags" id="detailTags">
+                <span class="user-tag">链上分析师</span>
+                <span class="user-tag">Web3 创作者</span>
+              </div>
+            </div>
+          </div>
+          <div class="user-detail-right">
+            <div class="user-stat">
+              <div class="user-stat-label">发帖数</div>
+              <div class="user-stat-value" id="detailPostCount">2</div>
+            </div>
+            <div class="user-stat">
+              <div class="user-stat-label">粉丝数</div>
+              <div class="user-stat-value" id="detailFollowers">0</div>
+            </div>
+            <div class="user-stat">
+              <div class="user-stat-label">关注数</div>
+              <div class="user-stat-value" id="detailFollowing">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 贴文筛选 -->
+        <div class="modal-filter">
+          <span class="filter-label">帖子 ID</span>
+          <input type="text" class="filter-input" placeholder="请输入帖子ID">
+          <span class="filter-label">话题标签</span>
+          <input type="text" class="filter-input" placeholder="请搜索并选择话题">
+          <span class="filter-label">币种标签</span>
+          <input type="text" class="filter-input" placeholder="请选择或搜索币种">
+          <span class="filter-label">帖子状态</span>
+          <select class="filter-select">
+            <option>全部</option>
+            <option>已发布</option>
+            <option>审核中</option>
+            <option>已删除</option>
+          </select>
+          <button class="filter-btn primary">🔍 查询</button>
+          <button class="filter-btn default">↻ 重置</button>
+        </div>
+
+        <!-- 贴文列表 -->
+        <div class="modal-table-wrap">
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th>帖子 ID</th>
+                <th>内容摘要</th>
+                <th>话题标签</th>
+                <th>币种标签</th>
+                <th>发布时间</th>
+                <th>浏览 ↕</th>
+                <th>点赞 ↕</th>
+                <th>评论 ↕</th>
+                <th>转发 ↕</th>
+                <th>举报 ↕</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="detailPostsTable">
+              <tr>
+                <td>3530988334912405248</td>
+                <td><a href="#" class="link">123 $BTC1 #BITC #ajajsds1jdask...</a></td>
+                <td>BTC1, ajajsdsjdaskf,asjfal</td>
+                <td>$BTC</td>
+                <td>2026-09-04 17:07:02</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">1</td>
+                <td><span class="status-tag warning">审核中</span></td>
+              </tr>
+              <tr>
+                <td>3530988175574990592</td>
+                <td><a href="#" class="link">123 $BTC #BTC #ajajsdsjdaskf,a...</a></td>
+                <td>BTC, ajajsdsjdaskf,asjfal</td>
+                <td>$BTC</td>
+                <td>2026-09-04 17:06:24</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td class="num-cell">0</td>
+                <td><span class="status-tag success">正常</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 弹窗内分页 -->
+        <div class="pagination" style="padding: 12px 0 0;">
+          <span class="page-info">共 2 条</span>
+          <span style="margin-right: 8px;">10条/页</span>
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">›</button>
+          <span style="margin-left: 8px;">前往</span>
+          <input type="text" value="1" style="width: 40px; height: 28px; text-align: center; border: 1px solid #d9d9d9; border-radius: 4px; margin: 0 4px;">
+          <span>页</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用户标签管理弹窗 -->
+  <div class="modal-overlay" id="tagManageModal">
+    <div class="modal small">
+      <div class="modal-header">
+        <span class="modal-title">用户标签管理</span>
+        <button class="modal-icon-btn" onclick="hideModal('tagManage')">×</button>
+      </div>
+      <div class="modal-body">
+        <!-- 标签分类1 -->
+        <div class="tag-manage-section">
+          <div class="tag-manage-header">
+            <span class="tag-manage-title">交易风格</span>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
+          </div>
+          <div class="tag-list">
+            <div class="tag-item active">
+              <span class="tag-status-dot"></span>
+              <span>链上分析师</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item">
+              <span class="tag-status-dot"></span>
+              <span>量化交易员</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item">
+              <span class="tag-status-dot"></span>
+              <span>长线投资者</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item">
+              <span class="tag-status-dot disabled"></span>
+              <span style="color: #999;">短线玩家</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 标签分类2 -->
+        <div class="tag-manage-section">
+          <div class="tag-manage-header">
+            <span class="tag-manage-title">社区属性</span>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
+          </div>
+          <div class="tag-list">
+            <div class="tag-item">
+              <span class="tag-status-dot"></span>
+              <span>加密市场研究员</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item active">
+              <span class="tag-status-dot"></span>
+              <span>Web3 创作者</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item">
+              <span class="tag-status-dot"></span>
+              <span>NFT 收藏家</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+            <div class="tag-item">
+              <span class="tag-status-dot"></span>
+              <span>DeFi 玩家</span>
+              <span class="tag-edit-btn">编辑</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 全局配置 -->
+        <div class="tag-config-box">
+          <div class="tag-config-row">
+            <span class="tag-config-label">用户最大可选标签数</span>
+            <input type="number" class="tag-config-input" value="5">
+            <span style="font-size: 13px; color: #888;">个</span>
+          </div>
+          <div class="tag-config-row">
+            <span class="tag-config-label">标签分类数量</span>
+            <input type="number" class="tag-config-input" value="2">
+            <span style="font-size: 13px; color: #888;">个</span>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px; margin-left: 8px;">+ 新增分类</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn default" onclick="hideModal('tagManage')">取消</button>
+        <button class="modal-btn primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 用户数据
+    const usersData = {
+      1: { nickname: 'ETZ-Y66Rsp', ids: '社区用户ID 509 · UID 1700822363', email: 'C4@gmail.com', posts: 0, followers: 0, following: 0, tags: ['链上分析师', 'Web3 创作者'], hasPosts: false },
+      2: { nickname: '1test8288', ids: '社区用户ID 508 · UID 1700428288', email: 'test@gmail.com', posts: 2, followers: 0, following: 0, tags: ['链上分析师', 'Web3 创作者'], hasPosts: true },
+      3: { nickname: 'ETZ-Owly84', ids: '社区用户ID 507 · UID 1700561766', email: '3o9ksq.com', posts: 0, followers: 0, following: 0, tags: [], hasPosts: false },
+      4: { nickname: 'ETZ-ReNrf', ids: '社区用户ID 506 · UID 1700819757', email: 'xito-agent@gamil.com', posts: 0, followers: 0, following: 0, tags: [], hasPosts: false },
+      5: { nickname: 'ETZ-LmUK930', ids: '社区用户ID 505 · UID 1700749706', email: 'bug3018@gmail.com', posts: 0, followers: 0, following: 0, tags: [], hasPosts: false },
+      6: { nickname: 'yanon', ids: '社区用户ID 504 · UID 1700772563', email: '79295876189@qq.com', posts: 0, followers: 0, following: 0, tags: [], hasPosts: false }
+    };
+
+    // 显示用户详情弹窗
+    function showUserDetailModal(userId) {
+      const user = usersData[userId];
+      if (user) {
+        document.getElementById('detailNickname').textContent = user.nickname;
+        document.getElementById('detailIds').textContent = user.ids;
+        document.getElementById('detailEmail').textContent = user.email;
+        document.getElementById('detailPostCount').textContent = user.posts;
+        document.getElementById('detailFollowers').textContent = user.followers;
+        document.getElementById('detailFollowing').textContent = user.following;
+
+        // 标签
+        const tagsContainer = document.getElementById('detailTags');
+        if (user.tags.length > 0) {
+          tagsContainer.innerHTML = user.tags.map(tag => `<span class="user-tag">${tag}</span>`).join('');
+        } else {
+          tagsContainer.innerHTML = '<span class="user-tags-empty">暂无标签</span>';
+        }
+
+        // 贴文列表
+        const postsTable = document.getElementById('detailPostsTable');
+        if (user.hasPosts) {
+          postsTable.innerHTML = `
+            <tr>
+              <td>3530988334912405248</td>
+              <td><a href="#" class="link">123 $BTC1 #BITC #ajajsds1jdask...</a></td>
+              <td>BTC1, ajajsdsjdaskf,asjfal</td>
+              <td>$BTC</td>
+              <td>2026-09-04 17:07:02</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">1</td>
+              <td><span class="status-tag warning">审核中</span></td>
+            </tr>
+            <tr>
+              <td>3530988175574990592</td>
+              <td><a href="#" class="link">123 $BTC #BTC #ajajsdsjdaskf,a...</a></td>
+              <td>BTC, ajajsdsjdaskf,asjfal</td>
+              <td>$BTC</td>
+              <td>2026-09-04 17:06:24</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td><span class="status-tag success">正常</span></td>
+            </tr>
+          `;
+        } else {
+          postsTable.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: #999;">暂无数据</td></tr>';
+        }
+      }
+
+      // 关闭下拉菜单
+      document.querySelectorAll('.more-dropdown').forEach(d => d.classList.remove('open'));
+      document.getElementById('userDetailModal').classList.add('show');
+    }
+
+    // 显示标签管理弹窗
+    function showTagManageModal() {
+      document.getElementById('tagManageModal').classList.add('show');
+    }
+
+    // 隐藏弹窗
+    function hideModal(type) {
+      document.getElementById(type + 'Modal').classList.remove('show');
+    }
+
+    // 点击遮罩关闭
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+        }
+      });
+    });
+
+    // 更多下拉菜单
+    function toggleDropdown(btn) {
+      const dropdown = btn.closest('.more-dropdown');
+      const isOpen = dropdown.classList.contains('open');
+      document.querySelectorAll('.more-dropdown').forEach(d => d.classList.remove('open'));
+      if (!isOpen) {
+        dropdown.classList.add('open');
+      }
+    }
+
+    // 点击页面其他地方关闭下拉菜单
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.more-dropdown')) {
+        document.querySelectorAll('.more-dropdown').forEach(d => d.classList.remove('open'));
+      }
+    });
+
+    // 导航组展开/收起
+    document.querySelectorAll('.nav-group .nav-item.parent').forEach(item => {
+      item.addEventListener('click', function() {
+        this.closest('.nav-group').classList.toggle('expanded');
+      });
+    });
+  </script>
+
+</body>
+</html>

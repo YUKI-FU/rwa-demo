@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>官方贴文管理 - ETZ Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+      background: #f5f6f8;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* 左侧导航 */
+    .sidebar {
+      width: 200px;
+      background: #001529;
+      min-height: 100vh;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo-text {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav-menu {
+      padding: 8px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-item .icon {
+      font-size: 16px;
+    }
+
+    /* 子菜单样式 */
+    .nav-group .nav-item.parent {
+      justify-content: space-between;
+    }
+
+    .nav-group .nav-item.parent .arrow {
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .nav-group:not(.expanded) .nav-item.parent .arrow {
+      transform: rotate(180deg);
+    }
+
+    .nav-submenu {
+      display: none;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .nav-group.expanded .nav-submenu {
+      display: block;
+    }
+
+    .nav-subitem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px 12px 48px;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-subitem:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-subitem.active {
+      color: #fff;
+      background: #1890ff;
+    }
+
+    .nav-subitem .icon {
+      font-size: 14px;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* 顶部栏 */
+    .header {
+      height: 56px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .breadcrumb a {
+      color: #1890ff;
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1890ff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* 内容区域 */
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow: auto;
+    }
+
+    /* 顶部Tab导航 */
+    .top-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .top-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .top-tab:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .top-tab.active {
+      background: #1890ff;
+      border-color: #1890ff;
+      color: #fff;
+    }
+
+    /* 筛选区域 */
+    .filter-bar {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .filter-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-item.flex-1 {
+      flex: 1;
+    }
+
+    .filter-label {
+      font-size: 14px;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .filter-input {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      flex: 1;
+    }
+
+    .filter-input:focus {
+      border-color: #1890ff;
+    }
+
+    .filter-select {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+      cursor: pointer;
+      min-width: 160px;
+    }
+
+    .filter-btn {
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .filter-btn.primary {
+      background: #1890ff;
+      color: #fff;
+      border: none;
+    }
+
+    .filter-btn.default {
+      background: #fff;
+      color: #666;
+      border: 1px solid #d9d9d9;
+    }
+
+    .filter-btn.orange {
+      background: #fff;
+      border: 1px solid #ff9500;
+      color: #ff9500;
+    }
+
+    .filter-btn.success {
+      background: #52c41a;
+      color: #fff;
+      border: none;
+    }
+
+    /* 表格 */
+    .table-container {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: #fafafa;
+      padding: 12px 8px;
+      text-align: left;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 1px solid #f0f0f0;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+
+    .data-table tr:hover {
+      background: #f5f5f5;
+    }
+
+    .data-table .link {
+      color: #1890ff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .data-table .link:hover {
+      text-decoration: underline;
+    }
+
+    .id-cell {
+      color: #999;
+      font-family: monospace;
+    }
+
+    .num-cell {
+      text-align: center;
+    }
+
+    /* 状态标签 */
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .status-tag.success {
+      background: #f6ffed;
+      color: #52c41a;
+    }
+
+    .status-tag.warning {
+      background: #fffbe6;
+      color: #faad14;
+    }
+
+    .status-tag.error {
+      background: #fff2f0;
+      color: #ff4d4f;
+    }
+
+    .status-tag.default {
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    /* 操作链接 */
+    .op-link {
+      color: #1890ff;
+      cursor: pointer;
+      margin-right: 12px;
+      font-size: 13px;
+    }
+
+    .op-link:hover {
+      text-decoration: underline;
+    }
+
+    .op-link.danger {
+      color: #ff4d4f;
+    }
+
+    /* 更多下拉 */
+    .more-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .more-btn {
+      color: #1890ff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      min-width: 100px;
+      z-index: 100;
+      display: none;
+    }
+
+    .more-dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 10px 16px;
+      text-align: left;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background: #f5f5f5;
+      color: #1890ff;
+    }
+
+    /* 分页 */
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .page-info {
+      font-size: 14px;
+      color: #666;
+      margin-right: 16px;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .page-btn:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .page-btn.active {
+      background: #1890ff;
+      border-color: #1890ff;
+      color: #fff;
+    }
+
+    /* 弹窗 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 1000;
+      padding: 60px 20px;
+      overflow: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 8px;
+      width: 680px;
+      max-width: 100%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-icon-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .modal-icon-btn:hover {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .modal-btn {
+      height: 36px;
+      padding: 0 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .modal-btn.default {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      color: #666;
+    }
+
+    .modal-btn.primary {
+      background: #1890ff;
+      border: none;
+      color: #fff;
+    }
+
+    /* 表单项 */
+    .form-item {
+      margin-bottom: 20px;
+    }
+
+    .form-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-label .required {
+      color: #ff4d4f;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .form-row .form-item {
+      flex: 1;
+    }
+
+    .form-select {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* 开关 */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .switch-label {
+      font-size: 14px;
+      color: #ff4d4f;
+    }
+
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 22px;
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    .switch input:checked + .switch-slider {
+      background-color: #1890ff;
+    }
+
+    .switch input:checked + .switch-slider:before {
+      transform: translateX(22px);
+    }
+
+    /* 语言Tab */
+    .lang-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .lang-tab {
+      padding: 6px 16px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .lang-tab.active {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .lang-tab.add {
+      border-style: dashed;
+      color: #1890ff;
+      border-color: #1890ff;
+    }
+
+    /* 富文本编辑器 */
+    .editor-container {
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .editor-textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 12px;
+      border: none;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+
+    .editor-count {
+      text-align: right;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #999;
+      background: #fafafa;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+
+    .toolbar-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #666;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toolbar-btn:hover {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background: #e8e8e8;
+      margin: 0 4px;
+    }
+
+    .toolbar-info {
+      margin-left: auto;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1890ff;
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 是/否状态 */
+    .status-text {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .status-text.yes {
+      color: #1890ff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 左侧导航 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-text">📋 ETZ Admin</span>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item"><span class="icon">🏠</span> 首页</div>
+      <div class="nav-item"><span class="icon">👤</span> 会员管理</div>
+      <div class="nav-item"><span class="icon">📊</span> API管理</div>
+      <div class="nav-item"><span class="icon">💰</span> RWA管理</div>
+      <div class="nav-item"><span class="icon">🔄</span> OTC系统</div>
+      <div class="nav-group expanded">
+        <div class="nav-item parent"><span class="icon">📢</span> 广场管理 <span class="arrow">∧</span></div>
+        <div class="nav-submenu">
+          <a href="plaza-user-admin.html" class="nav-subitem"><span class="icon">👤</span> 用户管理</a>
+          <a href="plaza-post-admin.html" class="nav-subitem"><span class="icon">📄</span> 贴文管理</a>
+          <div class="nav-subitem"><span class="icon">💬</span> 话题管理</div>
+          <div class="nav-subitem"><span class="icon">🔒</span> 内容审核</div>
+          <a href="official-post-admin.html" class="nav-subitem active"><span class="icon">📘</span> 官方贴文</a>
+        </div>
+      </div>
+      <div class="nav-item"><span class="icon">⚙️</span> 运营管理</div>
+      <div class="nav-item"><span class="icon">📝</span> 文章管理</div>
+      <div class="nav-item"><span class="icon">👥</span> 平台邀请</div>
+    </nav>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <!-- 顶部栏 -->
+    <header class="header">
+      <div class="breadcrumb">
+        <a href="#">广场管理</a> / 官方贴文
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <span class="avatar">A</span>
+          <span>admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <div class="content">
+      <!-- 顶部Tab -->
+      <div class="top-tabs">
+        <span style="color: #999; margin-right: 8px;">‹‹</span>
+        <div class="top-tab"><span>🏠</span> 首页</div>
+        <a href="plaza-post-admin.html" class="top-tab"><span>📄</span> 贴文管理</a>
+        <div class="top-tab"><span>🔒</span> 内容审核</div>
+        <a href="plaza-user-admin.html" class="top-tab"><span>👤</span> 用户管理</a>
+        <a href="official-post-admin.html" class="top-tab active"><span>📘</span> 官方贴文</a>
+      </div>
+
+      <!-- 筛选区域 -->
+      <div class="filter-bar">
+        <div class="filter-row">
+          <div class="filter-item flex-1">
+            <span class="filter-label">帖子 ID</span>
+            <input type="text" class="filter-input" placeholder="请输入帖子ID">
+          </div>
+          <div class="filter-item flex-1">
+            <span class="filter-label">用户</span>
+            <input type="text" class="filter-input" placeholder="输入并搜索，选择用户">
+          </div>
+          <div class="filter-item flex-1">
+            <span class="filter-label">币种</span>
+            <input type="text" class="filter-input" placeholder="请选择或搜索币种">
+          </div>
+          <div class="filter-item flex-1">
+            <span class="filter-label">话题标签</span>
+            <input type="text" class="filter-input" placeholder="请搜索并选择话题">
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">状态</span>
+            <select class="filter-select">
+              <option>请选择</option>
+              <option>待发布</option>
+              <option>已发布</option>
+              <option>发布失败</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">创建时间</span>
+            <input type="month" class="filter-input" value="2026-02" style="width: 120px;">
+            <span style="color: #999; margin: 0 4px;">-</span>
+            <input type="month" class="filter-input" value="2026-04" style="width: 120px;">
+          </div>
+        </div>
+        <div class="filter-row">
+          <button class="filter-btn primary">🔍 查询</button>
+          <button class="filter-btn default">↻ 重置</button>
+          <button class="filter-btn orange" onclick="showModal()">+ 添加</button>
+          <button class="filter-btn orange">↻ 刷新缓存</button>
+        </div>
+      </div>
+
+      <!-- 表格 -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox"></th>
+              <th>ID</th>
+              <th>帖子 ID</th>
+              <th>社区用户ID</th>
+              <th>用户昵称</th>
+              <th>内容摘要</th>
+              <th>话题标签</th>
+              <th>币种标签</th>
+              <th>评论</th>
+              <th>点赞</th>
+              <th>浏览</th>
+              <th>转发</th>
+              <th>举报</th>
+              <th>快讯</th>
+              <th>置顶</th>
+              <th>推荐</th>
+              <th>状态</th>
+              <th>发布时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="id-cell">386</td>
+              <td><a href="#" class="link">3483044842977896512</a></td>
+              <td class="id-cell">417</td>
+              <td>坚韧无上家拉里那大...</td>
+              <td><a href="#" class="link">#旧片合集 为什么没有翻译的内容 #美女后援...</a></td>
+              <td><span class="status-tag default">美女后援会, 色情, 淫秽色情</span></td>
+              <td>CS9, PUMP</td>
+              <td class="num-cell">6</td>
+              <td class="num-cell">2</td>
+              <td class="num-cell">57</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">0</td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-tag success">已发布</span></td>
+              <td>2026-04-27 21:32:59</td>
+              <td>
+                <span class="op-link">详情</span>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">编辑</button>
+                    <button class="dropdown-item">立即发布</button>
+                    <button class="dropdown-item" style="color: #ff4d4f;">删除</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="id-cell">368</td>
+              <td><a href="#" class="link">3483881612272210048</a></td>
+              <td class="id-cell">66</td>
+              <td>官方ETZ</td>
+              <td><a href="#" class="link">让我们欢迎我们"美丽的高币*小姐! #美女后援会 #...</a></td>
+              <td><span class="status-tag default">美女后援会, 淫秽色情, 法轮...</span></td>
+              <td>—</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">4</td>
+              <td class="num-cell">91</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">1</td>
+              <td><span class="status-text yes">是</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-tag success">已发布</span></td>
+              <td>2026-04-27 17:21:44</td>
+              <td>
+                <span class="op-link">详情</span>
+                <span class="op-link danger">取消快讯</span>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="id-cell">339</td>
+              <td><a href="#" class="link">3483796322575110672</a></td>
+              <td class="id-cell">66</td>
+              <td>官方ETZ</td>
+              <td><a href="#" class="link">这个#星淫棟社区的话题 #淫秽色情...</a></td>
+              <td><span class="status-tag default">淫秽色情</span></td>
+              <td>—</td>
+              <td class="num-cell">51</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">129</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">1</td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-tag warning">待发布</span></td>
+              <td>2026-04-27 11:43:03</td>
+              <td>
+                <span class="op-link">详情</span>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">编辑</button>
+                    <button class="dropdown-item">立即发布</button>
+                    <button class="dropdown-item" style="color: #ff4d4f;">删除</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="id-cell">335</td>
+              <td><a href="#" class="link">3483795897916067968</a></td>
+              <td class="id-cell">66</td>
+              <td>官方ETZ</td>
+              <td><a href="#" class="link">#美女图片 我是美女圖片的贴文內容，測試试验...</a></td>
+              <td><span class="status-tag default">美女图片</span></td>
+              <td>—</td>
+              <td class="num-cell">3</td>
+              <td class="num-cell">2</td>
+              <td class="num-cell">25</td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">0</td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-tag error">发布失败</span></td>
+              <td>2026-04-27 11:41:08</td>
+              <td>
+                <span class="op-link">详情</span>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">编辑</button>
+                    <button class="dropdown-item">立即发布</button>
+                    <button class="dropdown-item" style="color: #ff4d4f;">删除</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="id-cell">326</td>
+              <td><a href="#" class="link">3483780859100663936</a></td>
+              <td class="id-cell">66</td>
+              <td>官方ETZ</td>
+              <td><a href="#" class="link">本日播出現完更新公告，大家快来买! $PT #美女...</a></td>
+              <td><span class="status-tag default">美女后援会, BTC</span></td>
+              <td>RT</td>
+              <td class="num-cell">3</td>
+              <td class="num-cell">2</td>
+              <td class="num-cell">36</td>
+              <td class="num-cell">2</td>
+              <td class="num-cell">4</td>
+              <td><span class="status-text yes">是</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-text">否</span></td>
+              <td><span class="status-tag success">已发布</span></td>
+              <td>2026-04-27 10:41:22</td>
+              <td>
+                <span class="op-link">详情</span>
+                <div class="more-dropdown">
+                  <button class="more-btn" onclick="toggleDropdown(this)">更多 ∨</button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">编辑</button>
+                    <button class="dropdown-item" style="color: #ff4d4f;">删除</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 分页 -->
+        <div class="pagination">
+          <span class="page-info">共 20 条</span>
+          <span style="margin-right: 8px;">10条/页</span>
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">›</button>
+          <span style="margin-left: 8px;">前往</span>
+          <input type="text" value="1" style="width: 40px; height: 28px; text-align: center; border: 1px solid #d9d9d9; border-radius: 4px; margin: 0 4px;">
+          <span>页</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 新增官方贴文弹窗 -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">新增官方贴文</span>
+        <div class="modal-actions">
+          <button class="modal-icon-btn">⤢</button>
+          <button class="modal-icon-btn" onclick="hideModal()">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- 第一行：官方账号 + 设置为快讯 + 发布时间 -->
+        <div class="form-row">
+          <div class="form-item">
+            <div class="form-label"><span class="required">*</span> 官方账号</div>
+            <select class="form-select">
+              <option>请选择官方账号</option>
+              <option>官方ETZ</option>
+              <option>ETZ运营</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <div class="form-label">设置为快讯</div>
+            <div class="switch-row">
+              <label class="switch">
+                <input type="checkbox" id="flashSwitch">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="form-item">
+            <div class="form-label">发布时间</div>
+            <input type="datetime-local" class="form-input" placeholder="不设置则立即发布">
+          </div>
+        </div>
+
+        <!-- 语言Tab -->
+        <div class="form-item">
+          <div class="lang-tabs">
+            <button class="lang-tab active">简体中文</button>
+            <button class="lang-tab add">+ 添加</button>
+          </div>
+        </div>
+
+        <!-- 内容摘要 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span> 内容摘要</div>
+          <div class="editor-container">
+            <textarea class="editor-textarea" placeholder="请输入文字；表情请点「插入表情」，勿粘贴外部富文本" maxlength="2000"></textarea>
+            <div class="editor-count"><span id="charCount">0</span>/2000</div>
+            <div class="editor-toolbar">
+              <button class="toolbar-btn" title="表情">😊</button>
+              <button class="toolbar-btn" title="图片">🖼</button>
+              <button class="toolbar-btn" title="视频">📹</button>
+              <div class="toolbar-divider"></div>
+              <button class="toolbar-btn" title="话题">#</button>
+              <button class="toolbar-btn" title="币种">$</button>
+              <button class="toolbar-btn" title="转发">↩</button>
+              <span class="toolbar-info">i</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn default" onclick="hideModal()">取消</button>
+        <button class="modal-btn primary">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 显示弹窗
+    function showModal() {
+      document.getElementById('addModal').classList.add('show');
+    }
+
+    // 隐藏弹窗
+    function hideModal() {
+      document.getElementById('addModal').classList.remove('show');
+    }
+
+    // 点击遮罩关闭
+    document.getElementById('addModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        hideModal();
+      }
+    });
+
+    // 字数统计
+    document.querySelector('.editor-textarea').addEventListener('input', function() {
+      document.getElementById('charCount').textContent = this.value.length;
+    });
+
+    // 更多下拉菜单
+    function toggleDropdown(btn) {
+      const dropdown = btn.closest('.more-dropdown');
+      const isOpen = dropdown.classList.contains('open');
+      document.querySelectorAll('.more-dropdown').forEach(d => d.classList.remove('open'));
+      if (!isOpen) {
+        dropdown.classList.add('open');
+      }
+    }
+
+    // 点击页面其他地方关闭下拉菜单
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.more-dropdown')) {
+        document.querySelectorAll('.more-dropdown').forEach(d => d.classList.remove('open'));
+      }
+    });
+
+    // 导航组展开/收起
+    document.querySelectorAll('.nav-group .nav-item.parent').forEach(item => {
+      item.addEventListener('click', function() {
+        this.closest('.nav-group').classList.toggle('expanded');
+      });
+    });
+  </script>
+
+</body>
+</html>
