@@ -861,6 +861,193 @@
       text-decoration: underline;
     }
 
+    /* 新版标签管理样式 */
+    .category-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .category-item:hover {
+      background: #f5f5f5;
+    }
+
+    .category-item.active {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    .category-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: #999;
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .category-item.active .category-count {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .tag-list-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .tag-list-item:hover {
+      background: #f5f5f5;
+    }
+
+    .tag-list-item.active {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    .tag-list-item.disabled {
+      color: #999;
+    }
+
+    .tag-sort-arrows {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .tag-sort-arrows span {
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+
+    .tag-sort-arrows span:hover {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+
+    /* 多语言Tab */
+    .lang-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .lang-tab {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .lang-tab:hover {
+      color: #1890ff;
+    }
+
+    .lang-tab.active {
+      color: #1890ff;
+      border-bottom-color: #1890ff;
+    }
+
+    .lang-add-btn {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #1890ff;
+      cursor: pointer;
+      background: #e6f7ff;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .lang-add-btn:hover {
+      background: #bae7ff;
+    }
+
+    .lang-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      z-index: 10;
+      display: none;
+      min-width: 120px;
+    }
+
+    .lang-dropdown.show {
+      display: block;
+    }
+
+    .lang-dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .lang-dropdown-item:hover {
+      background: #f5f5f5;
+    }
+
+    .lang-content {
+      display: none;
+    }
+
+    .lang-content.active {
+      display: block;
+    }
+
+    .form-item {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-label.required::before {
+      content: '*';
+      color: #ff4d4f;
+      margin-right: 4px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: #1890ff;
+    }
+
     .tag-edit-btn {
       color: #1890ff;
       cursor: pointer;
@@ -1396,138 +1583,154 @@
 
   <!-- 用户标签管理弹窗 -->
   <div class="modal-overlay" id="tagManageModal">
-    <div class="modal small">
+    <div class="modal" style="width: 680px;">
       <div class="modal-header">
         <span class="modal-title">用户标签管理</span>
         <button class="modal-icon-btn" onclick="hideModal('tagManage')">×</button>
       </div>
-      <div class="modal-body">
-        <!-- 标签分类1 -->
-        <div class="tag-manage-section" data-category="trade">
-          <div class="tag-manage-header">
-            <span class="tag-manage-title">交易风格</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('trade')">+ 新增标签</button>
+      <div class="modal-body" style="padding: 0;">
+        <!-- 标签列表区域 -->
+        <div style="display: flex; height: 480px;">
+          <!-- 左侧：分类和标签列表 -->
+          <div style="width: 240px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column;">
+            <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+              <div style="font-size: 14px; font-weight: 500; color: #333; margin-bottom: 12px;">标签分类</div>
+              <div id="categoryList">
+                <div class="category-item active" data-category="trade" onclick="selectCategory('trade')">
+                  <span class="tag-status-dot enabled"></span>
+                  <span>交易风格</span>
+                  <span class="category-count">4</span>
+                </div>
+                <div class="category-item" data-category="community" onclick="selectCategory('community')">
+                  <span class="tag-status-dot enabled"></span>
+                  <span>社区属性</span>
+                  <span class="category-count">4</span>
+                </div>
+              </div>
+              <button class="filter-btn default" style="width: 100%; margin-top: 12px; height: 32px; font-size: 13px;" onclick="addNewCategory()">+ 新增分类</button>
+            </div>
+            <div style="padding: 16px; flex: 1; overflow-y: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-size: 14px; font-weight: 500; color: #333;">标签列表</span>
+                <button class="filter-btn primary" style="height: 28px; font-size: 12px; padding: 0 12px;" onclick="showAddTagPanel()">+ 新增</button>
+              </div>
+              <div id="tagListPanel">
+                <div class="tag-list-item active" data-tag-id="1" onclick="selectTag(this)">
+                  <span class="tag-status-dot enabled"></span>
+                  <span>链上分析师</span>
+                  <span class="tag-sort-arrows">
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'up')">↑</span>
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'down')">↓</span>
+                  </span>
+                </div>
+                <div class="tag-list-item" data-tag-id="2" onclick="selectTag(this)">
+                  <span class="tag-status-dot enabled"></span>
+                  <span>量化交易员</span>
+                  <span class="tag-sort-arrows">
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'up')">↑</span>
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'down')">↓</span>
+                  </span>
+                </div>
+                <div class="tag-list-item" data-tag-id="3" onclick="selectTag(this)">
+                  <span class="tag-status-dot enabled"></span>
+                  <span>长线投资者</span>
+                  <span class="tag-sort-arrows">
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'up')">↑</span>
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'down')">↓</span>
+                  </span>
+                </div>
+                <div class="tag-list-item disabled" data-tag-id="4" onclick="selectTag(this)">
+                  <span class="tag-status-dot"></span>
+                  <span>短线玩家</span>
+                  <span class="tag-sort-arrows">
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'up')">↑</span>
+                    <span onclick="event.stopPropagation(); moveTagInList(this, 'down')">↓</span>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="tag-list" id="tagList-trade">
-            <div class="tag-item" data-users="3" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">链上分析师</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 3)">删除</span>
+
+          <!-- 右侧：标签编辑区域 -->
+          <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <div id="tagEditPanel">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="font-size: 15px; font-weight: 500; color: #333;">标签详情</span>
+                <div>
+                  <label style="font-size: 13px; color: #666; margin-right: 8px;">
+                    <input type="checkbox" id="tagEnabledCheck" checked onchange="toggleCurrentTagEnabled()"> 启用
+                  </label>
+                </div>
+              </div>
+
+              <!-- 多语言Tab -->
+              <div class="lang-tabs">
+                <div class="lang-tab active" data-lang="zh-CN" onclick="switchLangTab('zh-CN')">简体中文</div>
+                <div class="lang-tab" data-lang="en" onclick="switchLangTab('en')">English</div>
+                <div class="lang-tab" data-lang="zh-TW" onclick="switchLangTab('zh-TW')">繁体中文</div>
+                <div class="lang-add-btn" onclick="showLangDropdown(this)">+ 添加</div>
+                <div class="lang-dropdown" id="langDropdown">
+                  <div class="lang-dropdown-item" onclick="addLangTab('ja')">日本語</div>
+                  <div class="lang-dropdown-item" onclick="addLangTab('ko')">한국어</div>
+                  <div class="lang-dropdown-item" onclick="addLangTab('vi')">Tiếng Việt</div>
+                </div>
+              </div>
+
+              <!-- 多语言内容输入 -->
+              <div class="lang-content active" data-lang="zh-CN">
+                <div class="form-item">
+                  <label class="form-label required">标签名称</label>
+                  <input type="text" class="form-input" value="链上分析师" placeholder="请输入标签名称">
+                </div>
+              </div>
+              <div class="lang-content" data-lang="en" style="display: none;">
+                <div class="form-item">
+                  <label class="form-label required">标签名称</label>
+                  <input type="text" class="form-input" value="On-chain Analyst" placeholder="Enter tag name">
+                </div>
+              </div>
+              <div class="lang-content" data-lang="zh-TW" style="display: none;">
+                <div class="form-item">
+                  <label class="form-label required">标签名称</label>
+                  <input type="text" class="form-input" value="鏈上分析師" placeholder="請輸入標籤名稱">
+                </div>
+              </div>
+
+              <!-- 操作按钮 -->
+              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f0f0f0; display: flex; gap: 12px;">
+                <button class="modal-btn primary" style="flex: 1;">保存标签</button>
+                <button class="modal-btn default" style="color: #ff4d4f; border-color: #ff4d4f;" onclick="deleteCurrentTag()">删除标签</button>
+              </div>
             </div>
-            <div class="tag-item" data-users="2" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">量化交易员</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 2)">删除</span>
-            </div>
-            <div class="tag-item" data-users="1" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">长线投资者</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 1)">删除</span>
-            </div>
-            <div class="tag-item disabled" data-users="0" data-enabled="false">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot"></span>
-              <span class="tag-name">短线玩家</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle enable" onclick="toggleTagEnabled(this)">启用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
+
+            <!-- 空状态 -->
+            <div id="tagEmptyPanel" style="display: none; text-align: center; padding: 60px 20px; color: #999;">
+              <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
+              <div>请从左侧选择标签进行编辑</div>
+              <div style="margin-top: 8px;">或点击"+ 新增"创建新标签</div>
             </div>
           </div>
         </div>
 
-        <!-- 标签分类2 -->
-        <div class="tag-manage-section" data-category="community">
-          <div class="tag-manage-header">
-            <span class="tag-manage-title">社区属性</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('community')">+ 新增标签</button>
-          </div>
-          <div class="tag-list" id="tagList-community">
-            <div class="tag-item" data-users="5" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">加密市场研究员</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 5)">删除</span>
+        <!-- 底部配置 -->
+        <div style="padding: 16px 20px; border-top: 1px solid #f0f0f0; background: #fafafa;">
+          <div style="display: flex; align-items: center; gap: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; color: #666;">用户最大可选标签数</span>
+              <input type="number" class="tag-config-input" value="5" style="width: 60px;">
+              <span style="font-size: 13px; color: #888;">个</span>
             </div>
-            <div class="tag-item" data-users="4" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">Web3 创作者</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 4)">删除</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; color: #666;">当前分类数</span>
+              <span style="font-size: 14px; font-weight: 500; color: #1890ff;">2</span>
+              <span style="font-size: 13px; color: #888;">个</span>
             </div>
-            <div class="tag-item" data-users="0" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">NFT 收藏家</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
-            </div>
-            <div class="tag-item" data-users="0" data-enabled="true">
-              <span class="tag-sort-btns">
-                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-              </span>
-              <span class="tag-status-dot enabled"></span>
-              <span class="tag-name">DeFi 玩家</span>
-              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
-              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 全局配置 -->
-        <div class="tag-config-box">
-          <div class="tag-config-row">
-            <span class="tag-config-label">用户最大可选标签数</span>
-            <input type="number" class="tag-config-input" value="5">
-            <span style="font-size: 13px; color: #888;">个</span>
-          </div>
-          <div class="tag-config-row">
-            <span class="tag-config-label">标签分类数量</span>
-            <input type="number" class="tag-config-input" value="2">
-            <span style="font-size: 13px; color: #888;">个</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px; margin-left: 8px;" onclick="addNewCategory()">+ 新增分类</button>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="modal-btn default" onclick="hideModal('tagManage')">取消</button>
-        <button class="modal-btn primary">保存</button>
+        <button class="modal-btn primary">保存全部</button>
       </div>
     </div>
   </div>
@@ -1613,158 +1816,161 @@
       document.getElementById(type + 'Modal').classList.remove('show');
     }
 
-    // 编辑标签
-    function editTag(editBtn) {
-      const tagItem = editBtn.closest('.tag-item');
-      const tagNameSpan = tagItem.querySelector('.tag-name');
-
-      if (tagNameSpan.tagName === 'INPUT') {
-        return;
-      }
-
-      const currentName = tagNameSpan.textContent;
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'tag-name-input';
-      input.value = currentName;
-
-      tagNameSpan.replaceWith(input);
-      input.focus();
-      input.select();
-
-      editBtn.textContent = '保存';
-      const originalOnclick = editBtn.onclick;
-      editBtn.onclick = function(e) {
-        e.stopPropagation();
-        saveTag(editBtn, input.value);
-      };
-
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          saveTag(editBtn, input.value);
-        }
-        if (e.key === 'Escape') {
-          saveTag(editBtn, currentName);
-        }
+    // 选择分类
+    function selectCategory(category) {
+      document.querySelectorAll('.category-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.category === category);
       });
-
-      input.addEventListener('blur', function() {
-        setTimeout(() => {
-          if (document.contains(input)) {
-            saveTag(editBtn, input.value);
-          }
-        }, 100);
-      });
+      // 根据分类加载对应标签列表
+      loadTagsByCategory(category);
     }
 
-    // 保存标签编辑
-    function saveTag(editBtn, newName) {
-      const tagItem = editBtn.closest('.tag-item');
-      const input = tagItem.querySelector('.tag-name-input');
-      if (!input) return;
-
-      const span = document.createElement('span');
-      span.className = 'tag-name';
-      span.textContent = newName || '未命名标签';
-
-      input.replaceWith(span);
-      editBtn.textContent = '编辑';
-      editBtn.onclick = function(e) {
-        e.stopPropagation();
-        editTag(editBtn);
+    // 根据分类加载标签
+    function loadTagsByCategory(category) {
+      const tagData = {
+        trade: [
+          { id: 1, name: '链上分析师', enabled: true },
+          { id: 2, name: '量化交易员', enabled: true },
+          { id: 3, name: '长线投资者', enabled: true },
+          { id: 4, name: '短线玩家', enabled: false }
+        ],
+        community: [
+          { id: 5, name: '加密市场研究员', enabled: true },
+          { id: 6, name: 'Web3 创作者', enabled: true },
+          { id: 7, name: 'NFT 收藏家', enabled: true },
+          { id: 8, name: 'DeFi 玩家', enabled: true }
+        ]
       };
+      const tags = tagData[category] || [];
+      const panel = document.getElementById('tagListPanel');
+      panel.innerHTML = tags.map((tag, idx) => `
+        <div class="tag-list-item ${!tag.enabled ? 'disabled' : ''} ${idx === 0 ? 'active' : ''}" data-tag-id="${tag.id}" onclick="selectTag(this)">
+          <span class="tag-status-dot ${tag.enabled ? 'enabled' : ''}"></span>
+          <span>${tag.name}</span>
+          <span class="tag-sort-arrows">
+            <span onclick="event.stopPropagation(); moveTagInList(this, 'up')">↑</span>
+            <span onclick="event.stopPropagation(); moveTagInList(this, 'down')">↓</span>
+          </span>
+        </div>
+      `).join('');
     }
 
-    // 启用/禁用标签
-    function toggleTagEnabled(toggleBtn) {
-      const tagItem = toggleBtn.closest('.tag-item');
-      const isEnabled = tagItem.dataset.enabled === 'true';
-      const dot = tagItem.querySelector('.tag-status-dot');
+    // 选择标签
+    function selectTag(item) {
+      document.querySelectorAll('.tag-list-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      document.getElementById('tagEditPanel').style.display = 'block';
+      document.getElementById('tagEmptyPanel').style.display = 'none';
+      // 更新启用状态checkbox
+      const isEnabled = !item.classList.contains('disabled');
+      document.getElementById('tagEnabledCheck').checked = isEnabled;
+    }
 
+    // 切换当前标签启用状态
+    function toggleCurrentTagEnabled() {
+      const activeTag = document.querySelector('.tag-list-item.active');
+      if (!activeTag) return;
+      const isEnabled = document.getElementById('tagEnabledCheck').checked;
+      const dot = activeTag.querySelector('.tag-status-dot');
       if (isEnabled) {
-        tagItem.dataset.enabled = 'false';
-        tagItem.classList.add('disabled');
-        dot.classList.remove('enabled');
-        toggleBtn.textContent = '启用';
-        toggleBtn.classList.add('enable');
-      } else {
-        tagItem.dataset.enabled = 'true';
-        tagItem.classList.remove('disabled');
+        activeTag.classList.remove('disabled');
         dot.classList.add('enabled');
-        toggleBtn.textContent = '禁用';
-        toggleBtn.classList.remove('enable');
+      } else {
+        activeTag.classList.add('disabled');
+        dot.classList.remove('enabled');
       }
     }
 
-    // 删除标签
-    function deleteTag(deleteBtn, userCount) {
-      if (userCount > 0) {
-        alert('当前标签存在关联数据，无法删除');
+    // 切换语言Tab
+    function switchLangTab(lang) {
+      document.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.lang === lang);
+      });
+      document.querySelectorAll('.lang-content').forEach(content => {
+        content.classList.toggle('active', content.dataset.lang === lang);
+        content.style.display = content.dataset.lang === lang ? 'block' : 'none';
+      });
+    }
+
+    // 显示语言下拉菜单
+    function showLangDropdown(btn) {
+      const dropdown = document.getElementById('langDropdown');
+      dropdown.classList.toggle('show');
+      event.stopPropagation();
+    }
+
+    // 添加语言Tab
+    function addLangTab(lang) {
+      const langNames = { ja: '日本語', ko: '한국어', vi: 'Tiếng Việt' };
+      const tabs = document.querySelector('.lang-tabs');
+      const addBtn = tabs.querySelector('.lang-add-btn');
+
+      // 检查是否已存在
+      if (tabs.querySelector(`[data-lang="${lang}"]`)) {
+        alert('该语言已添加');
         return;
       }
 
-      if (confirm('确定要删除该标签吗？')) {
-        const tagItem = deleteBtn.closest('.tag-item');
-        tagItem.remove();
-      }
-    }
+      const newTab = document.createElement('div');
+      newTab.className = 'lang-tab';
+      newTab.dataset.lang = lang;
+      newTab.textContent = langNames[lang];
+      newTab.onclick = function() { switchLangTab(lang); };
+      tabs.insertBefore(newTab, addBtn);
 
-    // 标签排序-上移/下移
-    function moveTag(sortBtn, direction) {
-      const tagItem = sortBtn.closest('.tag-item');
-      const tagList = tagItem.parentElement;
-
-      if (direction === 'up') {
-        const prev = tagItem.previousElementSibling;
-        if (prev) {
-          tagList.insertBefore(tagItem, prev);
-        }
-      } else {
-        const next = tagItem.nextElementSibling;
-        if (next) {
-          tagList.insertBefore(next, tagItem);
-        }
-      }
-    }
-
-    // 新增标签
-    function addNewTag(category) {
-      const tagList = document.getElementById('tagList-' + category);
-      const newTag = document.createElement('div');
-      newTag.className = 'tag-item';
-      newTag.dataset.users = '0';
-      newTag.dataset.enabled = 'true';
-      newTag.innerHTML = `
-        <span class="tag-sort-btns">
-          <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
-          <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
-        </span>
-        <span class="tag-status-dot enabled"></span>
-        <input type="text" class="tag-name-input" placeholder="输入标签名称" style="flex:1;">
-        <span class="tag-action-btn edit" onclick="editTag(this)">保存</span>
-        <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
-        <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
+      // 添加对应内容区域
+      const editPanel = document.getElementById('tagEditPanel');
+      const newContent = document.createElement('div');
+      newContent.className = 'lang-content';
+      newContent.dataset.lang = lang;
+      newContent.style.display = 'none';
+      newContent.innerHTML = `
+        <div class="form-item">
+          <label class="form-label required">标签名称</label>
+          <input type="text" class="form-input" placeholder="请输入${langNames[lang]}名称">
+        </div>
       `;
-      tagList.appendChild(newTag);
+      const buttons = editPanel.querySelector('[style*="border-top"]');
+      editPanel.insertBefore(newContent, buttons);
 
-      const input = newTag.querySelector('.tag-name-input');
-      input.focus();
+      document.getElementById('langDropdown').classList.remove('show');
+      switchLangTab(lang);
+    }
 
-      const saveBtn = newTag.querySelector('.tag-action-btn.edit');
-      saveBtn.onclick = function() {
-        const span = document.createElement('span');
-        span.className = 'tag-name';
-        span.textContent = input.value || '未命名标签';
-        input.replaceWith(span);
-        saveBtn.textContent = '编辑';
-        saveBtn.onclick = function() { editTag(saveBtn); };
-      };
+    // 标签排序
+    function moveTagInList(btn, direction) {
+      const item = btn.closest('.tag-list-item');
+      const list = item.parentElement;
+      if (direction === 'up' && item.previousElementSibling) {
+        list.insertBefore(item, item.previousElementSibling);
+      } else if (direction === 'down' && item.nextElementSibling) {
+        list.insertBefore(item.nextElementSibling, item);
+      }
+    }
 
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          saveBtn.click();
-        }
-      });
+    // 显示新增标签面板
+    function showAddTagPanel() {
+      document.querySelectorAll('.tag-list-item').forEach(i => i.classList.remove('active'));
+      document.getElementById('tagEditPanel').style.display = 'block';
+      document.getElementById('tagEmptyPanel').style.display = 'none';
+      // 清空输入框
+      document.querySelectorAll('.lang-content .form-input').forEach(input => input.value = '');
+      document.getElementById('tagEnabledCheck').checked = true;
+      switchLangTab('zh-CN');
+    }
+
+    // 删除当前标签
+    function deleteCurrentTag() {
+      const activeTag = document.querySelector('.tag-list-item.active');
+      if (!activeTag) {
+        alert('请先选择要删除的标签');
+        return;
+      }
+      if (confirm('确定要删除该标签吗？')) {
+        activeTag.remove();
+        document.getElementById('tagEditPanel').style.display = 'none';
+        document.getElementById('tagEmptyPanel').style.display = 'block';
+      }
     }
 
     // 新增分类
@@ -1773,28 +1979,24 @@
       if (!categoryName) return;
 
       const categoryId = 'cat_' + Date.now();
-      const section = document.createElement('div');
-      section.className = 'tag-manage-section';
-      section.dataset.category = categoryId;
-      section.innerHTML = `
-        <div class="tag-manage-header">
-          <span class="tag-manage-title">${categoryName}</span>
-          <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('${categoryId}')">+ 新增标签</button>
-        </div>
-        <div class="tag-list" id="tagList-${categoryId}">
-          <div style="color: #999; font-size: 13px; padding: 12px;">暂无标签，请点击"新增标签"添加</div>
-        </div>
+      const categoryList = document.getElementById('categoryList');
+      const newCategory = document.createElement('div');
+      newCategory.className = 'category-item';
+      newCategory.dataset.category = categoryId;
+      newCategory.onclick = function() { selectCategory(categoryId); };
+      newCategory.innerHTML = `
+        <span class="tag-status-dot enabled"></span>
+        <span>${categoryName}</span>
+        <span class="category-count">0</span>
       `;
-
-      const configBox = document.querySelector('.tag-config-box');
-      configBox.parentElement.insertBefore(section, configBox);
-
-      // 更新分类数量
-      const countInput = document.querySelector('.tag-config-input[value]');
-      if (countInput) {
-        countInput.value = document.querySelectorAll('.tag-manage-section').length;
-      }
+      categoryList.appendChild(newCategory);
+      selectCategory(categoryId);
     }
+
+    // 点击页面关闭下拉菜单
+    document.addEventListener('click', function() {
+      document.getElementById('langDropdown')?.classList.remove('show');
+    });
 
     // 点击遮罩关闭
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
