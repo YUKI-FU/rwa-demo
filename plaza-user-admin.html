@@ -877,18 +877,44 @@
       background: #f5f5f5;
     }
 
+    .category-item:hover .category-edit-btn {
+      opacity: 1;
+    }
+
     .category-item.active {
       background: #e6f7ff;
       color: #1890ff;
     }
 
+    .category-name {
+      flex: 1;
+    }
+
+    .category-edit-btn {
+      font-size: 12px;
+      color: #1890ff;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .category-edit-btn:hover {
+      text-decoration: underline;
+    }
+
     .category-count {
-      margin-left: auto;
       font-size: 12px;
       color: #999;
       background: #f0f0f0;
       padding: 2px 8px;
       border-radius: 10px;
+    }
+
+    .category-lang-content {
+      display: none;
+    }
+
+    .category-lang-content.active {
+      display: block;
     }
 
     .category-item.active .category-count {
@@ -1598,16 +1624,18 @@
               <div id="categoryList">
                 <div class="category-item active" data-category="trade" onclick="selectCategory('trade')">
                   <span class="tag-status-dot enabled"></span>
-                  <span>交易风格</span>
+                  <span class="category-name">交易风格</span>
+                  <span class="category-edit-btn" onclick="event.stopPropagation(); editCategory('trade')">编辑</span>
                   <span class="category-count">4</span>
                 </div>
                 <div class="category-item" data-category="community" onclick="selectCategory('community')">
                   <span class="tag-status-dot enabled"></span>
-                  <span>社区属性</span>
+                  <span class="category-name">社区属性</span>
+                  <span class="category-edit-btn" onclick="event.stopPropagation(); editCategory('community')">编辑</span>
                   <span class="category-count">4</span>
                 </div>
               </div>
-              <button class="filter-btn default" style="width: 100%; margin-top: 12px; height: 32px; font-size: 13px;" onclick="addNewCategory()">+ 新增分类</button>
+              <button class="filter-btn default" style="width: 100%; margin-top: 12px; height: 32px; font-size: 13px;" onclick="showAddCategoryPanel()">+ 新增分类</button>
             </div>
             <div style="padding: 16px; flex: 1; overflow-y: auto;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -1651,8 +1679,60 @@
             </div>
           </div>
 
-          <!-- 右侧：标签编辑区域 -->
+          <!-- 右侧：编辑区域 -->
           <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <!-- 分类编辑面板 -->
+            <div id="categoryEditPanel" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="font-size: 15px; font-weight: 500; color: #333;">分类详情</span>
+                <div>
+                  <label style="font-size: 13px; color: #666; margin-right: 8px;">
+                    <input type="checkbox" id="categoryEnabledCheck" checked onchange="toggleCurrentCategoryEnabled()"> 启用
+                  </label>
+                </div>
+              </div>
+
+              <!-- 多语言Tab -->
+              <div class="lang-tabs" id="categoryLangTabs">
+                <div class="lang-tab active" data-lang="zh-CN" onclick="switchCategoryLangTab('zh-CN')">简体中文</div>
+                <div class="lang-tab" data-lang="en" onclick="switchCategoryLangTab('en')">English</div>
+                <div class="lang-tab" data-lang="zh-TW" onclick="switchCategoryLangTab('zh-TW')">繁体中文</div>
+                <div class="lang-add-btn" onclick="showCategoryLangDropdown(this)">+ 添加</div>
+                <div class="lang-dropdown" id="categoryLangDropdown">
+                  <div class="lang-dropdown-item" onclick="addCategoryLangTab('ja')">日本語</div>
+                  <div class="lang-dropdown-item" onclick="addCategoryLangTab('ko')">한국어</div>
+                  <div class="lang-dropdown-item" onclick="addCategoryLangTab('vi')">Tiếng Việt</div>
+                </div>
+              </div>
+
+              <!-- 多语言内容输入 -->
+              <div class="category-lang-content active" data-lang="zh-CN">
+                <div class="form-item">
+                  <label class="form-label required">分类名称</label>
+                  <input type="text" class="form-input" id="categoryName-zh-CN" value="交易风格" placeholder="请输入分类名称">
+                </div>
+              </div>
+              <div class="category-lang-content" data-lang="en" style="display: none;">
+                <div class="form-item">
+                  <label class="form-label required">分类名称</label>
+                  <input type="text" class="form-input" id="categoryName-en" value="Trading Style" placeholder="Enter category name">
+                </div>
+              </div>
+              <div class="category-lang-content" data-lang="zh-TW" style="display: none;">
+                <div class="form-item">
+                  <label class="form-label required">分类名称</label>
+                  <input type="text" class="form-input" id="categoryName-zh-TW" value="交易風格" placeholder="請輸入分類名稱">
+                </div>
+              </div>
+
+              <!-- 操作按钮 -->
+              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f0f0f0; display: flex; gap: 12px;">
+                <button class="modal-btn primary" style="flex: 1;" onclick="saveCategoryEdit()">保存分类</button>
+                <button class="modal-btn default" style="color: #ff4d4f; border-color: #ff4d4f;" onclick="deleteCurrentCategory()">删除分类</button>
+              </div>
+            </div>
+
+            <!-- 标签编辑面板 -->
             <div id="tagEditPanel">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <span style="font-size: 15px; font-weight: 500; color: #333;">标签详情</span>
@@ -1821,8 +1901,168 @@
       document.querySelectorAll('.category-item').forEach(item => {
         item.classList.toggle('active', item.dataset.category === category);
       });
+      // 隐藏分类编辑面板，显示标签列表
+      document.getElementById('categoryEditPanel').style.display = 'none';
+      document.getElementById('tagEditPanel').style.display = 'block';
+      document.getElementById('tagEmptyPanel').style.display = 'none';
       // 根据分类加载对应标签列表
       loadTagsByCategory(category);
+    }
+
+    // 编辑分类
+    function editCategory(category) {
+      const categoryData = {
+        trade: { 'zh-CN': '交易风格', en: 'Trading Style', 'zh-TW': '交易風格' },
+        community: { 'zh-CN': '社区属性', en: 'Community Attributes', 'zh-TW': '社區屬性' }
+      };
+      const data = categoryData[category] || {};
+
+      // 显示分类编辑面板
+      document.getElementById('categoryEditPanel').style.display = 'block';
+      document.getElementById('tagEditPanel').style.display = 'none';
+      document.getElementById('tagEmptyPanel').style.display = 'none';
+
+      // 填充数据
+      document.getElementById('categoryName-zh-CN').value = data['zh-CN'] || '';
+      document.getElementById('categoryName-en').value = data.en || '';
+      document.getElementById('categoryName-zh-TW').value = data['zh-TW'] || '';
+
+      // 切换到简体中文Tab
+      switchCategoryLangTab('zh-CN');
+
+      // 存储当前编辑的分类ID
+      document.getElementById('categoryEditPanel').dataset.editingCategory = category;
+    }
+
+    // 显示新增分类面板
+    function showAddCategoryPanel() {
+      document.getElementById('categoryEditPanel').style.display = 'block';
+      document.getElementById('tagEditPanel').style.display = 'none';
+      document.getElementById('tagEmptyPanel').style.display = 'none';
+
+      // 清空数据
+      document.getElementById('categoryName-zh-CN').value = '';
+      document.getElementById('categoryName-en').value = '';
+      document.getElementById('categoryName-zh-TW').value = '';
+      document.getElementById('categoryEnabledCheck').checked = true;
+
+      // 切换到简体中文Tab
+      switchCategoryLangTab('zh-CN');
+
+      // 清除编辑标记
+      document.getElementById('categoryEditPanel').dataset.editingCategory = '';
+    }
+
+    // 切换分类语言Tab
+    function switchCategoryLangTab(lang) {
+      document.querySelectorAll('#categoryLangTabs .lang-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.lang === lang);
+      });
+      document.querySelectorAll('.category-lang-content').forEach(content => {
+        content.classList.toggle('active', content.dataset.lang === lang);
+        content.style.display = content.dataset.lang === lang ? 'block' : 'none';
+      });
+    }
+
+    // 显示分类语言下拉菜单
+    function showCategoryLangDropdown(btn) {
+      const dropdown = document.getElementById('categoryLangDropdown');
+      dropdown.classList.toggle('show');
+      event.stopPropagation();
+    }
+
+    // 添加分类语言Tab
+    function addCategoryLangTab(lang) {
+      const langNames = { ja: '日本語', ko: '한국어', vi: 'Tiếng Việt' };
+      const tabs = document.getElementById('categoryLangTabs');
+      const addBtn = tabs.querySelector('.lang-add-btn');
+
+      if (tabs.querySelector(`[data-lang="${lang}"]`)) {
+        alert('该语言已添加');
+        return;
+      }
+
+      const newTab = document.createElement('div');
+      newTab.className = 'lang-tab';
+      newTab.dataset.lang = lang;
+      newTab.textContent = langNames[lang];
+      newTab.onclick = function() { switchCategoryLangTab(lang); };
+      tabs.insertBefore(newTab, addBtn);
+
+      // 添加对应内容区域
+      const editPanel = document.getElementById('categoryEditPanel');
+      const newContent = document.createElement('div');
+      newContent.className = 'category-lang-content';
+      newContent.dataset.lang = lang;
+      newContent.style.display = 'none';
+      newContent.innerHTML = `
+        <div class="form-item">
+          <label class="form-label required">分类名称</label>
+          <input type="text" class="form-input" id="categoryName-${lang}" placeholder="请输入${langNames[lang]}名称">
+        </div>
+      `;
+      const buttons = editPanel.querySelector('[style*="border-top"]');
+      editPanel.insertBefore(newContent, buttons);
+
+      document.getElementById('categoryLangDropdown').classList.remove('show');
+      switchCategoryLangTab(lang);
+    }
+
+    // 保存分类编辑
+    function saveCategoryEdit() {
+      const zhName = document.getElementById('categoryName-zh-CN').value;
+      if (!zhName) {
+        alert('请输入简体中文名称');
+        return;
+      }
+
+      const editingCategory = document.getElementById('categoryEditPanel').dataset.editingCategory;
+      if (editingCategory) {
+        // 更新已有分类
+        const categoryItem = document.querySelector(`.category-item[data-category="${editingCategory}"]`);
+        if (categoryItem) {
+          categoryItem.querySelector('.category-name').textContent = zhName;
+        }
+      } else {
+        // 新增分类
+        const categoryId = 'cat_' + Date.now();
+        const categoryList = document.getElementById('categoryList');
+        const newCategory = document.createElement('div');
+        newCategory.className = 'category-item';
+        newCategory.dataset.category = categoryId;
+        newCategory.onclick = function() { selectCategory(categoryId); };
+        newCategory.innerHTML = `
+          <span class="tag-status-dot enabled"></span>
+          <span class="category-name">${zhName}</span>
+          <span class="category-edit-btn" onclick="event.stopPropagation(); editCategory('${categoryId}')">编辑</span>
+          <span class="category-count">0</span>
+        `;
+        categoryList.appendChild(newCategory);
+      }
+
+      alert('保存成功');
+    }
+
+    // 切换分类启用状态
+    function toggleCurrentCategoryEnabled() {
+      // 实际项目中需要处理启用禁用逻辑
+    }
+
+    // 删除当前分类
+    function deleteCurrentCategory() {
+      const editingCategory = document.getElementById('categoryEditPanel').dataset.editingCategory;
+      if (!editingCategory) {
+        alert('请先选择要删除的分类');
+        return;
+      }
+      if (confirm('确定要删除该分类吗？分类下的所有标签也将被删除。')) {
+        const categoryItem = document.querySelector(`.category-item[data-category="${editingCategory}"]`);
+        if (categoryItem) {
+          categoryItem.remove();
+        }
+        document.getElementById('categoryEditPanel').style.display = 'none';
+        document.getElementById('tagEmptyPanel').style.display = 'block';
+      }
     }
 
     // 根据分类加载标签
@@ -1859,6 +2099,7 @@
     function selectTag(item) {
       document.querySelectorAll('.tag-list-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
+      document.getElementById('categoryEditPanel').style.display = 'none';
       document.getElementById('tagEditPanel').style.display = 'block';
       document.getElementById('tagEmptyPanel').style.display = 'none';
       // 更新启用状态checkbox
@@ -1883,10 +2124,10 @@
 
     // 切换语言Tab
     function switchLangTab(lang) {
-      document.querySelectorAll('.lang-tab').forEach(tab => {
+      document.querySelectorAll('#tagEditPanel .lang-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.lang === lang);
       });
-      document.querySelectorAll('.lang-content').forEach(content => {
+      document.querySelectorAll('#tagEditPanel .lang-content').forEach(content => {
         content.classList.toggle('active', content.dataset.lang === lang);
         content.style.display = content.dataset.lang === lang ? 'block' : 'none';
       });
@@ -1951,10 +2192,11 @@
     // 显示新增标签面板
     function showAddTagPanel() {
       document.querySelectorAll('.tag-list-item').forEach(i => i.classList.remove('active'));
+      document.getElementById('categoryEditPanel').style.display = 'none';
       document.getElementById('tagEditPanel').style.display = 'block';
       document.getElementById('tagEmptyPanel').style.display = 'none';
       // 清空输入框
-      document.querySelectorAll('.lang-content .form-input').forEach(input => input.value = '');
+      document.querySelectorAll('#tagEditPanel .lang-content .form-input').forEach(input => input.value = '');
       document.getElementById('tagEnabledCheck').checked = true;
       switchLangTab('zh-CN');
     }
