@@ -766,31 +766,47 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 12px;
+      padding: 8px 12px;
       border: 1px solid #d9d9d9;
       border-radius: 4px;
       font-size: 13px;
       color: #333;
-      background: #fafafa;
-      cursor: pointer;
+      background: #fff;
       transition: all 0.2s;
     }
 
     .tag-item:hover {
-      border-color: #1890ff;
+      border-color: #40a9ff;
     }
-
 
     .tag-item.disabled {
       color: #999;
+      background: #fafafa;
     }
 
-    .tag-item.disabled .tag-status-dot {
-      background: #d9d9d9;
+    .tag-item.disabled .tag-name {
+      color: #999;
     }
 
-    .tag-item.active {
-      border-color: #1890ff;
+    .tag-sort-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sort-btn {
+      width: 16px;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #999;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .sort-btn:hover {
       background: #e6f7ff;
       color: #1890ff;
     }
@@ -799,11 +815,50 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
+      background: #d9d9d9;
+    }
+
+    .tag-status-dot.enabled {
       background: #52c41a;
     }
 
-    .tag-status-dot.disabled {
-      background: #d9d9d9;
+    .tag-name {
+      flex: 1;
+    }
+
+    .tag-name-input {
+      border: 1px solid #1890ff;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 13px;
+      outline: none;
+      width: 100px;
+    }
+
+    .tag-action-btn {
+      font-size: 12px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+
+    .tag-action-btn.edit {
+      color: #1890ff;
+    }
+
+    .tag-action-btn.toggle {
+      color: #faad14;
+    }
+
+    .tag-action-btn.toggle.enable {
+      color: #52c41a;
+    }
+
+    .tag-action-btn.delete {
+      color: #ff4d4f;
+    }
+
+    .tag-action-btn:hover {
+      text-decoration: underline;
     }
 
     .tag-edit-btn {
@@ -1348,69 +1403,109 @@
       </div>
       <div class="modal-body">
         <!-- 标签分类1 -->
-        <div class="tag-manage-section">
+        <div class="tag-manage-section" data-category="trade">
           <div class="tag-manage-header">
             <span class="tag-manage-title">交易风格</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('trade')">+ 新增标签</button>
           </div>
-          <div class="tag-list">
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="3">
-              <span class="tag-status-dot"></span>
+          <div class="tag-list" id="tagList-trade">
+            <div class="tag-item" data-users="3" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">链上分析师</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 3)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 3)">删除</span>
             </div>
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="2">
-              <span class="tag-status-dot"></span>
+            <div class="tag-item" data-users="2" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">量化交易员</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 2)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 2)">删除</span>
             </div>
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="1">
-              <span class="tag-status-dot"></span>
+            <div class="tag-item" data-users="1" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">长线投资者</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 1)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 1)">删除</span>
             </div>
-            <div class="tag-item disabled" onclick="toggleTagSelect(this)" data-users="0">
+            <div class="tag-item disabled" data-users="0" data-enabled="false">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
               <span class="tag-status-dot"></span>
               <span class="tag-name">短线玩家</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle enable" onclick="toggleTagEnabled(this)">启用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
             </div>
           </div>
         </div>
 
         <!-- 标签分类2 -->
-        <div class="tag-manage-section">
+        <div class="tag-manage-section" data-category="community">
           <div class="tag-manage-header">
             <span class="tag-manage-title">社区属性</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px;">+ 新增标签</button>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('community')">+ 新增标签</button>
           </div>
-          <div class="tag-list">
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="5">
-              <span class="tag-status-dot"></span>
+          <div class="tag-list" id="tagList-community">
+            <div class="tag-item" data-users="5" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">加密市场研究员</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 5)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 5)">删除</span>
             </div>
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="4">
-              <span class="tag-status-dot"></span>
+            <div class="tag-item" data-users="4" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">Web3 创作者</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 4)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 4)">删除</span>
             </div>
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="0">
-              <span class="tag-status-dot"></span>
+            <div class="tag-item" data-users="0" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">NFT 收藏家</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
             </div>
-            <div class="tag-item" onclick="toggleTagSelect(this)" data-users="0">
-              <span class="tag-status-dot"></span>
+            <div class="tag-item" data-users="0" data-enabled="true">
+              <span class="tag-sort-btns">
+                <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+                <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+              </span>
+              <span class="tag-status-dot enabled"></span>
               <span class="tag-name">DeFi 玩家</span>
-              <span class="tag-edit-btn" onclick="event.stopPropagation(); editTag(this)">编辑</span>
-              <span class="tag-delete-btn" onclick="event.stopPropagation(); deleteTag(this, 0)">删除</span>
+              <span class="tag-action-btn edit" onclick="editTag(this)">编辑</span>
+              <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+              <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
             </div>
           </div>
         </div>
@@ -1426,7 +1521,7 @@
             <span class="tag-config-label">标签分类数量</span>
             <input type="number" class="tag-config-input" value="2">
             <span style="font-size: 13px; color: #888;">个</span>
-            <button class="filter-btn default" style="height: 28px; font-size: 12px; margin-left: 8px;">+ 新增分类</button>
+            <button class="filter-btn default" style="height: 28px; font-size: 12px; margin-left: 8px;" onclick="addNewCategory()">+ 新增分类</button>
           </div>
         </div>
       </div>
@@ -1518,18 +1613,11 @@
       document.getElementById(type + 'Modal').classList.remove('show');
     }
 
-    // 标签选中/取消选中
-    function toggleTagSelect(tagItem) {
-      if (tagItem.querySelector('.tag-name-input')) return; // 编辑中不切换
-      tagItem.classList.toggle('selected');
-    }
-
     // 编辑标签
     function editTag(editBtn) {
       const tagItem = editBtn.closest('.tag-item');
       const tagNameSpan = tagItem.querySelector('.tag-name');
 
-      // 如果已经在编辑状态，保存并退出
       if (tagNameSpan.tagName === 'INPUT') {
         return;
       }
@@ -1544,14 +1632,13 @@
       input.focus();
       input.select();
 
-      // 修改按钮文字为"保存"
       editBtn.textContent = '保存';
+      const originalOnclick = editBtn.onclick;
       editBtn.onclick = function(e) {
         e.stopPropagation();
         saveTag(editBtn, input.value);
       };
 
-      // 回车保存
       input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
           saveTag(editBtn, input.value);
@@ -1561,7 +1648,6 @@
         }
       });
 
-      // 失焦保存
       input.addEventListener('blur', function() {
         setTimeout(() => {
           if (document.contains(input)) {
@@ -1589,6 +1675,27 @@
       };
     }
 
+    // 启用/禁用标签
+    function toggleTagEnabled(toggleBtn) {
+      const tagItem = toggleBtn.closest('.tag-item');
+      const isEnabled = tagItem.dataset.enabled === 'true';
+      const dot = tagItem.querySelector('.tag-status-dot');
+
+      if (isEnabled) {
+        tagItem.dataset.enabled = 'false';
+        tagItem.classList.add('disabled');
+        dot.classList.remove('enabled');
+        toggleBtn.textContent = '启用';
+        toggleBtn.classList.add('enable');
+      } else {
+        tagItem.dataset.enabled = 'true';
+        tagItem.classList.remove('disabled');
+        dot.classList.add('enabled');
+        toggleBtn.textContent = '禁用';
+        toggleBtn.classList.remove('enable');
+      }
+    }
+
     // 删除标签
     function deleteTag(deleteBtn, userCount) {
       if (userCount > 0) {
@@ -1599,6 +1706,93 @@
       if (confirm('确定要删除该标签吗？')) {
         const tagItem = deleteBtn.closest('.tag-item');
         tagItem.remove();
+      }
+    }
+
+    // 标签排序-上移/下移
+    function moveTag(sortBtn, direction) {
+      const tagItem = sortBtn.closest('.tag-item');
+      const tagList = tagItem.parentElement;
+
+      if (direction === 'up') {
+        const prev = tagItem.previousElementSibling;
+        if (prev) {
+          tagList.insertBefore(tagItem, prev);
+        }
+      } else {
+        const next = tagItem.nextElementSibling;
+        if (next) {
+          tagList.insertBefore(next, tagItem);
+        }
+      }
+    }
+
+    // 新增标签
+    function addNewTag(category) {
+      const tagList = document.getElementById('tagList-' + category);
+      const newTag = document.createElement('div');
+      newTag.className = 'tag-item';
+      newTag.dataset.users = '0';
+      newTag.dataset.enabled = 'true';
+      newTag.innerHTML = `
+        <span class="tag-sort-btns">
+          <span class="sort-btn" onclick="moveTag(this, 'up')">↑</span>
+          <span class="sort-btn" onclick="moveTag(this, 'down')">↓</span>
+        </span>
+        <span class="tag-status-dot enabled"></span>
+        <input type="text" class="tag-name-input" placeholder="输入标签名称" style="flex:1;">
+        <span class="tag-action-btn edit" onclick="editTag(this)">保存</span>
+        <span class="tag-action-btn toggle" onclick="toggleTagEnabled(this)">禁用</span>
+        <span class="tag-action-btn delete" onclick="deleteTag(this, 0)">删除</span>
+      `;
+      tagList.appendChild(newTag);
+
+      const input = newTag.querySelector('.tag-name-input');
+      input.focus();
+
+      const saveBtn = newTag.querySelector('.tag-action-btn.edit');
+      saveBtn.onclick = function() {
+        const span = document.createElement('span');
+        span.className = 'tag-name';
+        span.textContent = input.value || '未命名标签';
+        input.replaceWith(span);
+        saveBtn.textContent = '编辑';
+        saveBtn.onclick = function() { editTag(saveBtn); };
+      };
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          saveBtn.click();
+        }
+      });
+    }
+
+    // 新增分类
+    function addNewCategory() {
+      const categoryName = prompt('请输入分类名称：');
+      if (!categoryName) return;
+
+      const categoryId = 'cat_' + Date.now();
+      const section = document.createElement('div');
+      section.className = 'tag-manage-section';
+      section.dataset.category = categoryId;
+      section.innerHTML = `
+        <div class="tag-manage-header">
+          <span class="tag-manage-title">${categoryName}</span>
+          <button class="filter-btn default" style="height: 28px; font-size: 12px;" onclick="addNewTag('${categoryId}')">+ 新增标签</button>
+        </div>
+        <div class="tag-list" id="tagList-${categoryId}">
+          <div style="color: #999; font-size: 13px; padding: 12px;">暂无标签，请点击"新增标签"添加</div>
+        </div>
+      `;
+
+      const configBox = document.querySelector('.tag-config-box');
+      configBox.parentElement.insertBefore(section, configBox);
+
+      // 更新分类数量
+      const countInput = document.querySelector('.tag-config-input[value]');
+      if (countInput) {
+        countInput.value = document.querySelectorAll('.tag-manage-section').length;
       }
     }
 
