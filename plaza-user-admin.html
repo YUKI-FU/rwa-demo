@@ -1681,6 +1681,20 @@
 
           <!-- 右侧：编辑区域 -->
           <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <!-- 顶部统计信息 -->
+            <div style="display: flex; align-items: center; gap: 24px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; color: #666;">用户最大可选标签数</span>
+                <span style="font-size: 14px; font-weight: 500; color: #1890ff;">5</span>
+                <span style="font-size: 13px; color: #888;">个</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; color: #666;">当前分类数</span>
+                <span style="font-size: 14px; font-weight: 500; color: #1890ff;" id="categoryCountDisplay">2</span>
+                <span style="font-size: 13px; color: #888;">个</span>
+              </div>
+            </div>
+
             <!-- 分类编辑面板 -->
             <div id="categoryEditPanel" style="display: none;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -1791,26 +1805,6 @@
             </div>
           </div>
         </div>
-
-        <!-- 底部配置 -->
-        <div style="padding: 16px 20px; border-top: 1px solid #f0f0f0; background: #fafafa;">
-          <div style="display: flex; align-items: center; gap: 24px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 13px; color: #666;">用户最大可选标签数</span>
-              <input type="number" class="tag-config-input" value="5" style="width: 60px;">
-              <span style="font-size: 13px; color: #888;">个</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 13px; color: #666;">当前分类数</span>
-              <span style="font-size: 14px; font-weight: 500; color: #1890ff;">2</span>
-              <span style="font-size: 13px; color: #888;">个</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-btn default" onclick="hideModal('tagManage')">取消</button>
-        <button class="modal-btn primary">保存全部</button>
       </div>
     </div>
   </div>
