@@ -791,7 +791,99 @@
       justify-content: center;
     }
 
+    /* 贴文语言Tab样式 */
+    .post-lang-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      position: relative;
+    }
+
+    .post-lang-tab {
+      padding: 8px 20px;
+      font-size: 14px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 6px;
+      margin-right: 12px;
+    }
+
+    .post-lang-tab:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .post-lang-tab.active {
+      background: #e6f7ff;
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .post-lang-tab.add {
+      border-style: dashed;
+      color: #1890ff;
+      border-color: #1890ff;
+    }
+
+    .post-lang-tab .lang-icon {
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .post-lang-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 200px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      z-index: 10;
+      display: none;
+      min-width: 120px;
+    }
+
+    .post-lang-dropdown.show {
+      display: block;
+    }
+
+    .post-lang-dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .post-lang-dropdown-item:hover {
+      background: #f5f5f5;
+    }
+
+    .translate-icon {
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    .editor-hint {
+      font-size: 12px;
+      color: #ff9500;
+      padding: 8px 0 0;
+    }
+
+    .vote-btn {
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
     /* 投票弹窗样式 */
+    .vote-hint {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
     .vote-title-input {
       margin-bottom: 16px;
     }
@@ -1267,18 +1359,25 @@
 
         <!-- 语言Tab -->
         <div class="form-item">
-          <div class="lang-tabs">
-            <button class="lang-tab active">简体中文</button>
-            <button class="lang-tab add">+ 添加</button>
+          <div class="post-lang-tabs" id="postLangTabs">
+            <button class="post-lang-tab active" data-lang="zh-CN">简体中文</button>
+            <button class="post-lang-tab" data-lang="en" onclick="switchPostLang('en')">English <span class="lang-icon">🌐</span></button>
+            <button class="post-lang-tab add" onclick="showPostLangDropdown()">+ 添加</button>
+            <div class="post-lang-dropdown" id="postLangDropdown">
+              <div class="post-lang-dropdown-item" onclick="addPostLang('zh-TW')">繁体中文</div>
+              <div class="post-lang-dropdown-item" onclick="addPostLang('ja')">日本語</div>
+              <div class="post-lang-dropdown-item" onclick="addPostLang('ko')">한국어</div>
+              <div class="post-lang-dropdown-item" onclick="addPostLang('vi')">Tiếng Việt</div>
+            </div>
           </div>
         </div>
 
         <!-- 内容摘要 -->
         <div class="form-item">
-          <div class="form-label"><span class="required">*</span> 内容摘要</div>
+          <div class="form-label"><span class="required">*</span> 内容摘要 <span class="translate-icon" title="翻译">🌐</span></div>
           <div class="editor-container">
-            <textarea class="editor-textarea" placeholder="请输入文字；表情请点「插入表情」，勿粘贴外部富文本" maxlength="2000"></textarea>
-            <div class="editor-count"><span id="charCount">0</span>/2000</div>
+            <textarea class="editor-textarea" placeholder="请输入文字；表情请点「插入表情」，勿粘贴外部富文本" maxlength="20000"></textarea>
+            <div class="editor-count"><span id="charCount">0</span>/20000</div>
             <div class="editor-toolbar">
               <button class="toolbar-btn" title="表情">😊</button>
               <button class="toolbar-btn" title="图片">🖼</button>
@@ -1287,9 +1386,10 @@
               <button class="toolbar-btn" title="话题">#</button>
               <button class="toolbar-btn" title="币种">$</button>
               <button class="toolbar-btn" title="转发">↩</button>
-              <button class="toolbar-btn" title="投票" style="border: 1px solid #d9d9d9; border-radius: 4px; padding: 2px 6px;" onclick="showVoteModal()">☐</button>
+              <button class="toolbar-btn vote-btn" title="投票" onclick="showVoteModal()">☐</button>
               <span class="toolbar-info">i</span>
             </div>
+            <div class="editor-hint">请输入帖子摘要</div>
           </div>
         </div>
       </div>
@@ -1304,45 +1404,48 @@
   <div class="modal-overlay" id="voteModal">
     <div class="modal" style="width: 480px;">
       <div class="modal-header">
-        <span class="modal-title">添加投票</span>
+        <span class="modal-title" id="voteModalTitle">添加投票</span>
         <button class="modal-icon-btn" onclick="hideVoteModal()">×</button>
       </div>
       <div class="modal-body">
+        <!-- 投票提示 -->
+        <div class="vote-hint" id="voteHint">分享您的看法!</div>
+
         <!-- 投票标题 -->
         <div class="vote-title-input">
-          <input type="text" placeholder="请填写投票标题..." maxlength="50">
+          <input type="text" id="voteTitleInput" placeholder="请填写投票标题..." maxlength="50">
         </div>
 
         <!-- 投票选项 -->
         <div id="voteOptions">
           <div class="vote-option-item">
             <span class="vote-option-remove" onclick="removeVoteOption(this)">⊖</span>
-            <input type="text" placeholder="选项-1" maxlength="40">
+            <input type="text" placeholder="选项-1" maxlength="40" class="vote-option-input">
             <span class="vote-option-count">40</span>
           </div>
           <div class="vote-option-item">
             <span class="vote-option-remove" onclick="removeVoteOption(this)">⊖</span>
-            <input type="text" placeholder="选项-2" maxlength="40">
+            <input type="text" placeholder="选项-2" maxlength="40" class="vote-option-input">
             <span class="vote-option-count">40</span>
           </div>
         </div>
 
         <!-- 添加选项 -->
         <div class="vote-add-option" onclick="addVoteOption()">
-          <span>⊕</span> 添加选项
+          <span>⊕</span> <span id="addOptionText">添加选项</span>
         </div>
 
         <!-- 投票时长和删除 -->
         <div class="vote-footer">
           <div class="vote-duration" onclick="showDurationPicker()">
-            投票时长 <span id="selectedDuration">1 天</span><span class="arrow">∧</span>
+            <span id="pollLengthLabel">投票时长</span> <span id="selectedDuration">1 天</span><span class="arrow">∧</span>
           </div>
-          <span class="vote-delete" onclick="deleteVote()">删除</span>
+          <span class="vote-delete" onclick="deleteVote()" id="deleteVoteText">删除</span>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="modal-btn default" onclick="hideVoteModal()">取消</button>
-        <button class="modal-btn primary" onclick="confirmVote()">确定</button>
+        <button class="modal-btn default" onclick="hideVoteModal()" id="voteCancelBtn">取消</button>
+        <button class="modal-btn primary" onclick="confirmVote()" id="voteConfirmBtn">确定</button>
       </div>
     </div>
   </div>
@@ -1351,29 +1454,29 @@
   <div class="modal-overlay" id="durationModal">
     <div class="modal" style="width: 320px;">
       <div class="modal-header">
-        <span class="modal-title">你的投票截止时间</span>
+        <span class="modal-title" id="durationModalTitle">你的投票截止时间</span>
         <button class="modal-icon-btn" onclick="hideDurationModal()">×</button>
       </div>
       <div class="modal-body" style="padding: 0;">
         <div class="duration-list">
-          <div class="duration-item" onclick="selectDuration('1 小时')">
-            <span>1 小时</span>
+          <div class="duration-item" data-value="1h" onclick="selectDuration('1h')">
+            <span class="duration-text">1 小时</span>
             <span class="duration-check"></span>
           </div>
-          <div class="duration-item active" onclick="selectDuration('1 天')">
-            <span>1 天</span>
+          <div class="duration-item active" data-value="1d" onclick="selectDuration('1d')">
+            <span class="duration-text">1 天</span>
             <span class="duration-check">✓</span>
           </div>
-          <div class="duration-item" onclick="selectDuration('2 天')">
-            <span>2 天</span>
+          <div class="duration-item" data-value="2d" onclick="selectDuration('2d')">
+            <span class="duration-text">2 天</span>
             <span class="duration-check"></span>
           </div>
-          <div class="duration-item" onclick="selectDuration('3 天')">
-            <span>3 天</span>
+          <div class="duration-item" data-value="3d" onclick="selectDuration('3d')">
+            <span class="duration-text">3 天</span>
             <span class="duration-check"></span>
           </div>
-          <div class="duration-item" onclick="selectDuration('7 天')">
-            <span>7 天</span>
+          <div class="duration-item" data-value="7d" onclick="selectDuration('7d')">
+            <span class="duration-text">7 天</span>
             <span class="duration-check"></span>
           </div>
         </div>
@@ -1404,8 +1507,109 @@
       document.getElementById('charCount').textContent = this.value.length;
     });
 
+    // 当前语言
+    let currentPostLang = 'zh-CN';
+
+    // 语言配置
+    const langConfig = {
+      'zh-CN': {
+        voteModalTitle: '添加投票',
+        voteHint: '分享您的看法!',
+        voteTitlePlaceholder: '请填写投票标题...',
+        optionPlaceholder: '选项',
+        addOption: '添加选项',
+        pollLength: '投票时长',
+        delete: '删除',
+        cancel: '取消',
+        confirm: '确定',
+        durationTitle: '你的投票截止时间',
+        durations: { '1h': '1 小时', '1d': '1 天', '2d': '2 天', '3d': '3 天', '7d': '7 天' }
+      },
+      'en': {
+        voteModalTitle: 'Add Poll',
+        voteHint: 'Share your thoughts!',
+        voteTitlePlaceholder: 'Enter a subject of voting.',
+        optionPlaceholder: 'Option',
+        addOption: 'Add Option',
+        pollLength: 'Poll length',
+        delete: 'Delete',
+        cancel: 'Cancel',
+        confirm: 'OK',
+        durationTitle: 'Poll Ends In',
+        durations: { '1h': '1 hour', '1d': '1 day', '2d': '2 days', '3d': '3 days', '7d': '7 days' }
+      }
+    };
+
+    // 切换贴文语言Tab
+    function switchPostLang(lang) {
+      currentPostLang = lang;
+      document.querySelectorAll('.post-lang-tab').forEach(tab => {
+        if (tab.dataset.lang) {
+          tab.classList.toggle('active', tab.dataset.lang === lang);
+        }
+      });
+      updateVoteModalLang();
+    }
+
+    // 更新投票弹窗语言
+    function updateVoteModalLang() {
+      const config = langConfig[currentPostLang] || langConfig['zh-CN'];
+      document.getElementById('voteModalTitle').textContent = config.voteModalTitle;
+      document.getElementById('voteHint').textContent = config.voteHint;
+      document.getElementById('voteTitleInput').placeholder = config.voteTitlePlaceholder;
+      document.getElementById('addOptionText').textContent = config.addOption;
+      document.getElementById('pollLengthLabel').textContent = config.pollLength;
+      document.getElementById('deleteVoteText').textContent = config.delete;
+      document.getElementById('voteCancelBtn').textContent = config.cancel;
+      document.getElementById('voteConfirmBtn').textContent = config.confirm;
+      document.getElementById('durationModalTitle').textContent = config.durationTitle;
+
+      // 更新选项placeholder
+      document.querySelectorAll('.vote-option-input').forEach((input, idx) => {
+        input.placeholder = `${config.optionPlaceholder}-${idx + 1}`;
+      });
+
+      // 更新时长选项
+      document.querySelectorAll('.duration-item').forEach(item => {
+        const value = item.dataset.value;
+        item.querySelector('.duration-text').textContent = config.durations[value];
+      });
+
+      // 更新已选时长
+      const selectedValue = document.querySelector('.duration-item.active')?.dataset.value || '1d';
+      document.getElementById('selectedDuration').textContent = config.durations[selectedValue];
+    }
+
+    // 显示贴文语言下拉
+    function showPostLangDropdown() {
+      document.getElementById('postLangDropdown').classList.toggle('show');
+      event.stopPropagation();
+    }
+
+    // 添加贴文语言
+    function addPostLang(lang) {
+      const langNames = { 'zh-TW': '繁体中文', ja: '日本語', ko: '한국어', vi: 'Tiếng Việt' };
+      const tabs = document.getElementById('postLangTabs');
+      const addBtn = tabs.querySelector('.add');
+
+      if (tabs.querySelector(`[data-lang="${lang}"]`)) {
+        alert('该语言已添加');
+        return;
+      }
+
+      const newTab = document.createElement('button');
+      newTab.className = 'post-lang-tab';
+      newTab.dataset.lang = lang;
+      newTab.textContent = langNames[lang];
+      newTab.onclick = function() { switchPostLang(lang); };
+      tabs.insertBefore(newTab, addBtn);
+
+      document.getElementById('postLangDropdown').classList.remove('show');
+    }
+
     // 投票弹窗
     function showVoteModal() {
+      updateVoteModalLang();
       document.getElementById('voteModal').classList.add('show');
     }
 
@@ -1417,17 +1621,17 @@
     let optionCount = 2;
     function addVoteOption() {
       optionCount++;
+      const config = langConfig[currentPostLang] || langConfig['zh-CN'];
       const container = document.getElementById('voteOptions');
       const newOption = document.createElement('div');
       newOption.className = 'vote-option-item';
       newOption.innerHTML = `
         <span class="vote-option-remove" onclick="removeVoteOption(this)">⊖</span>
-        <input type="text" placeholder="选项-${optionCount}" maxlength="40">
+        <input type="text" placeholder="${config.optionPlaceholder}-${optionCount}" maxlength="40" class="vote-option-input">
         <span class="vote-option-count">40</span>
       `;
       container.appendChild(newOption);
 
-      // 添加输入事件
       newOption.querySelector('input').addEventListener('input', function() {
         newOption.querySelector('.vote-option-count').textContent = 40 - this.value.length;
       });
@@ -1437,7 +1641,7 @@
     function removeVoteOption(btn) {
       const options = document.querySelectorAll('.vote-option-item');
       if (options.length <= 2) {
-        alert('至少需要2个选项');
+        alert(currentPostLang === 'en' ? 'At least 2 options required' : '至少需要2个选项');
         return;
       }
       btn.closest('.vote-option-item').remove();
@@ -1460,10 +1664,11 @@
     }
 
     // 选择时长
-    function selectDuration(duration) {
-      document.getElementById('selectedDuration').textContent = duration;
+    function selectDuration(value) {
+      const config = langConfig[currentPostLang] || langConfig['zh-CN'];
+      document.getElementById('selectedDuration').textContent = config.durations[value];
       document.querySelectorAll('.duration-item').forEach(item => {
-        const isSelected = item.querySelector('span').textContent === duration;
+        const isSelected = item.dataset.value === value;
         item.classList.toggle('active', isSelected);
         item.querySelector('.duration-check').textContent = isSelected ? '✓' : '';
       });
@@ -1472,19 +1677,20 @@
 
     // 删除投票
     function deleteVote() {
-      if (confirm('确定要删除投票吗？')) {
+      const msg = currentPostLang === 'en' ? 'Delete this poll?' : '确定要删除投票吗？';
+      if (confirm(msg)) {
         hideVoteModal();
       }
     }
 
     // 确认投票
     function confirmVote() {
-      const title = document.querySelector('.vote-title-input input').value;
+      const title = document.getElementById('voteTitleInput').value;
       if (!title) {
-        alert('请输入投票标题');
+        alert(currentPostLang === 'en' ? 'Please enter poll title' : '请输入投票标题');
         return;
       }
-      alert('投票已添加');
+      alert(currentPostLang === 'en' ? 'Poll added' : '投票已添加');
       hideVoteModal();
     }
 
@@ -1494,6 +1700,13 @@
     });
     document.getElementById('durationModal').addEventListener('click', function(e) {
       if (e.target === this) hideDurationModal();
+    });
+
+    // 点击页面关闭语言下拉
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.post-lang-tabs')) {
+        document.getElementById('postLangDropdown')?.classList.remove('show');
+      }
     });
 
     // 更多下拉菜单
