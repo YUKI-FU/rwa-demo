@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>钱包地址管理 - ETZ Admin</title>
+  <title>用户钱包管理 - ETZ Admin</title>
   <style>
     * {
       margin: 0;
@@ -491,18 +491,12 @@
       <div class="nav-item"><span class="icon">📊</span> API管理</div>
       <div class="nav-item"><span class="icon">💰</span> RWA管理</div>
       <div class="nav-item"><span class="icon">🔄</span> OTC系统</div>
-      <div class="nav-group expanded">
-        <div class="nav-item parent"><span class="icon">💳</span> 钱包管理 <span class="arrow">∧</span></div>
-        <div class="nav-submenu">
-          <a href="wallet-address-admin.html" class="nav-subitem active"><span class="icon">📍</span> 钱包地址</a>
-          <div class="nav-subitem"><span class="icon">📜</span> 交易记录</div>
-          <div class="nav-subitem"><span class="icon">⚙️</span> 钱包配置</div>
-        </div>
-      </div>
+      <div class="nav-item"><span class="icon">💳</span> 钱包管理</div>
       <div class="nav-group expanded">
         <div class="nav-item parent"><span class="icon">📢</span> 广场管理 <span class="arrow">∧</span></div>
         <div class="nav-submenu">
           <a href="plaza-user-admin.html" class="nav-subitem"><span class="icon">👤</span> 用户管理</a>
+          <a href="wallet-address-admin.html" class="nav-subitem active"><span class="icon">💰</span> 用户钱包</a>
           <a href="plaza-post-admin.html" class="nav-subitem"><span class="icon">📄</span> 贴文管理</a>
           <a href="official-post-admin.html" class="nav-subitem"><span class="icon">📘</span> 官方贴文</a>
         </div>
@@ -516,7 +510,7 @@
     <!-- 顶部栏 -->
     <header class="header">
       <div class="breadcrumb">
-        <a href="#">钱包管理</a> / 钱包地址
+        <a href="#">广场管理</a> / 用户钱包
       </div>
       <div class="header-right">
         <div class="user-info">
@@ -528,7 +522,7 @@
 
     <!-- 内容区域 -->
     <div class="content">
-      <div class="page-title">钱包地址管理</div>
+      <div class="page-title">用户钱包管理</div>
 
       <!-- 筛选区域 -->
       <div class="filter-bar">
@@ -558,7 +552,7 @@
       <!-- 表格 -->
       <div class="table-container">
         <div class="table-header">
-          <span class="table-title">钱包地址列表</span>
+          <span class="table-title">用户钱包列表</span>
         </div>
         <table class="data-table">
           <thead>
