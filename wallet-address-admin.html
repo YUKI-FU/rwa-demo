@@ -533,8 +533,8 @@
       <!-- 筛选区域 -->
       <div class="filter-bar">
         <div class="filter-item">
-          <span class="filter-label">UID/邮箱</span>
-          <input type="text" class="filter-input" id="filterUidEmail" placeholder="请输入UID或邮箱" style="width: 220px;">
+          <span class="filter-label">UID</span>
+          <input type="text" class="filter-input" id="filterUid" placeholder="请输入UID" style="width: 200px;">
         </div>
         <div class="filter-item">
           <span class="filter-label">钱包地址</span>
@@ -548,24 +548,6 @@
             <option value="BTC">BTC</option>
             <option value="ETH">ETH</option>
           </select>
-        </div>
-        <div class="filter-item">
-          <span class="filter-label">链</span>
-          <select class="filter-select" id="filterChain">
-            <option value="">全部链</option>
-            <option value="TRC20">TRC20</option>
-            <option value="ERC20">ERC20</option>
-            <option value="BEP20">BEP20</option>
-            <option value="BTC">BTC</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <span class="filter-label">创建时间</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <input type="date" class="filter-input" id="filterDateStart" style="width: 140px;">
-            <span style="color: #999;">至</span>
-            <input type="date" class="filter-input" id="filterDateEnd" style="width: 140px;">
-          </div>
         </div>
         <div class="filter-item" style="flex-direction: row; align-items: flex-end; gap: 12px;">
           <button class="filter-btn primary" onclick="doSearch()">🔍 查询</button>
@@ -581,9 +563,7 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>UID</th>
-              <th>邮箱</th>
               <th>币种</th>
               <th>链</th>
               <th>钱包地址</th>
@@ -594,9 +574,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>492</td>
               <td><span class="copy-cell">1700860885 <span class="copy-icon" onclick="copyText(this, '1700860885')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789529094604@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789529094604@qq.com')">📋</span></span></td>
               <td>USDT</td>
               <td><span class="chain-tag trc20">TRC20</span></td>
               <td><span class="wallet-address">TJYs...4kPq</span></td>
@@ -607,9 +585,7 @@
               </td>
             </tr>
             <tr>
-              <td>491</td>
               <td><span class="copy-cell">1700827057 <span class="copy-icon" onclick="copyText(this, '1700827057')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789527204561@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789527204561@qq.com')">📋</span></span></td>
               <td>USDT</td>
               <td><span class="chain-tag erc20">ERC20</span></td>
               <td><span class="wallet-address">0x7F...3a9B</span></td>
@@ -620,9 +596,7 @@
               </td>
             </tr>
             <tr>
-              <td>490</td>
               <td><span class="copy-cell">1700885932 <span class="copy-icon" onclick="copyText(this, '1700885932')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789526765894@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789526765894@qq.com')">📋</span></span></td>
               <td>BTC</td>
               <td><span class="chain-tag" style="background: #f6ffed; color: #52c41a;">BTC</span></td>
               <td><span class="wallet-address">bc1q...7xfm</span></td>
@@ -633,9 +607,7 @@
               </td>
             </tr>
             <tr>
-              <td>489</td>
               <td><span class="copy-cell">1700909286 <span class="copy-icon" onclick="copyText(this, '1700909286')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789526603351@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789526603351@qq.com')">📋</span></span></td>
               <td>ETH</td>
               <td><span class="chain-tag erc20">ERC20</span></td>
               <td><span class="wallet-address">0x4E...8dC2</span></td>
@@ -646,9 +618,7 @@
               </td>
             </tr>
             <tr>
-              <td>488</td>
               <td><span class="copy-cell">1700849715 <span class="copy-icon" onclick="copyText(this, '1700849715')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789526575159@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789526575159@qq.com')">📋</span></span></td>
               <td>USDT</td>
               <td><span class="chain-tag bep20">BEP20</span></td>
               <td><span class="wallet-address">0x9A...5eF1</span></td>
@@ -659,9 +629,7 @@
               </td>
             </tr>
             <tr>
-              <td>484</td>
               <td><span class="copy-cell">1700880047 <span class="copy-icon" onclick="copyText(this, '1700880047')">📋</span></span></td>
-              <td><span class="copy-cell">autotest_1789526283599@qq.com <span class="copy-icon" onclick="copyText(this, 'autotest_1789526283599@qq.com')">📋</span></span></td>
               <td>USDT</td>
               <td><span class="chain-tag trc20">TRC20</span></td>
               <td><span class="wallet-address">TVpL...9mXz</span></td>
@@ -730,7 +698,7 @@
       if (data.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9" style="text-align: center; padding: 60px 20px; color: #999;">
+            <td colspan="7" style="text-align: center; padding: 60px 20px; color: #999;">
               暂无数据
             </td>
           </tr>
@@ -741,9 +709,7 @@
 
       tbody.innerHTML = data.map(item => `
         <tr>
-          <td>${item.id}</td>
           <td><span class="copy-cell">${item.uid} <span class="copy-icon" onclick="copyText(this, '${item.uid}')">📋</span></span></td>
-          <td><span class="copy-cell">${item.email} <span class="copy-icon" onclick="copyText(this, '${item.email}')">📋</span></span></td>
           <td>${item.currency}</td>
           <td><span class="chain-tag ${getChainTagClass(item.chain)}" style="${getChainTagStyle(item.chain)}">${item.chain}</span></td>
           <td><span class="wallet-address">${item.shortAddr}</span></td>
@@ -760,28 +726,17 @@
 
     // 搜索/筛选
     function doSearch() {
-      const uidEmail = document.getElementById('filterUidEmail').value.trim().toLowerCase();
+      const uid = document.getElementById('filterUid').value.trim().toLowerCase();
       const address = document.getElementById('filterAddress').value.trim().toLowerCase();
       const currency = document.getElementById('filterCurrency').value;
-      const chain = document.getElementById('filterChain').value;
-      const dateStart = document.getElementById('filterDateStart').value;
-      const dateEnd = document.getElementById('filterDateEnd').value;
 
       let filtered = allData.filter(item => {
-        // UID/邮箱搜索
-        if (uidEmail && !item.uid.toLowerCase().includes(uidEmail) && !item.email.toLowerCase().includes(uidEmail)) return false;
+        // UID搜索
+        if (uid && !item.uid.toLowerCase().includes(uid)) return false;
         // 钱包地址搜索
         if (address && !item.address.toLowerCase().includes(address)) return false;
         // 币种筛选
         if (currency && item.currency !== currency) return false;
-        // 链筛选
-        if (chain && item.chain !== chain) return false;
-        // 创建时间筛选
-        if (dateStart || dateEnd) {
-          const itemDate = item.createTime.split(' ')[0];
-          if (dateStart && itemDate < dateStart) return false;
-          if (dateEnd && itemDate > dateEnd) return false;
-        }
         return true;
       });
 
@@ -791,12 +746,9 @@
 
     // 重置筛选
     function resetFilters() {
-      document.getElementById('filterUidEmail').value = '';
+      document.getElementById('filterUid').value = '';
       document.getElementById('filterAddress').value = '';
       document.getElementById('filterCurrency').value = '';
-      document.getElementById('filterChain').value = '';
-      document.getElementById('filterDateStart').value = '';
-      document.getElementById('filterDateEnd').value = '';
       renderTable(allData);
       showToast('已重置筛选条件');
     }
