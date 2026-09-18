@@ -487,7 +487,12 @@
     </div>
     <nav class="nav-menu">
       <div class="nav-item"><span class="icon">🏠</span> 首页</div>
-      <div class="nav-item"><span class="icon">👤</span> 会员管理</div>
+      <div class="nav-group expanded">
+        <div class="nav-item parent"><span class="icon">👤</span> 会员管理 <span class="arrow">∧</span></div>
+        <div class="nav-submenu">
+          <a href="wallet-address-admin.html" class="nav-subitem active"><span class="icon">💰</span> 用户钱包</a>
+        </div>
+      </div>
       <div class="nav-item"><span class="icon">📊</span> API管理</div>
       <div class="nav-item"><span class="icon">💰</span> RWA管理</div>
       <div class="nav-item"><span class="icon">🔄</span> OTC系统</div>
@@ -496,7 +501,6 @@
         <div class="nav-item parent"><span class="icon">📢</span> 广场管理 <span class="arrow">∧</span></div>
         <div class="nav-submenu">
           <a href="plaza-user-admin.html" class="nav-subitem"><span class="icon">👤</span> 用户管理</a>
-          <a href="wallet-address-admin.html" class="nav-subitem active"><span class="icon">💰</span> 用户钱包</a>
           <a href="plaza-post-admin.html" class="nav-subitem"><span class="icon">📄</span> 贴文管理</a>
           <a href="official-post-admin.html" class="nav-subitem"><span class="icon">📘</span> 官方贴文</a>
         </div>
@@ -510,7 +514,7 @@
     <!-- 顶部栏 -->
     <header class="header">
       <div class="breadcrumb">
-        <a href="#">广场管理</a> / 用户钱包
+        <a href="#">会员管理</a> / 用户钱包
       </div>
       <div class="header-right">
         <div class="user-info">
