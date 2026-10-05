@@ -106,6 +106,8 @@
     .earnings-item:last-child { text-align: right; }
     .earnings-item .label { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
     .earnings-item .value { font-size: 18px; font-weight: 600; }
+    .earnings-item.clickable { cursor: pointer; }
+    .earnings-item.clickable:active { opacity: 0.7; }
 
     .view-asset-link {
       margin-top: 16px;
@@ -1096,12 +1098,12 @@
       </div>
       <div class="earnings-total" id="totalAmount">1,286.42</div>
       <div class="earnings-row">
-        <div class="earnings-item">
-          <div class="label">现货佣金收益</div>
+        <div class="earnings-item clickable" onclick="goToCommission('spot')">
+          <div class="label">现货佣金收益 ›</div>
           <div class="value" id="spotAmount">18.88</div>
         </div>
-        <div class="earnings-item">
-          <div class="label">RWA佣金收益</div>
+        <div class="earnings-item clickable" onclick="goToCommission('rwa')">
+          <div class="label">RWA佣金收益 ›</div>
           <div class="value" id="rwaAmount">25.71</div>
         </div>
       </div>
@@ -1826,6 +1828,22 @@
 
       document.getElementById('spotCommission').style.display = type === 'spot' ? 'block' : 'none';
       document.getElementById('rwaCommission').style.display = type === 'rwa' ? 'block' : 'none';
+    }
+
+    // 跳转到佣金明细
+    function goToCommission(type) {
+      showPage('commission');
+      // 切换到对应的tab
+      document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
+      if (type === 'spot') {
+        document.querySelector('.comm-tab:first-child').classList.add('active');
+        document.getElementById('spotCommission').style.display = 'block';
+        document.getElementById('rwaCommission').style.display = 'none';
+      } else {
+        document.querySelector('.comm-tab:last-child').classList.add('active');
+        document.getElementById('spotCommission').style.display = 'none';
+        document.getElementById('rwaCommission').style.display = 'block';
+      }
     }
 
     // 推广Tab切换
