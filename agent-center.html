@@ -1204,6 +1204,20 @@
     .dash-list-header.three-col span:nth-child(2) { width: 80px; text-align: center; }
     .dash-list-header.three-col span:last-child { width: 120px; text-align: right; }
 
+    .sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sortable:hover {
+      color: #8b9a46;
+    }
+
+    #sortIcon {
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
     .dash-user-list {
       background: #fff;
     }
@@ -2006,11 +2020,11 @@
       <div class="dash-list-header three-col">
         <span>昵称</span>
         <span>用户类型</span>
-        <span>贡献佣金(USDT)</span>
+        <span class="sortable" onclick="sortUserList()">贡献佣金(USDT) <span id="sortIcon">↓</span></span>
       </div>
 
       <div class="dash-user-list" id="spotUserList">
-        <div class="dash-user-row three-col" data-type="partner">
+        <div class="dash-user-row three-col" data-type="partner" data-amount="0">
           <div class="user-info-col">
             <div class="name">User_D0szhj</div>
             <div class="uid">UID 1700936932</div>
@@ -2018,15 +2032,15 @@
           <span class="user-type">合伙人</span>
           <span class="amount">0 ›</span>
         </div>
-        <div class="dash-user-row three-col" data-type="partner">
+        <div class="dash-user-row three-col" data-type="partner" data-amount="5.82">
           <div class="user-info-col">
             <div class="name">User_kSxqNg</div>
             <div class="uid">UID 1700907882</div>
           </div>
           <span class="user-type">合伙人</span>
-          <span class="amount">0 ›</span>
+          <span class="amount">5.82 ›</span>
         </div>
-        <div class="dash-user-row three-col" data-type="direct">
+        <div class="dash-user-row three-col" data-type="direct" data-amount="2.5">
           <div class="user-info-col">
             <div class="name">直客A</div>
             <div class="uid">UID 1700123456</div>
@@ -2034,21 +2048,21 @@
           <span class="user-type">直客</span>
           <span class="amount">2.5 ›</span>
         </div>
-        <div class="dash-user-row three-col" data-type="partner">
+        <div class="dash-user-row three-col" data-type="partner" data-amount="12.35">
           <div class="user-info-col">
             <div class="name">User_RKSxug</div>
             <div class="uid">UID 1700881659</div>
           </div>
           <span class="user-type">合伙人</span>
-          <span class="amount">0 ›</span>
+          <span class="amount">12.35 ›</span>
         </div>
-        <div class="dash-user-row three-col" data-type="partner">
+        <div class="dash-user-row three-col" data-type="partner" data-amount="8.76">
           <div class="user-info-col">
             <div class="name">C3</div>
             <div class="uid">UID 1700557567</div>
           </div>
           <span class="user-type">合伙人</span>
-          <span class="amount">0 ›</span>
+          <span class="amount">8.76 ›</span>
         </div>
       </div>
     </div>
@@ -2320,6 +2334,25 @@
           row.style.display = row.dataset.type === type ? 'flex' : 'none';
         }
       });
+    }
+
+    // 排序用户列表
+    let sortAsc = false;
+    function sortUserList() {
+      sortAsc = !sortAsc;
+      const icon = document.getElementById('sortIcon');
+      icon.textContent = sortAsc ? '↑' : '↓';
+
+      const list = document.getElementById('spotUserList');
+      const rows = Array.from(list.querySelectorAll('.dash-user-row'));
+
+      rows.sort((a, b) => {
+        const amountA = parseFloat(a.dataset.amount) || 0;
+        const amountB = parseFloat(b.dataset.amount) || 0;
+        return sortAsc ? amountA - amountB : amountB - amountA;
+      });
+
+      rows.forEach(row => list.appendChild(row));
     }
   </script>
 </body>
