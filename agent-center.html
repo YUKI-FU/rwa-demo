@@ -1218,6 +1218,12 @@
       margin-left: 4px;
     }
 
+    .list-filter-row {
+      padding: 12px 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
     .dash-user-list {
       background: #fff;
     }
@@ -1987,11 +1993,6 @@
               <option value="7d" selected>7日</option>
               <option value="30d">30日</option>
             </select>
-            <select class="chart-filter-select" id="userTypeFilter" onchange="filterUserList()">
-              <option value="all">全部</option>
-              <option value="partner">合伙人</option>
-              <option value="direct">直客</option>
-            </select>
           </div>
         </div>
         <div class="line-chart" id="spotLineChart">
@@ -2015,6 +2016,14 @@
           <span>26/10/03</span>
           <span>26/10/05</span>
         </div>
+      </div>
+
+      <div class="list-filter-row">
+        <select class="chart-filter-select" id="userTypeFilter" onchange="filterUserList()">
+          <option value="all">全部用户</option>
+          <option value="partner">合伙人</option>
+          <option value="direct">直客</option>
+        </select>
       </div>
 
       <div class="dash-list-header three-col">
