@@ -69,6 +69,27 @@
       font-size: 16px;
     }
 
+    .time-filter {
+      display: flex;
+      gap: 6px;
+    }
+
+    .time-filter .filter-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .time-filter .filter-btn.active {
+      color: #1a1a1a;
+      background: #fff;
+    }
+
     .earnings-total {
       font-size: 36px;
       font-weight: 700;
@@ -379,16 +400,22 @@
           累计佣金收益 (USDT)
           <span class="eye" onclick="toggleAmount()">👁</span>
         </span>
+        <div class="time-filter">
+          <button class="filter-btn active" onclick="switchTime(this, 'today')">今日</button>
+          <button class="filter-btn" onclick="switchTime(this, '3d')">3日</button>
+          <button class="filter-btn" onclick="switchTime(this, '7d')">7日</button>
+          <button class="filter-btn" onclick="switchTime(this, '30d')">30日</button>
+        </div>
       </div>
       <div class="earnings-total" id="totalAmount">1,286.42</div>
       <div class="earnings-row">
         <div class="earnings-item">
-          <div class="label">今日佣金</div>
-          <div class="value" id="todayAmount">18.88</div>
+          <div class="label">现货佣金收益</div>
+          <div class="value" id="spotAmount">18.88</div>
         </div>
         <div class="earnings-item">
-          <div class="label">昨日佣金</div>
-          <div class="value" id="yesterdayAmount">25.71</div>
+          <div class="label">RWA佣金收益</div>
+          <div class="value" id="rwaAmount">25.71</div>
         </div>
       </div>
     </div>
@@ -399,12 +426,10 @@
         <div class="ratio-item">
           <div class="label">现货佣金比例</div>
           <div class="value">24%</div>
-          <span class="tag">Lv.3</span>
         </div>
         <div class="ratio-item">
           <div class="label">RWA 返佣比例</div>
           <div class="value">20%</div>
-          <span class="tag">Lv.2</span>
         </div>
       </div>
     </div>
@@ -558,10 +583,18 @@
   </div>
 
   <script>
+    // 模拟数据
+    const earningsData = {
+      today: { total: '1,286.42', spot: '18.88', rwa: '25.71' },
+      '3d': { total: '1,352.18', spot: '56.64', rwa: '77.13' },
+      '7d': { total: '1,486.92', spot: '132.15', rwa: '180.02' },
+      '30d': { total: '2,156.80', spot: '568.42', rwa: '772.50' }
+    };
+
     let isHidden = false;
     function toggleAmount() {
       isHidden = !isHidden;
-      const els = ['totalAmount', 'todayAmount', 'yesterdayAmount'];
+      const els = ['totalAmount', 'spotAmount', 'rwaAmount'];
       els.forEach(id => {
         const el = document.getElementById(id);
         if (isHidden) {
@@ -573,6 +606,23 @@
           el.classList.remove('hidden-amount');
         }
       });
+    }
+
+    // 时间筛选
+    function switchTime(btn, period) {
+      document.querySelectorAll('.time-filter .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const data = earningsData[period];
+      if (!isHidden) {
+        document.getElementById('totalAmount').textContent = data.total;
+        document.getElementById('spotAmount').textContent = data.spot;
+        document.getElementById('rwaAmount').textContent = data.rwa;
+      }
+      // 更新隐藏时的缓存值
+      document.getElementById('totalAmount').dataset.value = data.total;
+      document.getElementById('spotAmount').dataset.value = data.spot;
+      document.getElementById('rwaAmount').dataset.value = data.rwa;
     }
 
     // Tab切换
