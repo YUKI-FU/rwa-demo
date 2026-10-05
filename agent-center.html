@@ -1068,6 +1068,143 @@
       cursor: pointer;
       margin-left: 8px;
     }
+
+    /* 数据看板样式 */
+    .dashboard-tabs {
+      display: flex;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dash-tab {
+      padding: 14px 0;
+      margin-right: 24px;
+      font-size: 15px;
+      color: #999;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .dash-tab.active {
+      color: #1a1a1a;
+      font-weight: 600;
+      border-bottom-color: #1a1a1a;
+    }
+
+    .dashboard-content {
+      padding: 16px;
+    }
+
+    .chart-card-full {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .chart-title .chart-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-left: 8px;
+    }
+
+    .line-chart {
+      display: flex;
+      height: 180px;
+    }
+
+    .line-chart .y-axis {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #999;
+      padding-right: 8px;
+      width: 50px;
+      text-align: right;
+    }
+
+    .line-chart .chart-area {
+      flex: 1;
+      border-left: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+
+    .line-chart .chart-area svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .line-chart .x-axis {
+      display: none;
+    }
+
+    .x-axis {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #999;
+      margin-top: 8px;
+      padding-left: 50px;
+    }
+
+    .dash-filter-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .dash-list-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #fff;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dash-list-header.three-col span:first-child { flex: 1; }
+    .dash-list-header.three-col span:nth-child(2) { width: 80px; text-align: center; }
+    .dash-list-header.three-col span:last-child { width: 120px; text-align: right; }
+
+    .dash-user-list {
+      background: #fff;
+    }
+
+    .dash-user-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dash-user-row .amount {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .dash-user-row.three-col .user-info-col { flex: 1; }
+    .dash-user-row.three-col .user-type { width: 80px; text-align: center; font-size: 13px; color: #666; }
+    .dash-user-row.three-col .amount { width: 120px; text-align: right; }
+
+    .section-header.clickable {
+      cursor: pointer;
+    }
+
+    .section-header.clickable:active {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -1186,8 +1323,8 @@
 
     <!-- P1: 佣金趋势 + 贡献用户 -->
     <div class="card chart-card">
-      <div class="section-header">
-        <span class="section-title">佣金趋势</span>
+      <div class="section-header clickable" onclick="showPage('dashboard')">
+        <span class="section-title">佣金趋势 ›</span>
         <span class="section-filter">近 7 日 ▾</span>
       </div>
       <div class="tabs" id="trendTabs">
@@ -1720,6 +1857,158 @@
     </div>
   </div>
 
+  <!-- 数据看板页面 -->
+  <div class="page" id="dashboardPage" style="display: none;">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('home')">‹</span>
+      <span class="page-title">数据看板</span>
+      <span class="placeholder"></span>
+    </div>
+
+    <div class="dashboard-tabs">
+      <span class="dash-tab" onclick="switchDashTab(this, 'spot')">现货交易</span>
+      <span class="dash-tab active" onclick="switchDashTab(this, 'rwa')">RWA</span>
+    </div>
+
+    <!-- RWA数据 -->
+    <div class="dashboard-content" id="rwaDashboard">
+      <div class="chart-card-full">
+        <div class="chart-title">佣金（USDT预估）<span class="chart-value">20.95022799</span></div>
+        <div class="line-chart">
+          <div class="y-axis">
+            <span>22.66</span>
+            <span>17.00</span>
+            <span>11.33</span>
+            <span>5.67</span>
+            <span>0</span>
+          </div>
+          <div class="chart-area">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+              <path d="M0,118 L75,118 L150,118 L180,80 L200,20 L220,60 L250,90 L300,115"
+                    fill="none" stroke="#e85a5a" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="x-axis">
+            <span>26/05</span>
+            <span>26/07</span>
+            <span>26/08</span>
+            <span>26/10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-list-header">
+        <span>昵称</span>
+        <span>贡献佣金</span>
+      </div>
+
+      <div class="dash-user-list">
+        <div class="dash-user-row">
+          <div class="user-info-col">
+            <div class="name">User_D0szhj</div>
+            <div class="uid">UID 1700936932</div>
+          </div>
+          <span class="amount">0.44748858 USDT ›</span>
+        </div>
+        <div class="dash-user-row">
+          <div class="user-info-col">
+            <div class="name">User_kSxqNg</div>
+            <div class="uid">UID 1700907882</div>
+          </div>
+          <span class="amount">- ›</span>
+        </div>
+        <div class="dash-user-row">
+          <div class="user-info-col">
+            <div class="name">User_RKSxug</div>
+            <div class="uid">UID 1700881659</div>
+          </div>
+          <span class="amount">6.5301369 USDT ›</span>
+        </div>
+        <div class="dash-user-row">
+          <div class="user-info-col">
+            <div class="name">C3</div>
+            <div class="uid">UID 1700557567</div>
+          </div>
+          <span class="amount">3.2602736 USDT ›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 现货数据 -->
+    <div class="dashboard-content" id="spotDashboard" style="display: none;">
+      <div class="chart-card-full">
+        <div class="chart-title">佣金 <span class="chart-value">25.7145 USDT</span></div>
+        <div class="line-chart">
+          <div class="y-axis">
+            <span>15.63</span>
+            <span>11.72</span>
+            <span>7.81</span>
+            <span>3.91</span>
+            <span>0</span>
+          </div>
+          <div class="chart-area">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+              <path d="M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118"
+                    fill="none" stroke="#e85a5a" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="x-axis">
+            <span>26/09/06</span>
+            <span>26/09/16</span>
+            <span>26/09/25</span>
+            <span>26/10/05</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-filter-row">
+        <div class="filter-dropdown">今日 ▾</div>
+        <div class="filter-dropdown">全部 ▾</div>
+      </div>
+
+      <div class="dash-list-header three-col">
+        <span>昵称</span>
+        <span>用户类型</span>
+        <span>贡献佣金(USDT)</span>
+      </div>
+
+      <div class="dash-user-list">
+        <div class="dash-user-row three-col">
+          <div class="user-info-col">
+            <div class="name">User_D0szhj</div>
+            <div class="uid">UID 1700936932</div>
+          </div>
+          <span class="user-type">合伙人</span>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="dash-user-row three-col">
+          <div class="user-info-col">
+            <div class="name">User_kSxqNg</div>
+            <div class="uid">UID 1700907882</div>
+          </div>
+          <span class="user-type">合伙人</span>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="dash-user-row three-col">
+          <div class="user-info-col">
+            <div class="name">User_RKSxug</div>
+            <div class="uid">UID 1700881659</div>
+          </div>
+          <span class="user-type">合伙人</span>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="dash-user-row three-col">
+          <div class="user-info-col">
+            <div class="name">C3</div>
+            <div class="uid">UID 1700557567</div>
+          </div>
+          <span class="user-type">合伙人</span>
+          <span class="amount">0 ›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 底部导航 -->
   <div class="tab-bar">
     <div class="tab-item active" id="tabHome" onclick="showPage('home')">
@@ -1807,10 +2096,11 @@
       document.getElementById('detailPage').style.display = page === 'detail' ? 'block' : 'none';
       document.getElementById('commissionPage').style.display = page === 'commission' ? 'block' : 'none';
       document.getElementById('promotionPage').style.display = page === 'promotion' ? 'block' : 'none';
+      document.getElementById('dashboardPage').style.display = page === 'dashboard' ? 'block' : 'none';
 
       // 更新底部导航状态
       document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-      if (page === 'home') {
+      if (page === 'home' || page === 'dashboard') {
         document.getElementById('tabHome').classList.add('active');
       } else if (page === 'user' || page === 'detail') {
         document.getElementById('tabUser').classList.add('active');
@@ -1819,6 +2109,15 @@
       } else if (page === 'promotion') {
         document.getElementById('tabPromotion').classList.add('active');
       }
+    }
+
+    // 数据看板Tab切换
+    function switchDashTab(tab, type) {
+      document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      document.getElementById('spotDashboard').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('rwaDashboard').style.display = type === 'rwa' ? 'block' : 'none';
     }
 
     // 返佣Tab切换
