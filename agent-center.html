@@ -755,6 +755,303 @@
       color: #fff;
       cursor: pointer;
     }
+
+    /* 返佣页面样式 */
+    .commission-tabs {
+      display: flex;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .comm-tab {
+      padding: 14px 0;
+      margin-right: 24px;
+      font-size: 15px;
+      color: #999;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .comm-tab.active {
+      color: #1a1a1a;
+      font-weight: 600;
+      border-bottom-color: #1a1a1a;
+    }
+
+    .commission-content {
+      padding: 16px;
+    }
+
+    .commission-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .comm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .comm-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .comm-currency {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .comm-amount {
+      font-size: 36px;
+      font-weight: 600;
+      color: #8b9a46;
+      margin-bottom: 16px;
+    }
+
+    .comm-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 20px;
+    }
+
+    .comm-stats .stat-label {
+      font-size: 12px;
+      color: #999;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .comm-stats .stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .btn-view-asset {
+      width: 100%;
+      padding: 14px;
+      background: #8b9a46;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .filter-dropdown {
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .search-box-inline {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+    }
+
+    .search-box-inline input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .search-box-full {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .search-box-full input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .filter-row-spot {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #fff;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .comm-user-list {
+      background: #fff;
+    }
+
+    .comm-user-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .comm-user-row .amount {
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* 推广页面样式 */
+    .promo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .promo-tabs {
+      display: flex;
+    }
+
+    .promo-tab {
+      padding: 14px 0;
+      margin-right: 24px;
+      font-size: 15px;
+      color: #999;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .promo-tab.active {
+      color: #1a1a1a;
+      font-weight: 600;
+      border-bottom-color: #1a1a1a;
+    }
+
+    .btn-create-link {
+      padding: 8px 14px;
+      background: #8b9a46;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .promo-content {
+      padding: 16px;
+    }
+
+    .promo-info {
+      margin-bottom: 16px;
+    }
+
+    .promo-info p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .promo-info .warning {
+      color: #8b9a46;
+      margin-top: 8px;
+    }
+
+    .link-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .link-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 12px;
+    }
+
+    .link-header .status {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .link-header .status.expired {
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .link-header .status.active {
+      background: #e8f5e9;
+      color: #4caf50;
+    }
+
+    .link-header .link-name {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .link-header .link-action {
+      font-size: 18px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .link-row .label {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .link-row .value {
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .copy-btn {
+      cursor: pointer;
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
@@ -1132,6 +1429,280 @@
     </div>
   </div>
 
+  <!-- 返佣页面 -->
+  <div class="page" id="commissionPage" style="display: none;">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('home')">‹</span>
+      <span class="page-title">佣金明细</span>
+      <span class="placeholder"></span>
+    </div>
+
+    <div class="commission-tabs">
+      <span class="comm-tab" onclick="switchCommTab(this, 'spot')">现货交易</span>
+      <span class="comm-tab active" onclick="switchCommTab(this, 'rwa')">RWA</span>
+    </div>
+
+    <!-- RWA佣金 -->
+    <div class="commission-content" id="rwaCommission">
+      <div class="commission-card">
+        <div class="comm-header">
+          <span class="comm-label">佣金收益</span>
+          <span class="comm-currency">USDT ▾</span>
+        </div>
+        <div class="comm-amount">85.15022746</div>
+        <div class="comm-stats">
+          <div class="stat">
+            <span class="stat-label">已结算</span>
+            <span class="stat-value">20.95022799</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">待结算</span>
+            <span class="stat-value">64.19999947</span>
+          </div>
+        </div>
+        <button class="btn-view-asset">查看资产</button>
+      </div>
+
+      <div class="filter-row">
+        <div class="filter-dropdown">全部产品 ▾</div>
+        <div class="search-box-inline">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="搜索 用户名/UID">
+        </div>
+      </div>
+
+      <div class="list-header">
+        <span>昵称</span>
+        <span>贡献佣金</span>
+      </div>
+
+      <div class="comm-user-list">
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_D0szhj</div>
+            <div class="uid">UID 1700936932</div>
+          </div>
+          <span class="amount">0.44748858 USDT ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_kSxqNg</div>
+            <div class="uid">UID 1700907882</div>
+          </div>
+          <span class="amount">- ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_RKSxug</div>
+            <div class="uid">UID 1700881659</div>
+          </div>
+          <span class="amount">6.5301369 USDT ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">C3</div>
+            <div class="uid">UID 1700557567</div>
+          </div>
+          <span class="amount">3.2602736 USDT ›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 现货佣金 -->
+    <div class="commission-content" id="spotCommission" style="display: none;">
+      <div class="commission-card">
+        <div class="comm-header">
+          <span class="comm-label">佣金收益</span>
+          <span class="comm-currency">USDT ▾</span>
+        </div>
+        <div class="comm-amount">25.7393</div>
+        <div class="comm-stats">
+          <div class="stat">
+            <span class="stat-label">已结算</span>
+            <span class="stat-value">25.7393</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">待结算</span>
+            <span class="stat-value">0</span>
+          </div>
+        </div>
+        <button class="btn-view-asset">查看资产</button>
+      </div>
+
+      <div class="search-box-full">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="搜索 用户名/UID">
+      </div>
+
+      <div class="filter-row-spot">
+        <div class="filter-dropdown">合伙人 ▾</div>
+        <div class="filter-dropdown">今日 ▾</div>
+      </div>
+
+      <div class="list-header">
+        <span>昵称</span>
+        <span>贡献佣金(USDT)</span>
+      </div>
+
+      <div class="comm-user-list">
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_D0szhj</div>
+            <div class="uid">UID 1700936932</div>
+          </div>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_kSxqNg</div>
+            <div class="uid">UID 1700907882</div>
+          </div>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">User_RKSxug</div>
+            <div class="uid">UID 1700881659</div>
+          </div>
+          <span class="amount">0 ›</span>
+        </div>
+        <div class="comm-user-row">
+          <div class="user-info-col">
+            <div class="name">C3</div>
+            <div class="uid">UID 1700557567</div>
+          </div>
+          <span class="amount">0 ›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 推广页面 -->
+  <div class="page" id="promotionPage" style="display: none;">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('home')">‹</span>
+      <span class="page-title">推广链接</span>
+      <span class="placeholder"></span>
+    </div>
+
+    <div class="promo-header">
+      <div class="promo-tabs">
+        <span class="promo-tab" onclick="switchPromoTab(this, 'direct')">直客链接</span>
+        <span class="promo-tab active" onclick="switchPromoTab(this, 'partner')">合伙人链接</span>
+      </div>
+      <button class="btn-create-link">🔗 +创建链接</button>
+    </div>
+
+    <!-- 合伙人链接 -->
+    <div class="promo-content" id="partnerPromo">
+      <div class="promo-info">
+        <p>当前最高可自定义现货返佣比率：24%，RWA返佣比率：20%</p>
+        <p>已创链接：3/5</p>
+        <p class="warning">⚠️ 通过此链接注册用户将自动晋升为代理合伙人，请谨慎使用。</p>
+      </div>
+
+      <div class="link-card">
+        <div class="link-header">
+          <span class="status expired">已失效</span>
+          <span class="link-name">1</span>
+          <span class="link-action">↗️</span>
+        </div>
+        <div class="link-row">
+          <span class="label">现货返佣比例</span>
+          <span class="value">16%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">RWA返佣比例</span>
+          <span class="value">0%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">邀请码</span>
+          <span class="value">99007447 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="link-row">
+          <span class="label">有效期</span>
+          <span class="value">2026/07/17 00:59:59</span>
+        </div>
+      </div>
+
+      <div class="link-card">
+        <div class="link-header">
+          <span class="status expired">已失效</span>
+          <span class="link-name">合伙人连接2</span>
+          <span class="link-action">↗️</span>
+        </div>
+        <div class="link-row">
+          <span class="label">现货返佣比例</span>
+          <span class="value">7%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">RWA返佣比例</span>
+          <span class="value">10%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">邀请码</span>
+          <span class="value">65020412 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="link-row">
+          <span class="label">有效期</span>
+          <span class="value">2026/10/01 00:59:59</span>
+        </div>
+      </div>
+
+      <div class="link-card">
+        <div class="link-header">
+          <span class="status expired">已失效</span>
+          <span class="link-name">930</span>
+          <span class="link-action">↗️</span>
+        </div>
+        <div class="link-row">
+          <span class="label">现货返佣比例</span>
+          <span class="value">0%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">RWA返佣比例</span>
+          <span class="value">3%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">邀请码</span>
+          <span class="value">88012345 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="link-row">
+          <span class="label">有效期</span>
+          <span class="value">2026/09/15 00:59:59</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 直客链接 -->
+    <div class="promo-content" id="directPromo" style="display: none;">
+      <div class="promo-info">
+        <p>当前现货最高可自定义手续费减免比例：24%</p>
+        <p>已创链接：1/5</p>
+      </div>
+
+      <div class="link-card">
+        <div class="link-header">
+          <span class="status expired">已失效</span>
+          <span class="link-name">123</span>
+          <span class="link-action">↗️</span>
+        </div>
+        <div class="link-row">
+          <span class="label">手续费减免比例</span>
+          <span class="value">0%</span>
+        </div>
+        <div class="link-row">
+          <span class="label">邀请码</span>
+          <span class="value">13058239 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="link-row">
+          <span class="label">有效期</span>
+          <span class="value">2026/10/02 23:59:59</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 底部导航 -->
   <div class="tab-bar">
     <div class="tab-item active" id="tabHome" onclick="showPage('home')">
@@ -1142,11 +1713,11 @@
       <span class="icon">👥</span>
       <span class="text">用户</span>
     </div>
-    <div class="tab-item">
+    <div class="tab-item" id="tabCommission" onclick="showPage('commission')">
       <span class="icon">💰</span>
       <span class="text">返佣</span>
     </div>
-    <div class="tab-item">
+    <div class="tab-item" id="tabPromotion" onclick="showPage('promotion')">
       <span class="icon">📢</span>
       <span class="text">推广</span>
     </div>
@@ -1217,6 +1788,8 @@
       document.getElementById('homePage').style.display = page === 'home' ? 'block' : 'none';
       document.getElementById('userPage').style.display = page === 'user' ? 'block' : 'none';
       document.getElementById('detailPage').style.display = page === 'detail' ? 'block' : 'none';
+      document.getElementById('commissionPage').style.display = page === 'commission' ? 'block' : 'none';
+      document.getElementById('promotionPage').style.display = page === 'promotion' ? 'block' : 'none';
 
       // 更新底部导航状态
       document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -1224,7 +1797,29 @@
         document.getElementById('tabHome').classList.add('active');
       } else if (page === 'user' || page === 'detail') {
         document.getElementById('tabUser').classList.add('active');
+      } else if (page === 'commission') {
+        document.getElementById('tabCommission').classList.add('active');
+      } else if (page === 'promotion') {
+        document.getElementById('tabPromotion').classList.add('active');
       }
+    }
+
+    // 返佣Tab切换
+    function switchCommTab(tab, type) {
+      document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      document.getElementById('spotCommission').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('rwaCommission').style.display = type === 'rwa' ? 'block' : 'none';
+    }
+
+    // 推广Tab切换
+    function switchPromoTab(tab, type) {
+      document.querySelectorAll('.promo-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      document.getElementById('directPromo').style.display = type === 'direct' ? 'block' : 'none';
+      document.getElementById('partnerPromo').style.display = type === 'partner' ? 'block' : 'none';
     }
 
     // 用户类型Tab切换
