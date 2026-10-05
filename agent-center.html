@@ -1157,6 +1157,33 @@
       padding-left: 50px;
     }
 
+    .chart-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .chart-filters {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chart-filter-select {
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #333;
+      background: #f5f5f5;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 24px;
+    }
+
     .dash-filter-row {
       display: flex;
       gap: 12px;
@@ -1937,9 +1964,24 @@
     <!-- 现货数据 -->
     <div class="dashboard-content" id="spotDashboard" style="display: none;">
       <div class="chart-card-full">
-        <div class="chart-title">佣金 <span class="chart-value">25.7145 USDT</span></div>
-        <div class="line-chart">
-          <div class="y-axis">
+        <div class="chart-header-row">
+          <div class="chart-title">佣金 <span class="chart-value" id="spotChartValue">25.7145 USDT</span></div>
+          <div class="chart-filters">
+            <select class="chart-filter-select" id="timeFilter" onchange="updateSpotChart()">
+              <option value="today">今日</option>
+              <option value="3d">3日</option>
+              <option value="7d" selected>7日</option>
+              <option value="30d">30日</option>
+            </select>
+            <select class="chart-filter-select" id="userTypeFilter" onchange="filterUserList()">
+              <option value="all">全部</option>
+              <option value="partner">合伙人</option>
+              <option value="direct">直客</option>
+            </select>
+          </div>
+        </div>
+        <div class="line-chart" id="spotLineChart">
+          <div class="y-axis" id="spotYAxis">
             <span>15.63</span>
             <span>11.72</span>
             <span>7.81</span>
@@ -1947,23 +1989,18 @@
             <span>0</span>
           </div>
           <div class="chart-area">
-            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
-              <path d="M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118"
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none" id="spotChartSvg">
+              <path id="spotChartPath" d="M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118"
                     fill="none" stroke="#e85a5a" stroke-width="2"/>
             </svg>
           </div>
-          <div class="x-axis">
-            <span>26/09/06</span>
-            <span>26/09/16</span>
-            <span>26/09/25</span>
-            <span>26/10/05</span>
-          </div>
         </div>
-      </div>
-
-      <div class="dash-filter-row">
-        <div class="filter-dropdown">今日 ▾</div>
-        <div class="filter-dropdown">全部 ▾</div>
+        <div class="x-axis" id="spotXAxis">
+          <span>26/09/29</span>
+          <span>26/10/01</span>
+          <span>26/10/03</span>
+          <span>26/10/05</span>
+        </div>
       </div>
 
       <div class="dash-list-header three-col">
@@ -1972,8 +2009,8 @@
         <span>贡献佣金(USDT)</span>
       </div>
 
-      <div class="dash-user-list">
-        <div class="dash-user-row three-col">
+      <div class="dash-user-list" id="spotUserList">
+        <div class="dash-user-row three-col" data-type="partner">
           <div class="user-info-col">
             <div class="name">User_D0szhj</div>
             <div class="uid">UID 1700936932</div>
@@ -1981,7 +2018,7 @@
           <span class="user-type">合伙人</span>
           <span class="amount">0 ›</span>
         </div>
-        <div class="dash-user-row three-col">
+        <div class="dash-user-row three-col" data-type="partner">
           <div class="user-info-col">
             <div class="name">User_kSxqNg</div>
             <div class="uid">UID 1700907882</div>
@@ -1989,7 +2026,15 @@
           <span class="user-type">合伙人</span>
           <span class="amount">0 ›</span>
         </div>
-        <div class="dash-user-row three-col">
+        <div class="dash-user-row three-col" data-type="direct">
+          <div class="user-info-col">
+            <div class="name">直客A</div>
+            <div class="uid">UID 1700123456</div>
+          </div>
+          <span class="user-type">直客</span>
+          <span class="amount">2.5 ›</span>
+        </div>
+        <div class="dash-user-row three-col" data-type="partner">
           <div class="user-info-col">
             <div class="name">User_RKSxug</div>
             <div class="uid">UID 1700881659</div>
@@ -1997,7 +2042,7 @@
           <span class="user-type">合伙人</span>
           <span class="amount">0 ›</span>
         </div>
-        <div class="dash-user-row three-col">
+        <div class="dash-user-row three-col" data-type="partner">
           <div class="user-info-col">
             <div class="name">C3</div>
             <div class="uid">UID 1700557567</div>
@@ -2213,6 +2258,68 @@
         currentUser.status = '已暂停';
         alert('已暂停合伙人');
       }
+    }
+
+    // 图表数据
+    const chartData = {
+      today: {
+        value: '5.23 USDT',
+        yAxis: ['6.00', '4.50', '3.00', '1.50', '0'],
+        xAxis: ['00:00', '06:00', '12:00', '18:00'],
+        path: 'M0,100 L75,90 L150,60 L225,40 L300,30'
+      },
+      '3d': {
+        value: '12.85 USDT',
+        yAxis: ['15.00', '11.25', '7.50', '3.75', '0'],
+        xAxis: ['10/03', '10/04', '10/05', '今日'],
+        path: 'M0,80 L100,60 L200,40 L300,30'
+      },
+      '7d': {
+        value: '25.7145 USDT',
+        yAxis: ['15.63', '11.72', '7.81', '3.91', '0'],
+        xAxis: ['26/09/29', '26/10/01', '26/10/03', '26/10/05'],
+        path: 'M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118'
+      },
+      '30d': {
+        value: '98.52 USDT',
+        yAxis: ['120.00', '90.00', '60.00', '30.00', '0'],
+        xAxis: ['09/06', '09/16', '09/26', '10/05'],
+        path: 'M0,100 L50,80 L100,60 L150,40 L200,50 L250,30 L300,20'
+      }
+    };
+
+    // 更新现货图表
+    function updateSpotChart() {
+      const period = document.getElementById('timeFilter').value;
+      const data = chartData[period];
+
+      // 更新佣金值
+      document.getElementById('spotChartValue').textContent = data.value;
+
+      // 更新Y轴
+      const yAxisSpans = document.querySelectorAll('#spotYAxis span');
+      data.yAxis.forEach((v, i) => yAxisSpans[i].textContent = v);
+
+      // 更新X轴
+      const xAxisSpans = document.querySelectorAll('#spotXAxis span');
+      data.xAxis.forEach((v, i) => xAxisSpans[i].textContent = v);
+
+      // 更新曲线
+      document.getElementById('spotChartPath').setAttribute('d', data.path);
+    }
+
+    // 筛选用户列表
+    function filterUserList() {
+      const type = document.getElementById('userTypeFilter').value;
+      const rows = document.querySelectorAll('#spotUserList .dash-user-row');
+
+      rows.forEach(row => {
+        if (type === 'all') {
+          row.style.display = 'flex';
+        } else {
+          row.style.display = row.dataset.type === type ? 'flex' : 'none';
+        }
+      });
     }
   </script>
 </body>
