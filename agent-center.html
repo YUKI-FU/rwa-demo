@@ -278,6 +278,97 @@
       background: #8b9a46;
     }
 
+    /* 转化漏斗 */
+    .funnel-section {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .funnel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .funnel-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .funnel-desc {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .funnel-stages {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .funnel-stage {
+      flex: 1;
+      min-width: 70px;
+      padding: 12px 8px;
+      border-radius: 10px;
+      text-align: center;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .funnel-stage:active {
+      transform: scale(0.95);
+    }
+
+    .stage-label {
+      font-size: 11px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .stage-value {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .funnel-arrow {
+      color: #ccc;
+      font-size: 16px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .funnel-rates {
+      display: flex;
+      gap: 8px;
+    }
+
+    .rate-item {
+      flex: 1;
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .rate-label {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .rate-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
     /* P1: 佣金趋势 */
     .chart-card .tabs {
       display: flex;
@@ -770,6 +861,49 @@
       font-size: 15px;
       color: #fff;
       cursor: pointer;
+    }
+
+    /* 漏斗用户弹窗 */
+    .funnel-modal {
+      max-height: 70vh;
+    }
+
+    .funnel-modal-body {
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .funnel-user-list {
+      padding: 0;
+    }
+
+    .funnel-user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .funnel-user-item:last-child {
+      border-bottom: none;
+    }
+
+    .funnel-user-info .name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .funnel-user-info .uid {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .funnel-user-time {
+      font-size: 12px;
+      color: #999;
     }
 
     /* 返佣页面样式 */
@@ -1366,6 +1500,49 @@
           <div class="sub">USDT</div>
         </div>
       </div>
+
+      <!-- 转化漏斗 -->
+      <div class="funnel-section">
+        <div class="funnel-header">
+          <span class="funnel-title">推广转化漏斗</span>
+          <span class="funnel-desc">渠道用户</span>
+        </div>
+        <div class="funnel-stages">
+          <div class="funnel-stage" style="background: #5b6be8;" onclick="showFunnelUsers('register')">
+            <div class="stage-label">新增注册</div>
+            <div class="stage-value">461</div>
+          </div>
+          <span class="funnel-arrow">→</span>
+          <div class="funnel-stage" style="background: #4db6ac;" onclick="showFunnelUsers('kyc')">
+            <div class="stage-label">完成KYC</div>
+            <div class="stage-value">382</div>
+          </div>
+          <span class="funnel-arrow">→</span>
+          <div class="funnel-stage" style="background: #66bb6a;" onclick="showFunnelUsers('deposit')">
+            <div class="stage-label">新增入金</div>
+            <div class="stage-value">271</div>
+          </div>
+          <span class="funnel-arrow">→</span>
+          <div class="funnel-stage" style="background: #d4a12a;" onclick="showFunnelUsers('trade')">
+            <div class="stage-label">首次交易</div>
+            <div class="stage-value">194</div>
+          </div>
+        </div>
+        <div class="funnel-rates">
+          <div class="rate-item">
+            <div class="rate-label">注册→KYC</div>
+            <div class="rate-value">82.9%</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-label">KYC→入金</div>
+            <div class="rate-value">70.9%</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-label">入金→交易</div>
+            <div class="rate-value">71.6%</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- P1: 佣金趋势 + 贡献用户 -->
@@ -1628,6 +1805,21 @@
       <div class="modal-footer">
         <button class="btn-cancel" onclick="closeModal()">取消</button>
         <button class="btn-confirm" onclick="saveCommission()">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 漏斗用户弹窗 -->
+  <div class="modal-overlay" id="funnelModal" style="display: none;">
+    <div class="modal-content funnel-modal">
+      <div class="modal-header">
+        <span class="modal-title" id="funnelModalTitle">新增注册用户</span>
+        <span class="modal-close" onclick="closeFunnelModal()">×</span>
+      </div>
+      <div class="modal-body funnel-modal-body">
+        <div class="funnel-user-list" id="funnelUserList">
+          <!-- 动态填充 -->
+        </div>
       </div>
     </div>
   </div>
@@ -2381,6 +2573,68 @@
       });
 
       rows.forEach(row => list.appendChild(row));
+    }
+
+    // 漏斗用户数据
+    const funnelUsers = {
+      register: {
+        title: '新增注册用户 (461)',
+        users: [
+          { name: 'User_A1xx', uid: '1700936932', time: '2026-10-05 14:32' },
+          { name: 'User_B2xx', uid: '1700907882', time: '2026-10-05 13:18' },
+          { name: 'User_C3xx', uid: '1700881659', time: '2026-10-05 12:45' },
+          { name: 'User_D4xx', uid: '1700557567', time: '2026-10-05 11:22' },
+          { name: 'User_E5xx', uid: '1700123456', time: '2026-10-05 10:15' }
+        ]
+      },
+      kyc: {
+        title: '完成KYC用户 (382)',
+        users: [
+          { name: 'User_A1xx', uid: '1700936932', time: '2026-10-05 15:02' },
+          { name: 'User_B2xx', uid: '1700907882', time: '2026-10-05 14:35' },
+          { name: 'User_D4xx', uid: '1700557567', time: '2026-10-05 12:18' },
+          { name: 'User_E5xx', uid: '1700123456', time: '2026-10-05 11:42' }
+        ]
+      },
+      deposit: {
+        title: '新增入金用户 (271)',
+        users: [
+          { name: 'User_A1xx', uid: '1700936932', time: '2026-10-05 16:20' },
+          { name: 'User_D4xx', uid: '1700557567', time: '2026-10-05 13:55' },
+          { name: 'User_E5xx', uid: '1700123456', time: '2026-10-05 12:30' }
+        ]
+      },
+      trade: {
+        title: '首次交易用户 (194)',
+        users: [
+          { name: 'User_A1xx', uid: '1700936932', time: '2026-10-05 16:45' },
+          { name: 'User_E5xx', uid: '1700123456', time: '2026-10-05 13:10' }
+        ]
+      }
+    };
+
+    // 显示漏斗用户
+    function showFunnelUsers(stage) {
+      const data = funnelUsers[stage];
+      document.getElementById('funnelModalTitle').textContent = data.title;
+
+      const list = document.getElementById('funnelUserList');
+      list.innerHTML = data.users.map(u => `
+        <div class="funnel-user-item">
+          <div class="funnel-user-info">
+            <div class="name">${u.name}</div>
+            <div class="uid">UID ${u.uid}</div>
+          </div>
+          <div class="funnel-user-time">${u.time}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('funnelModal').style.display = 'flex';
+    }
+
+    // 关闭漏斗弹窗
+    function closeFunnelModal() {
+      document.getElementById('funnelModal').style.display = 'none';
     }
   </script>
 </body>
