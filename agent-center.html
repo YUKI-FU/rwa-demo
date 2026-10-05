@@ -69,23 +69,21 @@
       font-size: 16px;
     }
 
-    .time-filter {
-      display: flex;
-      gap: 6px;
-    }
-
-    .time-filter .filter-btn {
-      padding: 4px 10px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.1);
-      border: none;
-      border-radius: 12px;
+    .time-select {
+      padding: 4px 24px 4px 10px;
+      font-size: 12px;
+      color: #fff;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 6px center;
     }
 
-    .time-filter .filter-btn.active {
+    .time-select option {
       color: #1a1a1a;
       background: #fff;
     }
@@ -325,14 +323,20 @@
     }
 
     /* P1: 贡献用户 */
-    .top-users .header-row {
+    .top-users-section {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .top-users-section .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
 
-    .top-users .more {
+    .top-users-section .more {
       font-size: 13px;
       color: #999;
       cursor: pointer;
@@ -432,12 +436,12 @@
           累计佣金收益 (USDT)
           <span class="eye" onclick="toggleAmount()">👁</span>
         </span>
-        <div class="time-filter">
-          <button class="filter-btn active" onclick="switchTime(this, 'today')">今日</button>
-          <button class="filter-btn" onclick="switchTime(this, '3d')">3日</button>
-          <button class="filter-btn" onclick="switchTime(this, '7d')">7日</button>
-          <button class="filter-btn" onclick="switchTime(this, '30d')">30日</button>
-        </div>
+        <select class="time-select" onchange="switchTime(this.value)">
+          <option value="all">全部</option>
+          <option value="today">今日</option>
+          <option value="7d">近7日</option>
+          <option value="30d">近30日</option>
+        </select>
       </div>
       <div class="earnings-total" id="totalAmount">1,286.42</div>
       <div class="earnings-row">
@@ -524,78 +528,79 @@
       </div>
     </div>
 
-    <!-- P1: 佣金趋势 -->
+    <!-- P1: 佣金趋势 + 贡献用户 -->
     <div class="card chart-card">
       <div class="section-header">
         <span class="section-title">佣金趋势</span>
         <span class="section-filter">近 7 日 ▾</span>
       </div>
-      <div class="tabs">
-        <span class="tab active">现货</span>
-        <span class="tab">RWA</span>
+      <div class="tabs" id="trendTabs">
+        <span class="tab active" onclick="switchTrendTab(this, 'spot')">现货</span>
+        <span class="tab" onclick="switchTrendTab(this, 'rwa')">RWA</span>
       </div>
-      <div class="chart-container">
-        <div class="chart-bar">
-          <div class="bar" style="height: 45px;"></div>
-          <span class="label">周一</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 62px;"></div>
-          <span class="label">周二</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 78px;"></div>
-          <span class="label">周三</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 95px;"></div>
-          <span class="label">周四</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 72px;"></div>
-          <span class="label">周五</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 85px;"></div>
-          <span class="label">周六</span>
-        </div>
-        <div class="chart-bar">
-          <div class="bar" style="height: 90px;"></div>
-          <span class="label">周日</span>
-        </div>
+      <!-- 现货图表 -->
+      <div class="chart-container" id="spotChart">
+        <div class="chart-bar"><div class="bar" style="height: 45px;"></div><span class="label">周一</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 62px;"></div><span class="label">周二</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 78px;"></div><span class="label">周三</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 95px;"></div><span class="label">周四</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周五</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 85px;"></div><span class="label">周六</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 90px;"></div><span class="label">周日</span></div>
       </div>
-      <div class="chart-hint">可切换现货 / RWA，查看每日佣金变化</div>
-    </div>
+      <!-- RWA图表 -->
+      <div class="chart-container" id="rwaChart" style="display: none;">
+        <div class="chart-bar"><div class="bar" style="height: 35px;"></div><span class="label">周一</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 48px;"></div><span class="label">周二</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 52px;"></div><span class="label">周三</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 68px;"></div><span class="label">周四</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 55px;"></div><span class="label">周五</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周六</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 80px;"></div><span class="label">周日</span></div>
+      </div>
 
-    <!-- P1: 贡献用户 TOP3 -->
-    <div class="card top-users">
-      <div class="header-row">
-        <span class="section-title">贡献用户 TOP 3</span>
-        <span class="more">全部用户 ›</span>
-      </div>
-      <div class="user-item">
-        <span class="user-rank top1">1</span>
-        <div class="user-info">
-          <div class="user-name">User_A8xx</div>
-          <div class="user-id">UID 1700936932</div>
+      <!-- 贡献用户 TOP3 -->
+      <div class="top-users-section">
+        <div class="header-row">
+          <span class="section-title">贡献用户 TOP 3</span>
+          <span class="more">全部用户 ›</span>
         </div>
-        <span class="user-amount">8.62 USDT</span>
-      </div>
-      <div class="user-item">
-        <span class="user-rank top2">2</span>
-        <div class="user-info">
-          <div class="user-name">User_B2xx</div>
-          <div class="user-id">UID 1700907882</div>
+        <!-- 现货用户 -->
+        <div id="spotUsers">
+          <div class="user-item">
+            <span class="user-rank top1">1</span>
+            <div class="user-info"><div class="user-name">User_A8xx</div><div class="user-id">UID 1700936932</div></div>
+            <span class="user-amount">8.62 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top2">2</span>
+            <div class="user-info"><div class="user-name">User_B2xx</div><div class="user-id">UID 1700907882</div></div>
+            <span class="user-amount">5.18 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top3">3</span>
+            <div class="user-info"><div class="user-name">User_C6xx</div><div class="user-id">UID 1700881659</div></div>
+            <span class="user-amount">3.26 USDT</span>
+          </div>
         </div>
-        <span class="user-amount">5.18 USDT</span>
-      </div>
-      <div class="user-item">
-        <span class="user-rank top3">3</span>
-        <div class="user-info">
-          <div class="user-name">User_C6xx</div>
-          <div class="user-id">UID 1700881659</div>
+        <!-- RWA用户 -->
+        <div id="rwaUsers" style="display: none;">
+          <div class="user-item">
+            <span class="user-rank top1">1</span>
+            <div class="user-info"><div class="user-name">User_K3xx</div><div class="user-id">UID 1700912345</div></div>
+            <span class="user-amount">12.35 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top2">2</span>
+            <div class="user-info"><div class="user-name">User_M7xx</div><div class="user-id">UID 1700898765</div></div>
+            <span class="user-amount">9.82 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top3">3</span>
+            <div class="user-info"><div class="user-name">User_P2xx</div><div class="user-id">UID 1700876543</div></div>
+            <span class="user-amount">6.45 USDT</span>
+          </div>
         </div>
-        <span class="user-amount">3.26 USDT</span>
       </div>
     </div>
   </div>
@@ -623,8 +628,8 @@
   <script>
     // 模拟数据
     const earningsData = {
+      all: { total: '2,856.80', spot: '768.42', rwa: '972.50' },
       today: { total: '1,286.42', spot: '18.88', rwa: '25.71' },
-      '3d': { total: '1,352.18', spot: '56.64', rwa: '77.13' },
       '7d': { total: '1,486.92', spot: '132.15', rwa: '180.02' },
       '30d': { total: '2,156.80', spot: '568.42', rwa: '772.50' }
     };
@@ -646,12 +651,9 @@
       });
     }
 
-    // 时间筛选
-    function switchTime(btn, period) {
-      document.querySelectorAll('.time-filter .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const data = earningsData[period];
+    // 时间筛选 - 下拉框
+    function switchTime(period) {
+      const data = earningsData[period] || earningsData['today'];
       if (!isHidden) {
         document.getElementById('totalAmount').textContent = data.total;
         document.getElementById('spotAmount').textContent = data.spot;
@@ -672,13 +674,16 @@
       document.getElementById('rwaStats').style.display = type === 'rwa' ? 'grid' : 'none';
     }
 
-    // Tab切换
-    document.querySelectorAll('.tabs .tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
+    // 佣金趋势Tab切换
+    function switchTrendTab(tab, type) {
+      document.querySelectorAll('#trendTabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      document.getElementById('spotChart').style.display = type === 'spot' ? 'flex' : 'none';
+      document.getElementById('rwaChart').style.display = type === 'rwa' ? 'flex' : 'none';
+      document.getElementById('spotUsers').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('rwaUsers').style.display = type === 'rwa' ? 'block' : 'none';
+    }
   </script>
 </body>
 </html>
