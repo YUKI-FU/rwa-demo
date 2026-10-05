@@ -1946,32 +1946,32 @@
 
       <div class="dash-list-header">
         <span>昵称</span>
-        <span>贡献佣金</span>
+        <span class="sortable" onclick="sortRwaUserList()">贡献佣金 <span id="rwaSortIcon">↓</span></span>
       </div>
 
-      <div class="dash-user-list">
-        <div class="dash-user-row">
+      <div class="dash-user-list" id="rwaUserList">
+        <div class="dash-user-row" data-amount="0.44748858">
           <div class="user-info-col">
             <div class="name">User_D0szhj</div>
             <div class="uid">UID 1700936932</div>
           </div>
           <span class="amount">0.44748858 USDT ›</span>
         </div>
-        <div class="dash-user-row">
+        <div class="dash-user-row" data-amount="0">
           <div class="user-info-col">
             <div class="name">User_kSxqNg</div>
             <div class="uid">UID 1700907882</div>
           </div>
           <span class="amount">- ›</span>
         </div>
-        <div class="dash-user-row">
+        <div class="dash-user-row" data-amount="6.5301369">
           <div class="user-info-col">
             <div class="name">User_RKSxug</div>
             <div class="uid">UID 1700881659</div>
           </div>
           <span class="amount">6.5301369 USDT ›</span>
         </div>
-        <div class="dash-user-row">
+        <div class="dash-user-row" data-amount="3.2602736">
           <div class="user-info-col">
             <div class="name">C3</div>
             <div class="uid">UID 1700557567</div>
@@ -2359,6 +2359,25 @@
         const amountA = parseFloat(a.dataset.amount) || 0;
         const amountB = parseFloat(b.dataset.amount) || 0;
         return sortAsc ? amountA - amountB : amountB - amountA;
+      });
+
+      rows.forEach(row => list.appendChild(row));
+    }
+
+    // 排序RWA用户列表
+    let rwaSortAsc = false;
+    function sortRwaUserList() {
+      rwaSortAsc = !rwaSortAsc;
+      const icon = document.getElementById('rwaSortIcon');
+      icon.textContent = rwaSortAsc ? '↑' : '↓';
+
+      const list = document.getElementById('rwaUserList');
+      const rows = Array.from(list.querySelectorAll('.dash-user-row'));
+
+      rows.sort((a, b) => {
+        const amountA = parseFloat(a.dataset.amount) || 0;
+        const amountB = parseFloat(b.dataset.amount) || 0;
+        return rwaSortAsc ? amountA - amountB : amountB - amountA;
       });
 
       rows.forEach(row => list.appendChild(row));
