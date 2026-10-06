@@ -212,6 +212,17 @@
       cursor: pointer;
     }
 
+    .time-filter {
+      font-size: 13px;
+      color: #8b9a46;
+      background: transparent;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      outline: none;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -286,87 +297,178 @@
     }
 
     .funnel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .funnel-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: #1a1a1a;
     }
 
-    .funnel-desc {
+    .funnel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .funnel-card {
+      background: #fafafa;
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .funnel-card:active {
+      background: #f0f0f0;
+    }
+
+    .funnel-card .label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .funnel-card .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .funnel-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .funnel-card .arrow {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .funnel-card .sub.rate {
+      font-size: 11px;
+      color: #8b9a46;
+      margin-top: 4px;
+    }
+
+    .funnel-rate-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .funnel-rate-row .rate-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #8b9a46;
+    }
+
+    .funnel-rate-row .rate-item .arrow {
+      color: #ccc;
+    }
+
+    /* 底部弹窗 */
+    .bottom-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+    }
+
+    .bottom-sheet.show {
+      display: block;
+    }
+
+    .bottom-sheet-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .bottom-sheet-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .bottom-sheet-header {
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bottom-sheet-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .bottom-sheet-close {
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .bottom-sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px 16px;
+    }
+
+    .user-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .user-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .user-list-info .name {
+      font-size: 14px;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .user-list-info .uid {
       font-size: 12px;
       color: #999;
     }
 
-    .funnel-stages {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      overflow-x: auto;
-    }
-
-    .funnel-stage {
-      flex: 1;
-      min-width: 70px;
-      padding: 12px 8px;
-      border-radius: 10px;
-      text-align: center;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .funnel-stage:active {
-      transform: scale(0.95);
-    }
-
-    .stage-label {
-      font-size: 11px;
-      margin-bottom: 6px;
-      opacity: 0.9;
-    }
-
-    .stage-value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .funnel-arrow {
-      color: #ccc;
-      font-size: 16px;
-      padding: 0 4px;
-      flex-shrink: 0;
-    }
-
-    .funnel-rates {
-      display: flex;
-      gap: 8px;
-    }
-
-    .rate-item {
-      flex: 1;
-      background: #fafafa;
-      border-radius: 8px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-
-    .rate-label {
-      font-size: 11px;
-      color: #666;
-      margin-bottom: 4px;
-    }
-
-    .rate-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1a1a1a;
+    .user-list-time {
+      font-size: 12px;
+      color: #999;
     }
 
     /* P1: 佣金趋势 */
@@ -1206,9 +1308,14 @@
     /* 数据看板样式 */
     .dashboard-tabs {
       display: flex;
+      align-items: center;
       padding: 0 16px;
       background: #fff;
       border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dashboard-time-filter {
+      margin-left: auto;
     }
 
     .dash-tab {
@@ -1444,112 +1551,16 @@
       </div>
     </div>
 
-    <!-- P0: 业务数据 -->
-    <div class="card">
-      <div class="section-header">
-        <span class="section-title">业务数据</span>
-        <span class="section-filter">今日 ▾</span>
-      </div>
-      <div class="biz-tabs">
-        <span class="biz-tab active" onclick="switchBizTab(this, 'spot')">现货</span>
-        <span class="biz-tab" onclick="switchBizTab(this, 'rwa')">RWA</span>
-      </div>
-      <!-- 现货数据 -->
-      <div class="stats-grid" id="spotStats">
-        <div class="stat-item">
-          <div class="label">新增邀请用户</div>
-          <div class="value">12</div>
-          <div class="sub up">较昨日 +3</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">有效交易用户</div>
-          <div class="value">36</div>
-          <div class="sub">统计期内有交易</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">累计邀请用户</div>
-          <div class="value">528</div>
-          <div class="sub">全部用户</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">下级交易量</div>
-          <div class="value">86.2K</div>
-          <div class="sub">USDT 估值</div>
-        </div>
-      </div>
-      <!-- RWA数据 -->
-      <div class="stats-grid" id="rwaStats" style="display: none;">
-        <div class="stat-item">
-          <div class="label">新增邀请用户</div>
-          <div class="value">12</div>
-          <div class="sub up">较昨日 +2</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">参与用户</div>
-          <div class="value">36</div>
-          <div class="sub">有申购记录</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">累计邀请用户</div>
-          <div class="value">168</div>
-          <div class="sub">全部用户</div>
-        </div>
-        <div class="stat-item">
-          <div class="label">累计申购金额</div>
-          <div class="value">86.2K</div>
-          <div class="sub">USDT</div>
-        </div>
-      </div>
-
-      <!-- 转化漏斗 -->
-      <div class="funnel-section">
-        <div class="funnel-header">
-          <span class="funnel-title">推广转化漏斗</span>
-          <span class="funnel-desc">渠道用户</span>
-        </div>
-        <div class="funnel-stages">
-          <div class="funnel-stage" style="background: #5b6be8;" onclick="showFunnelUsers('register')">
-            <div class="stage-label">新增注册</div>
-            <div class="stage-value">461</div>
-          </div>
-          <span class="funnel-arrow">→</span>
-          <div class="funnel-stage" style="background: #4db6ac;" onclick="showFunnelUsers('kyc')">
-            <div class="stage-label">完成KYC</div>
-            <div class="stage-value">382</div>
-          </div>
-          <span class="funnel-arrow">→</span>
-          <div class="funnel-stage" style="background: #66bb6a;" onclick="showFunnelUsers('deposit')">
-            <div class="stage-label">新增入金</div>
-            <div class="stage-value">271</div>
-          </div>
-          <span class="funnel-arrow">→</span>
-          <div class="funnel-stage" style="background: #d4a12a;" onclick="showFunnelUsers('trade')">
-            <div class="stage-label">首次交易</div>
-            <div class="stage-value">194</div>
-          </div>
-        </div>
-        <div class="funnel-rates">
-          <div class="rate-item">
-            <div class="rate-label">注册→KYC</div>
-            <div class="rate-value">82.9%</div>
-          </div>
-          <div class="rate-item">
-            <div class="rate-label">KYC→入金</div>
-            <div class="rate-value">70.9%</div>
-          </div>
-          <div class="rate-item">
-            <div class="rate-label">入金→交易</div>
-            <div class="rate-value">71.6%</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- P1: 佣金趋势 + 贡献用户 -->
     <div class="card chart-card">
-      <div class="section-header clickable" onclick="showPage('dashboard')">
-        <span class="section-title">佣金趋势 ›</span>
-        <span class="section-filter">近 7 日 ▾</span>
+      <div class="section-header">
+        <span class="section-title clickable" onclick="showPage('dashboard')">佣金趋势 ›</span>
+        <select class="time-filter" onchange="switchTimeFilter(this.value)" onclick="event.stopPropagation()">
+          <option value="7">近 7 日</option>
+          <option value="30">近 30 日</option>
+          <option value="90">近 90 日</option>
+          <option value="365">近 1 年</option>
+        </select>
       </div>
       <div class="tabs" id="trendTabs">
         <span class="tab active" onclick="switchTrendTab(this, 'spot')">现货</span>
@@ -1580,7 +1591,7 @@
       <div class="top-users-section">
         <div class="header-row">
           <span class="section-title">贡献用户 TOP 3</span>
-          <span class="more">全部用户 ›</span>
+          <span class="more" onclick="showPage('dashboard')" style="cursor:pointer;">全部用户 ›</span>
         </div>
         <!-- 现货用户 -->
         <div id="spotUsers">
@@ -1616,6 +1627,77 @@
             <span class="user-rank top3">3</span>
             <div class="user-info"><div class="user-name">User_P2xx</div><div class="user-id">UID 1700876543</div></div>
             <span class="user-amount">6.45 USDT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P0: 业务数据 -->
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">业务数据</span>
+        <span class="section-filter">今日 ▾</span>
+      </div>
+      <div class="biz-tabs">
+        <span class="biz-tab active" onclick="switchBizTab(this, 'spot')">现货</span>
+        <span class="biz-tab" onclick="switchBizTab(this, 'rwa')">RWA</span>
+      </div>
+      <!-- 现货数据 -->
+      <div class="stats-grid" id="spotStats">
+        <div class="stat-item">
+          <div class="label">有效交易用户</div>
+          <div class="value">36</div>
+          <div class="sub">统计期内有交易</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">下级交易量</div>
+          <div class="value">86.2K</div>
+          <div class="sub">USDT 估值</div>
+        </div>
+      </div>
+      <!-- RWA数据 -->
+      <div class="stats-grid" id="rwaStats" style="display: none;">
+        <div class="stat-item">
+          <div class="label">参与用户</div>
+          <div class="value">36</div>
+          <div class="sub">有申购记录</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">累计申购金额</div>
+          <div class="value">86.2K</div>
+          <div class="sub">USDT</div>
+        </div>
+      </div>
+
+      <!-- 转化漏斗 -->
+      <div class="funnel-section">
+        <div class="funnel-header">
+          <span class="funnel-title">转化漏斗</span>
+        </div>
+
+        <div class="funnel-grid">
+          <div class="funnel-card" onclick="showFunnelUsers('register')">
+            <div class="label"><span class="dot" style="background:#5b6be8;"></span>新增注册</div>
+            <div class="value">461</div>
+            <span class="arrow">›</span>
+          </div>
+          <div class="funnel-card" onclick="showFunnelUsers('kyc')">
+            <div class="label"><span class="dot" style="background:#4db6ac;"></span>完成KYC</div>
+            <div class="value">382</div>
+            <div class="sub rate">↓ 82.9%</div>
+            <span class="arrow">›</span>
+          </div>
+          <div class="funnel-card" onclick="showFunnelUsers('deposit')">
+            <div class="label"><span class="dot" style="background:#66bb6a;"></span>新增入金</div>
+            <div class="value">271</div>
+            <div class="sub rate">↓ 70.9%</div>
+            <span class="arrow">›</span>
+          </div>
+          <div class="funnel-card" onclick="showFunnelUsers('trade')">
+            <div class="label"><span class="dot" style="background:#d4a12a;"></span>首次交易</div>
+            <div class="value">194</div>
+            <div class="sub rate">↓ 71.6%</div>
+            <span class="arrow">›</span>
           </div>
         </div>
       </div>
@@ -1809,17 +1891,16 @@
     </div>
   </div>
 
-  <!-- 漏斗用户弹窗 -->
-  <div class="modal-overlay" id="funnelModal" style="display: none;">
-    <div class="modal-content funnel-modal">
-      <div class="modal-header">
-        <span class="modal-title" id="funnelModalTitle">新增注册用户</span>
-        <span class="modal-close" onclick="closeFunnelModal()">×</span>
+  <!-- 漏斗用户底部弹窗 -->
+  <div class="bottom-sheet" id="funnelSheet">
+    <div class="bottom-sheet-mask" onclick="closeFunnelSheet()"></div>
+    <div class="bottom-sheet-content">
+      <div class="bottom-sheet-header">
+        <span class="bottom-sheet-title" id="funnelSheetTitle">新增注册用户</span>
+        <span class="bottom-sheet-close" onclick="closeFunnelSheet()">×</span>
       </div>
-      <div class="modal-body funnel-modal-body">
-        <div class="funnel-user-list" id="funnelUserList">
-          <!-- 动态填充 -->
-        </div>
+      <div class="bottom-sheet-body" id="funnelSheetBody">
+        <!-- 动态填充 -->
       </div>
     </div>
   </div>
@@ -2107,6 +2188,12 @@
     <div class="dashboard-tabs">
       <span class="dash-tab" onclick="switchDashTab(this, 'spot')">现货交易</span>
       <span class="dash-tab active" onclick="switchDashTab(this, 'rwa')">RWA</span>
+      <select class="time-filter dashboard-time-filter" onchange="switchDashTimeFilter(this.value)">
+        <option value="7">近 7 日</option>
+        <option value="30">近 30 日</option>
+        <option value="90">近 90 日</option>
+        <option value="365">近 1 年</option>
+      </select>
     </div>
 
     <!-- RWA数据 -->
@@ -2178,14 +2265,6 @@
       <div class="chart-card-full">
         <div class="chart-header-row">
           <div class="chart-title">佣金 <span class="chart-value" id="spotChartValue">25.7145 USDT</span></div>
-          <div class="chart-filters">
-            <select class="chart-filter-select" id="timeFilter" onchange="updateSpotChart()">
-              <option value="today">今日</option>
-              <option value="3d">3日</option>
-              <option value="7d" selected>7日</option>
-              <option value="30d">30日</option>
-            </select>
-          </div>
         </div>
         <div class="line-chart" id="spotLineChart">
           <div class="y-axis" id="spotYAxis">
@@ -2349,6 +2428,12 @@
       document.getElementById('rwaUsers').style.display = type === 'rwa' ? 'block' : 'none';
     }
 
+    // 时间筛选切换
+    function switchTimeFilter(days) {
+      console.log('切换时间筛选:', days + '天');
+      // 这里可以添加实际的数据刷新逻辑
+    }
+
     // 页面切换
     function showPage(page) {
       document.getElementById('homePage').style.display = page === 'home' ? 'block' : 'none';
@@ -2378,6 +2463,12 @@
 
       document.getElementById('spotDashboard').style.display = type === 'spot' ? 'block' : 'none';
       document.getElementById('rwaDashboard').style.display = type === 'rwa' ? 'block' : 'none';
+    }
+
+    // 数据看板时间筛选
+    function switchDashTimeFilter(days) {
+      console.log('数据看板时间筛选:', days + '天');
+      // 这里可以添加实际的数据刷新逻辑
     }
 
     // 返佣Tab切换
@@ -2613,28 +2704,28 @@
       }
     };
 
-    // 显示漏斗用户
+    // 显示漏斗用户底部弹窗
     function showFunnelUsers(stage) {
       const data = funnelUsers[stage];
-      document.getElementById('funnelModalTitle').textContent = data.title;
+      document.getElementById('funnelSheetTitle').textContent = data.title;
 
-      const list = document.getElementById('funnelUserList');
-      list.innerHTML = data.users.map(u => `
-        <div class="funnel-user-item">
-          <div class="funnel-user-info">
+      const body = document.getElementById('funnelSheetBody');
+      body.innerHTML = data.users.map(u => `
+        <div class="user-list-item">
+          <div class="user-list-info">
             <div class="name">${u.name}</div>
             <div class="uid">UID ${u.uid}</div>
           </div>
-          <div class="funnel-user-time">${u.time}</div>
+          <div class="user-list-time">${u.time}</div>
         </div>
       `).join('');
 
-      document.getElementById('funnelModal').style.display = 'flex';
+      document.getElementById('funnelSheet').classList.add('show');
     }
 
     // 关闭漏斗弹窗
-    function closeFunnelModal() {
-      document.getElementById('funnelModal').style.display = 'none';
+    function closeFunnelSheet() {
+      document.getElementById('funnelSheet').classList.remove('show');
     }
   </script>
 </body>
