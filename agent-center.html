@@ -493,36 +493,36 @@
 
     .chart-container {
       height: 140px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 8px;
-      padding-bottom: 24px;
       position: relative;
+      padding-bottom: 24px;
     }
 
-    .chart-bar {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .chart-bar .bar {
+    .line-chart-svg {
       width: 100%;
-      max-width: 36px;
-      background: linear-gradient(180deg, #a3b356 0%, #8b9a46 100%);
-      border-radius: 6px 6px 2px 2px;
-      min-height: 8px;
-      transition: height 0.3s;
+      height: 100%;
     }
 
-    .chart-bar .label {
-      font-size: 11px;
-      color: #999;
+    .line-chart-svg .line {
+      fill: none;
+      stroke: #8b9a46;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .line-chart-svg .area {
+      fill: url(#chartGradient);
+    }
+
+    .chart-x-labels {
+      display: flex;
+      justify-content: space-between;
       position: absolute;
       bottom: 0;
+      left: 0;
+      right: 0;
+      font-size: 11px;
+      color: #999;
     }
 
     .chart-hint {
@@ -1568,23 +1568,35 @@
       </div>
       <!-- 现货图表 -->
       <div class="chart-container" id="spotChart">
-        <div class="chart-bar"><div class="bar" style="height: 45px;"></div><span class="label">周一</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 62px;"></div><span class="label">周二</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 78px;"></div><span class="label">周三</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 95px;"></div><span class="label">周四</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周五</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 85px;"></div><span class="label">周六</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 90px;"></div><span class="label">周日</span></div>
+        <svg class="line-chart-svg" viewBox="0 0 280 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8b9a46" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#8b9a46" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="area" d="M0,65 L47,45 L94,30 L141,10 L188,35 L235,20 L280,15 L280,100 L0,100 Z"/>
+          <path class="line" d="M0,65 L47,45 L94,30 L141,10 L188,35 L235,20 L280,15"/>
+        </svg>
+        <div class="chart-x-labels">
+          <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+        </div>
       </div>
       <!-- RWA图表 -->
       <div class="chart-container" id="rwaChart" style="display: none;">
-        <div class="chart-bar"><div class="bar" style="height: 35px;"></div><span class="label">周一</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 48px;"></div><span class="label">周二</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 52px;"></div><span class="label">周三</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 68px;"></div><span class="label">周四</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 55px;"></div><span class="label">周五</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周六</span></div>
-        <div class="chart-bar"><div class="bar" style="height: 80px;"></div><span class="label">周日</span></div>
+        <svg class="line-chart-svg" viewBox="0 0 280 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGradient2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8b9a46" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#8b9a46" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="area" d="M0,70 L47,55 L94,50 L141,35 L188,48 L235,30 L280,22 L280,100 L0,100 Z" style="fill:url(#chartGradient2)"/>
+          <path class="line" d="M0,70 L47,55 L94,50 L141,35 L188,48 L235,30 L280,22"/>
+        </svg>
+        <div class="chart-x-labels">
+          <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+        </div>
       </div>
 
       <!-- 贡献用户 TOP3 -->
@@ -2433,8 +2445,8 @@
       document.querySelectorAll('#trendTabs .tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      document.getElementById('spotChart').style.display = type === 'spot' ? 'flex' : 'none';
-      document.getElementById('rwaChart').style.display = type === 'rwa' ? 'flex' : 'none';
+      document.getElementById('spotChart').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('rwaChart').style.display = type === 'rwa' ? 'block' : 'none';
       document.getElementById('spotUsers').style.display = type === 'spot' ? 'block' : 'none';
       document.getElementById('rwaUsers').style.display = type === 'rwa' ? 'block' : 'none';
     }
