@@ -1636,7 +1636,13 @@
     <div class="card">
       <div class="section-header">
         <span class="section-title">业务数据</span>
-        <span class="section-filter">今日 ▾</span>
+        <select class="time-filter" onchange="switchBizTimeFilter(this.value)">
+          <option value="today">今日</option>
+          <option value="7">近 7 日</option>
+          <option value="30">近 30 日</option>
+          <option value="90">近 90 日</option>
+          <option value="365">近 1 年</option>
+        </select>
       </div>
       <div class="biz-tabs">
         <span class="biz-tab active" onclick="switchBizTab(this, 'spot')">现货</span>
@@ -2415,6 +2421,11 @@
 
       document.getElementById('spotStats').style.display = type === 'spot' ? 'grid' : 'none';
       document.getElementById('rwaStats').style.display = type === 'rwa' ? 'grid' : 'none';
+    }
+
+    // 业务数据时间筛选
+    function switchBizTimeFilter(period) {
+      console.log('业务数据时间筛选:', period);
     }
 
     // 佣金趋势Tab切换
