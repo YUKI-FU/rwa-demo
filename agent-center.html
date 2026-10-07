@@ -2470,53 +2470,51 @@
 
     // 绘制曲线图
     function drawLineChart(type, days) {
-      const data = chartData[type][days];
-      const values = data.values;
-      const labels = data.labels;
-      const maxVal = Math.max(...values);
+      try {
+        const data = chartData[type][days];
+        if (!data) return;
 
-      const linePath = document.getElementById(type + 'LinePath');
-      const areaPath = document.getElementById(type + 'AreaPath');
-      const xAxis = document.getElementById(type + 'XAxis');
+        const values = data.values;
+        const labels = data.labels;
+        const maxVal = Math.max(...values);
 
-      const width = 300;
-      const height = 100;
-      const padding = 10;
-      const n = values.length;
+        const linePath = document.getElementById(type + 'LinePath');
+        const areaPath = document.getElementById(type + 'AreaPath');
+        const xAxis = document.getElementById(type + 'XAxis');
 
-      // 生成路径点
-      let points = [];
-      for (let i = 0; i < n; i++) {
-        const x = padding + (i / (n - 1)) * (width - 2 * padding);
-        const y = height - padding - (values[i] / maxVal) * (height - 2 * padding);
-        points.push({ x, y });
+        if (!linePath || !areaPath || !xAxis) return;
+
+        const width = 300;
+        const height = 100;
+        const padding = 10;
+        const n = values.length;
+
+        // 生成路径点
+        let points = [];
+        for (let i = 0; i < n; i++) {
+          const x = padding + (i / (n - 1)) * (width - 2 * padding);
+          const y = height - padding - (values[i] / maxVal) * (height - 2 * padding);
+          points.push({ x: x, y: y });
+        }
+
+        // 生成直线段路径
+        let lineDraw = 'M ' + points[0].x + ' ' + points[0].y;
+        for (let i = 1; i < points.length; i++) {
+          lineDraw += ' L ' + points[i].x + ' ' + points[i].y;
+        }
+
+        linePath.setAttribute('d', lineDraw);
+
+        // 生成填充区域
+        let areaDraw = lineDraw + ' L ' + points[n-1].x + ' ' + height + ' L ' + points[0].x + ' ' + height + ' Z';
+        areaPath.setAttribute('d', areaDraw);
+
+        // 更新X轴标签
+        const displayLabels = labels.filter(function(l) { return l !== ''; });
+        xAxis.innerHTML = displayLabels.map(function(l) { return '<span>' + l + '</span>'; }).join('');
+      } catch(e) {
+        console.error('drawLineChart error:', e);
       }
-
-      // 生成平滑曲线路径
-      let lineDraw = `M ${points[0].x} ${points[0].y}`;
-      for (let i = 1; i < points.length; i++) {
-        const prev = points[i - 1];
-        const curr = points[i];
-        const cpx = (prev.x + curr.x) / 2;
-        lineDraw += ` Q ${prev.x + (curr.x - prev.x) * 0.5} ${prev.y}, ${cpx} ${(prev.y + curr.y) / 2}`;
-        lineDraw += ` Q ${cpx + (curr.x - cpx) * 0.5} ${curr.y}, ${curr.x} ${curr.y}`;
-      }
-
-      // 简化：使用直线段
-      lineDraw = `M ${points[0].x} ${points[0].y}`;
-      for (let i = 1; i < points.length; i++) {
-        lineDraw += ` L ${points[i].x} ${points[i].y}`;
-      }
-
-      linePath.setAttribute('d', lineDraw);
-
-      // 生成填充区域
-      let areaDraw = lineDraw + ` L ${points[n-1].x} ${height} L ${points[0].x} ${height} Z`;
-      areaPath.setAttribute('d', areaDraw);
-
-      // 更新X轴标签
-      const displayLabels = labels.filter(l => l !== '');
-      xAxis.innerHTML = displayLabels.map(l => `<span>${l}</span>`).join('');
     }
 
     // 时间筛选切换
