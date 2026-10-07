@@ -492,47 +492,37 @@
     }
 
     .chart-container {
-      height: 160px;
-      position: relative;
-      padding: 10px 0 30px;
-    }
-
-    .line-chart-wrap {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    .line-chart-wrap svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .line-chart-wrap .line-path {
-      fill: none;
-      stroke: #8b9a46;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .line-chart-wrap .area-fill {
-      fill: url(#areaGradient);
-    }
-
-    .line-chart-wrap .dot {
-      fill: #8b9a46;
-    }
-
-    .chart-x-axis {
+      height: 140px;
       display: flex;
+      align-items: flex-end;
       justify-content: space-between;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      gap: 8px;
+      padding-bottom: 24px;
+      position: relative;
+    }
+
+    .chart-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-bar .bar {
+      width: 100%;
+      max-width: 36px;
+      background: linear-gradient(180deg, #a3b356 0%, #8b9a46 100%);
+      border-radius: 6px 6px 2px 2px;
+      min-height: 8px;
+      transition: height 0.3s;
+    }
+
+    .chart-bar .label {
       font-size: 11px;
       color: #999;
+      position: absolute;
+      bottom: 0;
     }
 
     .chart-hint {
@@ -1578,35 +1568,23 @@
       </div>
       <!-- 现货图表 -->
       <div class="chart-container" id="spotChart">
-        <div class="line-chart-wrap">
-          <svg viewBox="0 0 300 100" preserveAspectRatio="none" id="spotChartSvg">
-            <defs>
-              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#8b9a46" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#8b9a46" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path class="area-fill" id="spotAreaPath"/>
-            <path class="line-path" id="spotLinePath"/>
-          </svg>
-        </div>
-        <div class="chart-x-axis" id="spotXAxis"></div>
+        <div class="chart-bar"><div class="bar" style="height: 45px;"></div><span class="label">周一</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 62px;"></div><span class="label">周二</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 78px;"></div><span class="label">周三</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 95px;"></div><span class="label">周四</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周五</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 85px;"></div><span class="label">周六</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 90px;"></div><span class="label">周日</span></div>
       </div>
       <!-- RWA图表 -->
       <div class="chart-container" id="rwaChart" style="display: none;">
-        <div class="line-chart-wrap">
-          <svg viewBox="0 0 300 100" preserveAspectRatio="none" id="rwaChartSvg">
-            <defs>
-              <linearGradient id="areaGradient2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#8b9a46" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#8b9a46" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path class="area-fill" id="rwaAreaPath" style="fill:url(#areaGradient2)"/>
-            <path class="line-path" id="rwaLinePath"/>
-          </svg>
-        </div>
-        <div class="chart-x-axis" id="rwaXAxis"></div>
+        <div class="chart-bar"><div class="bar" style="height: 35px;"></div><span class="label">周一</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 48px;"></div><span class="label">周二</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 52px;"></div><span class="label">周三</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 68px;"></div><span class="label">周四</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 55px;"></div><span class="label">周五</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 72px;"></div><span class="label">周六</span></div>
+        <div class="chart-bar"><div class="bar" style="height: 80px;"></div><span class="label">周日</span></div>
       </div>
 
       <!-- 贡献用户 TOP3 -->
@@ -2444,89 +2422,17 @@
       document.querySelectorAll('#trendTabs .tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      document.getElementById('spotChart').style.display = type === 'spot' ? 'block' : 'none';
-      document.getElementById('rwaChart').style.display = type === 'rwa' ? 'block' : 'none';
+      document.getElementById('spotChart').style.display = type === 'spot' ? 'flex' : 'none';
+      document.getElementById('rwaChart').style.display = type === 'rwa' ? 'flex' : 'none';
       document.getElementById('spotUsers').style.display = type === 'spot' ? 'block' : 'none';
       document.getElementById('rwaUsers').style.display = type === 'rwa' ? 'block' : 'none';
     }
 
-    // 图表数据
-    const chartData = {
-      spot: {
-        7: { values: [45, 62, 78, 95, 72, 85, 90], labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'] },
-        30: { values: [30, 45, 55, 70, 65, 80, 75, 90, 85, 95], labels: ['9/28', '9/29', '9/30', '10/1', '10/2', '10/3', '10/4', '10/5', '10/6', '10/7'] },
-        90: { values: [40, 55, 50, 70, 85, 75, 90, 80, 95, 88, 92, 85], labels: ['7月', '8月', '9月', '10月', '', '', '', '', '', '', '', ''] },
-        365: { values: [35, 50, 65, 80, 70, 90, 85, 95, 88, 92, 78, 85], labels: ['1月', '3月', '5月', '7月', '9月', '11月', '', '', '', '', '', ''] }
-      },
-      rwa: {
-        7: { values: [35, 48, 52, 68, 55, 72, 80], labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'] },
-        30: { values: [25, 40, 50, 65, 60, 75, 70, 85, 80, 90], labels: ['9/28', '9/29', '9/30', '10/1', '10/2', '10/3', '10/4', '10/5', '10/6', '10/7'] },
-        90: { values: [35, 50, 45, 65, 80, 70, 85, 75, 90, 82, 88, 80], labels: ['7月', '8月', '9月', '10月', '', '', '', '', '', '', '', ''] },
-        365: { values: [30, 45, 60, 75, 65, 85, 80, 90, 82, 88, 72, 80], labels: ['1月', '3月', '5月', '7月', '9月', '11月', '', '', '', '', '', ''] }
-      }
-    };
-
-    let currentTimeFilter = 7;
-
-    // 绘制曲线图
-    function drawLineChart(type, days) {
-      try {
-        const data = chartData[type][days];
-        if (!data) return;
-
-        const values = data.values;
-        const labels = data.labels;
-        const maxVal = Math.max(...values);
-
-        const linePath = document.getElementById(type + 'LinePath');
-        const areaPath = document.getElementById(type + 'AreaPath');
-        const xAxis = document.getElementById(type + 'XAxis');
-
-        if (!linePath || !areaPath || !xAxis) return;
-
-        const width = 300;
-        const height = 100;
-        const padding = 10;
-        const n = values.length;
-
-        // 生成路径点
-        let points = [];
-        for (let i = 0; i < n; i++) {
-          const x = padding + (i / (n - 1)) * (width - 2 * padding);
-          const y = height - padding - (values[i] / maxVal) * (height - 2 * padding);
-          points.push({ x: x, y: y });
-        }
-
-        // 生成直线段路径
-        let lineDraw = 'M ' + points[0].x + ' ' + points[0].y;
-        for (let i = 1; i < points.length; i++) {
-          lineDraw += ' L ' + points[i].x + ' ' + points[i].y;
-        }
-
-        linePath.setAttribute('d', lineDraw);
-
-        // 生成填充区域
-        let areaDraw = lineDraw + ' L ' + points[n-1].x + ' ' + height + ' L ' + points[0].x + ' ' + height + ' Z';
-        areaPath.setAttribute('d', areaDraw);
-
-        // 更新X轴标签
-        const displayLabels = labels.filter(function(l) { return l !== ''; });
-        xAxis.innerHTML = displayLabels.map(function(l) { return '<span>' + l + '</span>'; }).join('');
-      } catch(e) {
-        console.error('drawLineChart error:', e);
-      }
-    }
-
     // 时间筛选切换
     function switchTimeFilter(days) {
-      currentTimeFilter = parseInt(days);
-      drawLineChart('spot', currentTimeFilter);
-      drawLineChart('rwa', currentTimeFilter);
+      console.log('切换时间筛选:', days + '天');
+      // 这里可以添加实际的数据刷新逻辑
     }
-
-    // 初始化图表
-    drawLineChart('spot', 7);
-    drawLineChart('rwa', 7);
 
     // 页面切换
     function showPage(page) {
