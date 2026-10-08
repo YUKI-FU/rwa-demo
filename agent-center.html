@@ -791,11 +791,106 @@
     .user-row .edit-icon {
       font-size: 16px;
       color: #999;
+      cursor: pointer;
+      padding: 4px;
     }
 
     .user-row .arrow {
       font-size: 18px;
       color: #ccc;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* 别名弹窗 */
+    .alias-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .alias-modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 320px;
+      max-width: 90%;
+    }
+
+    .alias-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+
+    .alias-input-wrapper {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .alias-input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #1a1a1a;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .alias-input:focus {
+      outline: none;
+      border-color: #1a1a1a;
+    }
+
+    .alias-counter {
+      text-align: right;
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    .alias-current-user {
+      font-size: 14px;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    .alias-current-user a {
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+
+    .alias-modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .alias-modal-buttons button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .alias-cancel-btn {
+      background: #fff;
+      border: 1px solid #ddd;
+      color: #1a1a1a;
+    }
+
+    .alias-confirm-btn {
+      background: #333;
+      border: none;
+      color: #fff;
     }
 
     /* 用户详情页 */
@@ -1563,11 +1658,12 @@
         </select>
       </div>
       <div class="tabs" id="trendTabs">
-        <span class="tab active" onclick="switchTrendTab(this, 'spot')">现货</span>
+        <span class="tab active" onclick="switchTrendTab(this, 'direct')">直客</span>
+        <span class="tab" onclick="switchTrendTab(this, 'partner')">合伙人</span>
         <span class="tab" onclick="switchTrendTab(this, 'rwa')">RWA</span>
       </div>
-      <!-- 现货图表 -->
-      <div class="chart-container" id="spotChart">
+      <!-- 直客图表 -->
+      <div class="chart-container" id="directChart">
         <svg class="line-chart-svg" viewBox="0 0 280 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
@@ -1577,6 +1673,22 @@
           </defs>
           <path class="area" d="M0,65 L47,45 L94,30 L141,10 L188,35 L235,20 L280,15 L280,100 L0,100 Z"/>
           <path class="line" d="M0,65 L47,45 L94,30 L141,10 L188,35 L235,20 L280,15"/>
+        </svg>
+        <div class="chart-x-labels">
+          <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+        </div>
+      </div>
+      <!-- 合伙人图表 -->
+      <div class="chart-container" id="partnerChart" style="display: none;">
+        <svg class="line-chart-svg" viewBox="0 0 280 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGradient3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8b9a46" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#8b9a46" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="area" d="M0,75 L47,60 L94,45 L141,25 L188,40 L235,30 L280,20 L280,100 L0,100 Z" style="fill:url(#chartGradient3)"/>
+          <path class="line" d="M0,75 L47,60 L94,45 L141,25 L188,40 L235,30 L280,20"/>
         </svg>
         <div class="chart-x-labels">
           <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
@@ -1605,8 +1717,8 @@
           <span class="section-title">贡献用户 TOP 3</span>
           <span class="more" onclick="showPage('dashboard')" style="cursor:pointer;">全部用户 ›</span>
         </div>
-        <!-- 现货用户 -->
-        <div id="spotUsers">
+        <!-- 直客用户 -->
+        <div id="directUsers">
           <div class="user-item">
             <span class="user-rank top1">1</span>
             <div class="user-info"><div class="user-name">User_A8xx</div><div class="user-id">UID 1700936932</div></div>
@@ -1621,6 +1733,24 @@
             <span class="user-rank top3">3</span>
             <div class="user-info"><div class="user-name">User_C6xx</div><div class="user-id">UID 1700881659</div></div>
             <span class="user-amount">3.26 USDT</span>
+          </div>
+        </div>
+        <!-- 合伙人用户 -->
+        <div id="partnerUsers" style="display: none;">
+          <div class="user-item">
+            <span class="user-rank top1">1</span>
+            <div class="user-info"><div class="user-name">User_D5xx</div><div class="user-id">UID 1700945678</div></div>
+            <span class="user-amount">15.36 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top2">2</span>
+            <div class="user-info"><div class="user-name">User_E9xx</div><div class="user-id">UID 1700923456</div></div>
+            <span class="user-amount">11.28 USDT</span>
+          </div>
+          <div class="user-item">
+            <span class="user-rank top3">3</span>
+            <div class="user-info"><div class="user-name">User_F1xx</div><div class="user-id">UID 1700901234</div></div>
+            <span class="user-amount">7.94 USDT</span>
           </div>
         </div>
         <!-- RWA用户 -->
@@ -1657,11 +1787,12 @@
         </select>
       </div>
       <div class="biz-tabs">
-        <span class="biz-tab active" onclick="switchBizTab(this, 'spot')">现货</span>
+        <span class="biz-tab active" onclick="switchBizTab(this, 'direct')">直客</span>
+        <span class="biz-tab" onclick="switchBizTab(this, 'partner')">合伙人</span>
         <span class="biz-tab" onclick="switchBizTab(this, 'rwa')">RWA</span>
       </div>
-      <!-- 现货数据 -->
-      <div class="stats-grid" id="spotStats">
+      <!-- 直客数据 -->
+      <div class="stats-grid" id="directStats">
         <div class="stat-item">
           <div class="label">有效交易用户</div>
           <div class="value">36</div>
@@ -1670,6 +1801,19 @@
         <div class="stat-item">
           <div class="label">下级交易量</div>
           <div class="value">86.2K</div>
+          <div class="sub">USDT 估值</div>
+        </div>
+      </div>
+      <!-- 合伙人数据 -->
+      <div class="stats-grid" id="partnerStats" style="display: none;">
+        <div class="stat-item">
+          <div class="label">有效交易用户</div>
+          <div class="value">128</div>
+          <div class="sub">统计期内有交易</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">下级交易量</div>
+          <div class="value">256.8K</div>
           <div class="sub">USDT 估值</div>
         </div>
       </div>
@@ -1749,7 +1893,7 @@
     </div>
 
     <div class="user-list" id="partnerList">
-      <div class="user-row" onclick="showUserDetail('User_D0szhj', '930-1@gmail.com', '1700936932', '26/09/30', '合伙人', '7%', '10%', '正常')">
+      <div class="user-row">
         <div class="user-col">
           <span class="status-dot active"></span>
           <div class="user-info-col">
@@ -1760,11 +1904,11 @@
         <span class="col-spot">7%</span>
         <span class="col-rwa">10%</span>
         <div class="col-action">
-          <span class="edit-icon">✏️</span>
-          <span class="arrow">›</span>
+          <span class="edit-icon" onclick="showAliasModal('User_D0szhj')">✏️</span>
+          <span class="arrow" onclick="showUserDetail('User_D0szhj', '930-1@gmail.com', '1700936932', '26/09/30', '合伙人', '7%', '10%', '正常')">›</span>
         </div>
       </div>
-      <div class="user-row" onclick="showUserDetail('User_kSxqNg', 'ks123@gmail.com', '1700907882', '26/09/28', '合伙人', '11%', '5%', '正常')">
+      <div class="user-row">
         <div class="user-col">
           <span class="status-dot active"></span>
           <div class="user-info-col">
@@ -1775,11 +1919,11 @@
         <span class="col-spot">11%</span>
         <span class="col-rwa">5%</span>
         <div class="col-action">
-          <span class="edit-icon">✏️</span>
-          <span class="arrow">›</span>
+          <span class="edit-icon" onclick="showAliasModal('User_kSxqNg')">✏️</span>
+          <span class="arrow" onclick="showUserDetail('User_kSxqNg', 'ks123@gmail.com', '1700907882', '26/09/28', '合伙人', '11%', '5%', '正常')">›</span>
         </div>
       </div>
-      <div class="user-row" onclick="showUserDetail('User_RKSxug', 'rks456@gmail.com', '1700881659', '26/09/25', '合伙人', '11%', '5%', '正常')">
+      <div class="user-row">
         <div class="user-col">
           <span class="status-dot active"></span>
           <div class="user-info-col">
@@ -1790,11 +1934,11 @@
         <span class="col-spot">11%</span>
         <span class="col-rwa">5%</span>
         <div class="col-action">
-          <span class="edit-icon">✏️</span>
-          <span class="arrow">›</span>
+          <span class="edit-icon" onclick="showAliasModal('User_RKSxug')">✏️</span>
+          <span class="arrow" onclick="showUserDetail('User_RKSxug', 'rks456@gmail.com', '1700881659', '26/09/25', '合伙人', '11%', '5%', '正常')">›</span>
         </div>
       </div>
-      <div class="user-row" onclick="showUserDetail('C3', 'c3user@gmail.com', '1700557567', '26/09/20', '合伙人', '16%', '18%', '正常')">
+      <div class="user-row">
         <div class="user-col">
           <span class="status-dot active"></span>
           <div class="user-info-col">
@@ -1805,14 +1949,14 @@
         <span class="col-spot">16%</span>
         <span class="col-rwa">18%</span>
         <div class="col-action">
-          <span class="edit-icon">✏️</span>
-          <span class="arrow">›</span>
+          <span class="edit-icon" onclick="showAliasModal('C3')">✏️</span>
+          <span class="arrow" onclick="showUserDetail('C3', 'c3user@gmail.com', '1700557567', '26/09/20', '合伙人', '16%', '18%', '正常')">›</span>
         </div>
       </div>
     </div>
 
     <div class="user-list" id="directList" style="display: none;">
-      <div class="user-row" onclick="showUserDetail('直客A', 'directa@gmail.com', '1700123456', '26/10/01', '直客', '5%', '8%', '正常')">
+      <div class="user-row">
         <div class="user-col">
           <span class="status-dot active"></span>
           <div class="user-info-col">
@@ -1823,8 +1967,8 @@
         <span class="col-spot">5%</span>
         <span class="col-rwa">8%</span>
         <div class="col-action">
-          <span class="edit-icon">✏️</span>
-          <span class="arrow">›</span>
+          <span class="edit-icon" onclick="showAliasModal('直客A')">✏️</span>
+          <span class="arrow" onclick="showUserDetail('直客A', 'directa@gmail.com', '1700123456', '26/10/01', '直客', '5%', '8%', '正常')">›</span>
         </div>
       </div>
     </div>
@@ -2204,8 +2348,9 @@
     </div>
 
     <div class="dashboard-tabs">
-      <span class="dash-tab" onclick="switchDashTab(this, 'spot')">现货交易</span>
-      <span class="dash-tab active" onclick="switchDashTab(this, 'rwa')">RWA</span>
+      <span class="dash-tab active" onclick="switchDashTab(this, 'direct')">直客</span>
+      <span class="dash-tab" onclick="switchDashTab(this, 'partner')">合伙人</span>
+      <span class="dash-tab" onclick="switchDashTab(this, 'rwa')">RWA</span>
       <select class="time-filter dashboard-time-filter" onchange="switchDashTimeFilter(this.value)">
         <option value="7">近 7 日</option>
         <option value="30">近 30 日</option>
@@ -2214,8 +2359,140 @@
       </select>
     </div>
 
+    <!-- 直客数据 -->
+    <div class="dashboard-content" id="directDashboard">
+      <div class="chart-card-full">
+        <div class="chart-header-row">
+          <div class="chart-title">佣金 <span class="chart-value">15.82 USDT</span></div>
+        </div>
+        <div class="line-chart">
+          <div class="y-axis">
+            <span>10.25</span>
+            <span>7.69</span>
+            <span>5.12</span>
+            <span>2.56</span>
+            <span>0</span>
+          </div>
+          <div class="chart-area">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+              <path d="M0,118 L50,90 L100,60 L150,40 L200,70 L250,50 L300,30"
+                    fill="none" stroke="#e85a5a" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="x-axis">
+          <span>26/09/29</span>
+          <span>26/10/01</span>
+          <span>26/10/03</span>
+          <span>26/10/05</span>
+        </div>
+      </div>
+
+      <div class="dash-list-header">
+        <span>昵称</span>
+        <span class="sortable" onclick="sortDirectUserList()">贡献佣金(USDT) <span id="directSortIcon">↓</span></span>
+      </div>
+
+      <div class="dash-user-list" id="directUserList">
+        <div class="dash-user-row" data-amount="5.32">
+          <div class="user-info-col">
+            <div class="name">直客A</div>
+            <div class="uid">UID 1700123456</div>
+          </div>
+          <span class="amount">5.32 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="4.18">
+          <div class="user-info-col">
+            <div class="name">直客B</div>
+            <div class="uid">UID 1700234567</div>
+          </div>
+          <span class="amount">4.18 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="3.56">
+          <div class="user-info-col">
+            <div class="name">直客C</div>
+            <div class="uid">UID 1700345678</div>
+          </div>
+          <span class="amount">3.56 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="2.76">
+          <div class="user-info-col">
+            <div class="name">直客D</div>
+            <div class="uid">UID 1700456789</div>
+          </div>
+          <span class="amount">2.76 USDT ›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 合伙人数据 -->
+    <div class="dashboard-content" id="partnerDashboard" style="display: none;">
+      <div class="chart-card-full">
+        <div class="chart-header-row">
+          <div class="chart-title">佣金 <span class="chart-value">25.71 USDT</span></div>
+        </div>
+        <div class="line-chart">
+          <div class="y-axis">
+            <span>15.63</span>
+            <span>11.72</span>
+            <span>7.81</span>
+            <span>3.91</span>
+            <span>0</span>
+          </div>
+          <div class="chart-area">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+              <path d="M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118"
+                    fill="none" stroke="#e85a5a" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="x-axis">
+          <span>26/09/29</span>
+          <span>26/10/01</span>
+          <span>26/10/03</span>
+          <span>26/10/05</span>
+        </div>
+      </div>
+
+      <div class="dash-list-header">
+        <span>昵称</span>
+        <span class="sortable" onclick="sortPartnerUserList()">贡献佣金(USDT) <span id="partnerSortIcon">↓</span></span>
+      </div>
+
+      <div class="dash-user-list" id="partnerUserList">
+        <div class="dash-user-row" data-amount="12.35">
+          <div class="user-info-col">
+            <div class="name">User_RKSxug</div>
+            <div class="uid">UID 1700881659</div>
+          </div>
+          <span class="amount">12.35 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="8.76">
+          <div class="user-info-col">
+            <div class="name">C3</div>
+            <div class="uid">UID 1700557567</div>
+          </div>
+          <span class="amount">8.76 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="5.82">
+          <div class="user-info-col">
+            <div class="name">User_kSxqNg</div>
+            <div class="uid">UID 1700907882</div>
+          </div>
+          <span class="amount">5.82 USDT ›</span>
+        </div>
+        <div class="dash-user-row" data-amount="0">
+          <div class="user-info-col">
+            <div class="name">User_D0szhj</div>
+            <div class="uid">UID 1700936932</div>
+          </div>
+          <span class="amount">0 USDT ›</span>
+        </div>
+      </div>
+    </div>
+
     <!-- RWA数据 -->
-    <div class="dashboard-content" id="rwaDashboard">
+    <div class="dashboard-content" id="rwaDashboard" style="display: none;">
       <div class="chart-card-full">
         <div class="chart-title">佣金（USDT预估）<span class="chart-value">20.95022799</span></div>
         <div class="line-chart">
@@ -2277,91 +2554,20 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- 现货数据 -->
-    <div class="dashboard-content" id="spotDashboard" style="display: none;">
-      <div class="chart-card-full">
-        <div class="chart-header-row">
-          <div class="chart-title">佣金 <span class="chart-value" id="spotChartValue">25.7145 USDT</span></div>
-        </div>
-        <div class="line-chart" id="spotLineChart">
-          <div class="y-axis" id="spotYAxis">
-            <span>15.63</span>
-            <span>11.72</span>
-            <span>7.81</span>
-            <span>3.91</span>
-            <span>0</span>
-          </div>
-          <div class="chart-area">
-            <svg viewBox="0 0 300 120" preserveAspectRatio="none" id="spotChartSvg">
-              <path id="spotChartPath" d="M0,118 L50,118 L70,30 L90,118 L150,118 L170,30 L190,118 L300,118"
-                    fill="none" stroke="#e85a5a" stroke-width="2"/>
-            </svg>
-          </div>
-        </div>
-        <div class="x-axis" id="spotXAxis">
-          <span>26/09/29</span>
-          <span>26/10/01</span>
-          <span>26/10/03</span>
-          <span>26/10/05</span>
-        </div>
+  <!-- 别名修改弹窗 -->
+  <div class="alias-modal-overlay" id="aliasModal" onclick="closeAliasModal(event)">
+    <div class="alias-modal" onclick="event.stopPropagation()">
+      <div class="alias-modal-title">别名</div>
+      <div class="alias-input-wrapper">
+        <input type="text" class="alias-input" id="aliasInput" placeholder="请输入别名（最多8个字符）" maxlength="8" oninput="updateAliasCounter()">
       </div>
-
-      <div class="list-filter-row">
-        <select class="chart-filter-select" id="userTypeFilter" onchange="filterUserList()">
-          <option value="all">全部用户</option>
-          <option value="partner">合伙人</option>
-          <option value="direct">直客</option>
-        </select>
-      </div>
-
-      <div class="dash-list-header three-col">
-        <span>昵称</span>
-        <span>用户类型</span>
-        <span class="sortable" onclick="sortUserList()">贡献佣金(USDT) <span id="sortIcon">↓</span></span>
-      </div>
-
-      <div class="dash-user-list" id="spotUserList">
-        <div class="dash-user-row three-col" data-type="partner" data-amount="0">
-          <div class="user-info-col">
-            <div class="name">User_D0szhj</div>
-            <div class="uid">UID 1700936932</div>
-          </div>
-          <span class="user-type">合伙人</span>
-          <span class="amount">0 ›</span>
-        </div>
-        <div class="dash-user-row three-col" data-type="partner" data-amount="5.82">
-          <div class="user-info-col">
-            <div class="name">User_kSxqNg</div>
-            <div class="uid">UID 1700907882</div>
-          </div>
-          <span class="user-type">合伙人</span>
-          <span class="amount">5.82 ›</span>
-        </div>
-        <div class="dash-user-row three-col" data-type="direct" data-amount="2.5">
-          <div class="user-info-col">
-            <div class="name">直客A</div>
-            <div class="uid">UID 1700123456</div>
-          </div>
-          <span class="user-type">直客</span>
-          <span class="amount">2.5 ›</span>
-        </div>
-        <div class="dash-user-row three-col" data-type="partner" data-amount="12.35">
-          <div class="user-info-col">
-            <div class="name">User_RKSxug</div>
-            <div class="uid">UID 1700881659</div>
-          </div>
-          <span class="user-type">合伙人</span>
-          <span class="amount">12.35 ›</span>
-        </div>
-        <div class="dash-user-row three-col" data-type="partner" data-amount="8.76">
-          <div class="user-info-col">
-            <div class="name">C3</div>
-            <div class="uid">UID 1700557567</div>
-          </div>
-          <span class="user-type">合伙人</span>
-          <span class="amount">8.76 ›</span>
-        </div>
+      <div class="alias-counter"><span id="aliasCount">0</span>/8</div>
+      <div class="alias-current-user"><span id="aliasCurrentUser">User_D0s</span> ↗</div>
+      <div class="alias-modal-buttons">
+        <button class="alias-cancel-btn" onclick="closeAliasModal()">取消</button>
+        <button class="alias-confirm-btn" onclick="confirmAlias()">确定</button>
       </div>
     </div>
   </div>
@@ -2431,7 +2637,8 @@
       document.querySelectorAll('.biz-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      document.getElementById('spotStats').style.display = type === 'spot' ? 'grid' : 'none';
+      document.getElementById('directStats').style.display = type === 'direct' ? 'grid' : 'none';
+      document.getElementById('partnerStats').style.display = type === 'partner' ? 'grid' : 'none';
       document.getElementById('rwaStats').style.display = type === 'rwa' ? 'grid' : 'none';
     }
 
@@ -2445,9 +2652,11 @@
       document.querySelectorAll('#trendTabs .tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      document.getElementById('spotChart').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('directChart').style.display = type === 'direct' ? 'block' : 'none';
+      document.getElementById('partnerChart').style.display = type === 'partner' ? 'block' : 'none';
       document.getElementById('rwaChart').style.display = type === 'rwa' ? 'block' : 'none';
-      document.getElementById('spotUsers').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('directUsers').style.display = type === 'direct' ? 'block' : 'none';
+      document.getElementById('partnerUsers').style.display = type === 'partner' ? 'block' : 'none';
       document.getElementById('rwaUsers').style.display = type === 'rwa' ? 'block' : 'none';
     }
 
@@ -2484,7 +2693,8 @@
       document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      document.getElementById('spotDashboard').style.display = type === 'spot' ? 'block' : 'none';
+      document.getElementById('directDashboard').style.display = type === 'direct' ? 'block' : 'none';
+      document.getElementById('partnerDashboard').style.display = type === 'partner' ? 'block' : 'none';
       document.getElementById('rwaDashboard').style.display = type === 'rwa' ? 'block' : 'none';
     }
 
@@ -2535,6 +2745,36 @@
 
       document.getElementById('partnerList').style.display = type === 'partner' ? 'block' : 'none';
       document.getElementById('directList').style.display = type === 'direct' ? 'block' : 'none';
+    }
+
+    // 别名弹窗相关
+    let currentAliasUser = '';
+
+    function showAliasModal(userName) {
+      currentAliasUser = userName;
+      document.getElementById('aliasInput').value = '';
+      document.getElementById('aliasCount').textContent = '0';
+      document.getElementById('aliasCurrentUser').textContent = userName;
+      document.getElementById('aliasModal').style.display = 'flex';
+    }
+
+    function closeAliasModal(event) {
+      if (!event || event.target === document.getElementById('aliasModal')) {
+        document.getElementById('aliasModal').style.display = 'none';
+      }
+    }
+
+    function updateAliasCounter() {
+      var input = document.getElementById('aliasInput');
+      document.getElementById('aliasCount').textContent = input.value.length;
+    }
+
+    function confirmAlias() {
+      var newAlias = document.getElementById('aliasInput').value;
+      if (newAlias) {
+        console.log('设置别名:', currentAliasUser, '->', newAlias);
+      }
+      closeAliasModal();
     }
 
     // 显示用户详情
