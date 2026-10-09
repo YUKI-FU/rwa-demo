@@ -1352,10 +1352,10 @@
       </div>
     </div>
 
-    <!-- 成功页面 -->
+    <!-- 成功页面（买入/卖出通用） -->
     <div class="page hidden" id="successPage">
       <div class="nav-bar">
-        <span class="back" onclick="showDemo('buy')">‹</span>
+        <span class="back" onclick="showDemo('main')">‹</span>
         <div class="title">
           <div class="title-text">交易完成</div>
         </div>
@@ -1363,21 +1363,21 @@
       </div>
 
       <div class="success-page" style="display:block;">
-        <div class="success-icon">✓</div>
-        <div class="success-title">支付成功</div>
-        <div class="success-subtitle">USDT 已到账</div>
+        <div class="success-icon" id="successIcon">✓</div>
+        <div class="success-title" id="successTitle">卖出成功</div>
+        <div class="success-subtitle" id="successSubtitle">USDT 已到账</div>
 
         <div class="success-detail">
           <div class="row">
-            <span class="label">购买数量</span>
-            <span class="value">7.46 USDT</span>
+            <span class="label" id="successLabel1">卖出数量</span>
+            <span class="value" id="successValue1">7.46 CLD</span>
           </div>
           <div class="row">
-            <span class="label">支付金额</span>
-            <span class="value">50.00 CNY</span>
+            <span class="label" id="successLabel2">获得金额</span>
+            <span class="value" id="successValue2">50.00 USDT</span>
           </div>
           <div class="row">
-            <span class="label">支付方式</span>
+            <span class="label" id="successLabel3">收款方式</span>
             <span class="value">账户余额</span>
           </div>
           <div class="row">
@@ -1391,7 +1391,7 @@
         </div>
 
         <div class="success-actions">
-          <button class="btn-secondary" onclick="showDemo('buy')">继续购买</button>
+          <button class="btn-secondary" id="successContinueBtn" onclick="showDemo('main')">继续卖出</button>
           <button class="btn-primary">查看资产</button>
         </div>
       </div>
@@ -1792,26 +1792,26 @@
     </div>
   </div>
 
-  <!-- 确认支付弹窗 -->
+  <!-- 确认支付弹窗（买入/卖出通用） -->
   <div class="modal-overlay" id="confirmModal">
     <div class="bottom-sheet">
       <div class="sheet-header">
-        <span class="sheet-title">确认支付</span>
+        <span class="sheet-title" id="confirmTitle">确认支付</span>
         <span class="sheet-close" onclick="closeConfirmSheet()">×</span>
       </div>
 
-      <div class="user-info-box">
-        <div class="name">这是昵*** (sds***@gmail.com)</div>
-        <div class="uid">UID: 02452456</div>
+      <div class="user-info-box" style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;background:#ddd;border-radius:50%;"></div>
+        <div class="name" id="confirmUserName">这是昵称</div>
       </div>
 
       <div class="confirm-row">
-        <span class="label">支付金额</span>
-        <span class="value">50.00 CNY</span>
+        <span class="label" id="confirmLabel1">支付金额</span>
+        <span class="value" id="confirmValue1">50.00 USDT</span>
       </div>
       <div class="confirm-row">
-        <span class="label">购买数量</span>
-        <span class="value">7.46 USDT</span>
+        <span class="label" id="confirmLabel2">卖出数量</span>
+        <span class="value" id="confirmValue2">7.46 CLD</span>
       </div>
       <div class="confirm-row">
         <span class="label">支付方式</span>
@@ -1819,14 +1819,15 @@
       </div>
       <div class="confirm-row">
         <span class="label">当前余额</span>
-        <span class="value highlight" id="currentBalance">88.50 CNY</span>
+        <span class="value highlight">88.50 CNY</span>
       </div>
       <div class="confirm-row">
         <span class="label">支付后余额</span>
-        <span class="value" id="afterBalance">38.50 CNY</span>
+        <span class="value">38.50 CNY</span>
       </div>
 
-      <button class="confirm-btn" onclick="confirmPay()">确认支付</button>
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmPay()">确认支付</button>
+      <div style="text-align:center;margin-top:12px;color:#999;font-size:13px;cursor:pointer;">去充值</div>
     </div>
   </div>
 
@@ -2059,7 +2060,8 @@
     // 提交交易
     function submitTrade() {
       if (currentPaymentMethod === 'balance') {
-        // 账户余额 -> 显示确认弹窗
+        // 账户余额 -> 更新弹窗内容并显示
+        updateConfirmModal();
         document.getElementById('confirmModal').style.display = 'flex';
       } else if (currentPaymentMethod === 'external') {
         // 外部支付 -> 选择网络
@@ -2070,7 +2072,54 @@
       }
     }
 
+    // 更新确认弹窗内容
+    function updateConfirmModal() {
+      if (currentTradeType === 'buy') {
+        document.getElementById('confirmTitle').textContent = '确认支付';
+        document.getElementById('confirmLabel1').textContent = '支付金额';
+        document.getElementById('confirmValue1').textContent = '50.00 CNY';
+        document.getElementById('confirmLabel2').textContent = '购买数量';
+        document.getElementById('confirmValue2').textContent = '7.46 USDT';
+        document.getElementById('confirmBtn').textContent = '确认支付';
+        document.getElementById('confirmBtn').style.background = '#4cd964';
+      } else {
+        document.getElementById('confirmTitle').textContent = '确认支付';
+        document.getElementById('confirmLabel1').textContent = '支付金额';
+        document.getElementById('confirmValue1').textContent = '50.00 USDT';
+        document.getElementById('confirmLabel2').textContent = '卖出数量';
+        document.getElementById('confirmValue2').textContent = '7.46 CLD';
+        document.getElementById('confirmBtn').textContent = '确认支付';
+        document.getElementById('confirmBtn').style.background = '#4cd964';
+      }
+    }
+
+    // 更新成功页面内容
+    function updateSuccessPage() {
+      if (currentTradeType === 'buy') {
+        document.getElementById('successIcon').style.background = '#4cd964';
+        document.getElementById('successTitle').textContent = '支付成功';
+        document.getElementById('successSubtitle').textContent = 'USDT 已到账';
+        document.getElementById('successLabel1').textContent = '购买数量';
+        document.getElementById('successValue1').textContent = '7.46 USDT';
+        document.getElementById('successLabel2').textContent = '支付金额';
+        document.getElementById('successValue2').textContent = '50.00 CNY';
+        document.getElementById('successLabel3').textContent = '支付方式';
+        document.getElementById('successContinueBtn').textContent = '继续购买';
+      } else {
+        document.getElementById('successIcon').style.background = '#4cd964';
+        document.getElementById('successTitle').textContent = '卖出成功';
+        document.getElementById('successSubtitle').textContent = 'USDT 已到账';
+        document.getElementById('successLabel1').textContent = '卖出数量';
+        document.getElementById('successValue1').textContent = '7.46 CLD';
+        document.getElementById('successLabel2').textContent = '获得金额';
+        document.getElementById('successValue2').textContent = '50.00 USDT';
+        document.getElementById('successLabel3').textContent = '收款方式';
+        document.getElementById('successContinueBtn').textContent = '继续卖出';
+      }
+    }
+
     function openConfirmSheet() {
+      updateConfirmModal();
       document.getElementById('confirmModal').style.display = 'flex';
     }
 
@@ -2092,6 +2141,7 @@
 
     function confirmPay() {
       closeConfirmSheet();
+      updateSuccessPage();
       document.getElementById('mainPage').classList.add('hidden');
       document.getElementById('successPage').classList.remove('hidden');
       document.getElementById('demoTitle').textContent = currentTradeType === 'buy' ? '买入成功 - 即时完成' : '卖出成功 - 即时完成';
