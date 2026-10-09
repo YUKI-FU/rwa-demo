@@ -1097,21 +1097,82 @@
       border: 1px solid #ddd;
       color: #1a1a1a;
     }
+
+    /* 买入卖出切换 */
+    .trade-type-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .trade-type-switch .arrow {
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* 买入卖出下拉 */
+    .trade-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+      z-index: 100;
+      min-width: 120px;
+    }
+
+    .trade-dropdown.show {
+      display: block;
+    }
+
+    .trade-dropdown-item {
+      padding: 12px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trade-dropdown-item:hover {
+      background: #f5f5f5;
+    }
+
+    .trade-dropdown-item .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .trade-dropdown-item .dot.green {
+      background: #4cd964;
+    }
+
+    .trade-dropdown-item .dot.red {
+      background: #ff6b6b;
+    }
+
+    .nav-title-wrapper {
+      position: relative;
+    }
   </style>
 </head>
 <body>
 
   <div class="demo-nav" style="flex-wrap: wrap;">
-    <button class="active" onclick="showDemo('buy')">账户余额</button>
+    <button class="active" onclick="showDemo('main')">交易页面</button>
     <button onclick="showDemo('confirm')">余额确认</button>
-    <button onclick="showDemo('success')">余额成功</button>
-    <button onclick="showDemo('external')">外部支付</button>
+    <button onclick="showDemo('success')">交易成功</button>
     <button onclick="showDemo('selectNetwork')">选择网络</button>
     <button onclick="showDemo('qrcode')">充币地址</button>
     <button onclick="showDemo('orderDetail')">订单详情</button>
   </div>
 
-  <div class="demo-title" id="demoTitle">买入USDT - 选择账户余额支付</div>
+  <div class="demo-title" id="demoTitle">C2C交易 - 点击顶部切换买入/卖出，选择支付方式</div>
 
   <div class="phone-frame">
     <!-- 状态栏 -->
@@ -1120,8 +1181,100 @@
       <span class="icons">●●● ▂▄▆█</span>
     </div>
 
-    <!-- 买入页面 -->
-    <div class="page" id="buyPage">
+    <!-- 主交易页面 -->
+    <div class="page" id="mainPage">
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="nav-title-wrapper">
+          <div class="trade-type-switch" onclick="toggleTradeDropdown()">
+            <span class="dot" id="tradeDot" style="width:10px;height:10px;border-radius:50%;background:#4cd964;"></span>
+            <div>
+              <div class="title-text" id="tradeTypeText">买入USDT</div>
+              <div class="subtitle">参考单价 $6.70</div>
+            </div>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="trade-dropdown" id="tradeDropdown">
+            <div class="trade-dropdown-item" onclick="selectTradeType('buy')">
+              <span class="dot green"></span>
+              <span>买入USDT</span>
+            </div>
+            <div class="trade-dropdown-item" onclick="selectTradeType('sell')">
+              <span class="dot red"></span>
+              <span>卖出USDT</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="timer">00:38秒</span>
+          <span class="refresh">↻</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="amount-tabs">
+          <span class="amount-tab active">按金额</span>
+          <span class="amount-tab">按数量</span>
+        </div>
+
+        <div class="amount-input-row">
+          <input type="text" class="amount-input" value="50.00" placeholder="0.00">
+          <span class="currency" id="currencyLabel">CNY</span>
+          <span class="max-btn">最大</span>
+        </div>
+
+        <div class="amount-info">限额：46.90 - 67.00CNY</div>
+        <div class="amount-info" id="receiveInfo">我将收到　<strong>7.46 USDT</strong></div>
+
+        <div class="section-title" id="paymentTitle">支付方式</div>
+
+        <div class="payment-option" id="optWechat" onclick="selectPayment('wechat')">
+          <span class="icon">💬</span>
+          <span class="name">微信支付</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="payment-option" id="optExternal" onclick="selectPayment('external')">
+          <span class="icon">🏦</span>
+          <span class="name">外部支付</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="payment-option selected" id="optBalance" onclick="selectPayment('balance')">
+          <span class="icon">💰</span>
+          <span class="name">账户余额</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title" id="merchantTitle">商家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">15分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label" id="merchantLabel">商家名称</span>
+            <span class="value link">C2 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box" id="warningBox">
+          交易提醒：必须使用本人实名账号转账。转帳时请不要备注任何信息请不要设置延迟到账。黑钱绝逃，发现必报警。
+        </div>
+
+        <div class="disclaimer">
+          如果您同意使用C2C功能进行C2C交易，即表示您接受相应交易法律律数
+          <a href="#">免责声明</a>
+        </div>
+
+        <div class="bottom-btn">
+          <button class="submit-btn" id="submitBtn" onclick="submitTrade()">使用余额支付</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 买入页面 (隐藏，保留兼容) -->
+    <div class="page hidden" id="buyPage">
       <div class="nav-bar">
         <span class="back">‹</span>
         <div class="title">
@@ -1756,6 +1909,9 @@
   </div>
 
   <script>
+    var currentTradeType = 'buy'; // 'buy' or 'sell'
+    var currentPaymentMethod = 'balance'; // 'wechat', 'external', 'balance'
+
     function showDemo(type) {
       // 更新导航按钮状态
       document.querySelectorAll('.demo-nav button').forEach(function(btn) {
@@ -1766,6 +1922,7 @@
       });
 
       // 隐藏所有页面和弹窗
+      document.getElementById('mainPage').classList.add('hidden');
       document.getElementById('buyPage').classList.add('hidden');
       document.getElementById('successPage').classList.add('hidden');
       document.getElementById('sellPage').classList.add('hidden');
@@ -1777,21 +1934,19 @@
       document.getElementById('confirmModal').style.display = 'none';
       document.getElementById('insufficientModal').style.display = 'none';
       document.getElementById('sellConfirmModal').style.display = 'none';
+      document.getElementById('tradeDropdown').classList.remove('show');
 
       // 根据类型显示对应内容
-      if (type === 'buy') {
-        document.getElementById('demoTitle').textContent = '账户余额支付 - 买入页面';
-        document.getElementById('buyPage').classList.remove('hidden');
+      if (type === 'main') {
+        document.getElementById('demoTitle').textContent = 'C2C交易 - 点击顶部切换买入/卖出，选择支付方式';
+        document.getElementById('mainPage').classList.remove('hidden');
       } else if (type === 'confirm') {
-        document.getElementById('demoTitle').textContent = '账户余额支付 - 确认弹窗';
-        document.getElementById('buyPage').classList.remove('hidden');
+        document.getElementById('demoTitle').textContent = '账户余额 - 确认弹窗';
+        document.getElementById('mainPage').classList.remove('hidden');
         document.getElementById('confirmModal').style.display = 'flex';
       } else if (type === 'success') {
-        document.getElementById('demoTitle').textContent = '账户余额支付 - 即时成功';
+        document.getElementById('demoTitle').textContent = currentTradeType === 'buy' ? '买入成功 - 即时完成' : '卖出成功 - 即时完成';
         document.getElementById('successPage').classList.remove('hidden');
-      } else if (type === 'external') {
-        document.getElementById('demoTitle').textContent = '外部支付 - 买入页面';
-        document.getElementById('externalPage').classList.remove('hidden');
       } else if (type === 'selectNetwork') {
         document.getElementById('demoTitle').textContent = '外部支付 - 选择充币网络';
         document.getElementById('selectNetworkPage').classList.remove('hidden');
@@ -1801,25 +1956,14 @@
       } else if (type === 'orderDetail') {
         document.getElementById('demoTitle').textContent = '外部支付 - 等待付款';
         document.getElementById('orderDetailPage').classList.remove('hidden');
-      } else if (type === 'sell') {
-        document.getElementById('demoTitle').textContent = '卖出USDT - 选择账户余额收款';
-        document.getElementById('sellPage').classList.remove('hidden');
-      } else if (type === 'sellConfirm') {
-        document.getElementById('demoTitle').textContent = '卖出确认 - 显示USDT余额变化';
-        document.getElementById('sellPage').classList.remove('hidden');
-        document.getElementById('sellConfirmModal').style.display = 'flex';
-      } else if (type === 'sellSuccess') {
-        document.getElementById('demoTitle').textContent = '卖出成功 - CNY即时到账';
-        document.getElementById('sellSuccessPage').classList.remove('hidden');
       }
     }
 
     function getButtonText(type) {
       var map = {
-        'buy': '账户余额',
+        'main': '交易页面',
         'confirm': '余额确认',
-        'success': '余额成功',
-        'external': '外部支付',
+        'success': '交易成功',
         'selectNetwork': '选择网络',
         'qrcode': '充币地址',
         'orderDetail': '订单详情'
@@ -1827,11 +1971,103 @@
       return map[type] || '';
     }
 
-    function selectPayment(el) {
+    // 切换买入/卖出下拉
+    function toggleTradeDropdown() {
+      var dropdown = document.getElementById('tradeDropdown');
+      dropdown.classList.toggle('show');
+    }
+
+    // 选择买入或卖出
+    function selectTradeType(type) {
+      currentTradeType = type;
+      var dot = document.getElementById('tradeDot');
+      var text = document.getElementById('tradeTypeText');
+      var submitBtn = document.getElementById('submitBtn');
+      var paymentTitle = document.getElementById('paymentTitle');
+      var merchantTitle = document.getElementById('merchantTitle');
+      var merchantLabel = document.getElementById('merchantLabel');
+      var currencyLabel = document.getElementById('currencyLabel');
+      var receiveInfo = document.getElementById('receiveInfo');
+      var warningBox = document.getElementById('warningBox');
+
+      if (type === 'buy') {
+        dot.style.background = '#4cd964';
+        text.textContent = '买入USDT';
+        paymentTitle.textContent = '支付方式';
+        merchantTitle.textContent = '商家信息';
+        merchantLabel.textContent = '商家名称';
+        currencyLabel.textContent = 'CNY';
+        receiveInfo.innerHTML = '我将收到　<strong>7.46 USDT</strong>';
+        warningBox.textContent = '交易提醒：必须使用本人实名账号转账。转帳时请不要备注任何信息请不要设置延迟到账。黑钱绝逃，发现必报警。';
+        updateSubmitButton();
+      } else {
+        dot.style.background = '#ff6b6b';
+        text.textContent = '卖出USDT';
+        paymentTitle.textContent = '收款方式';
+        merchantTitle.textContent = '买家信息';
+        merchantLabel.textContent = '买家名称';
+        currencyLabel.textContent = 'USDT';
+        receiveInfo.innerHTML = '我将收到　<strong>50.00 CNY</strong>';
+        warningBox.textContent = '交易提醒：请确认收到付款后再释放币。使用账户余额收款将即时到账，无需等待。';
+        updateSubmitButton();
+      }
+
+      document.getElementById('tradeDropdown').classList.remove('show');
+    }
+
+    // 选择支付方式
+    function selectPayment(method) {
+      currentPaymentMethod = method;
+
       document.querySelectorAll('.payment-option').forEach(function(opt) {
         opt.classList.remove('selected');
       });
-      el.classList.add('selected');
+      document.getElementById('opt' + method.charAt(0).toUpperCase() + method.slice(1)).classList.add('selected');
+
+      updateSubmitButton();
+    }
+
+    // 更新提交按钮文案
+    function updateSubmitButton() {
+      var submitBtn = document.getElementById('submitBtn');
+
+      if (currentTradeType === 'buy') {
+        if (currentPaymentMethod === 'balance') {
+          submitBtn.textContent = '使用余额支付';
+          submitBtn.style.background = '#4cd964';
+        } else if (currentPaymentMethod === 'external') {
+          submitBtn.textContent = '外部支付购买';
+          submitBtn.style.background = '#4cd964';
+        } else {
+          submitBtn.textContent = '微信支付购买';
+          submitBtn.style.background = '#4cd964';
+        }
+      } else {
+        if (currentPaymentMethod === 'balance') {
+          submitBtn.textContent = '确认卖出';
+          submitBtn.style.background = '#ff6b6b';
+        } else if (currentPaymentMethod === 'external') {
+          submitBtn.textContent = '外部收款卖出';
+          submitBtn.style.background = '#ff6b6b';
+        } else {
+          submitBtn.textContent = '微信收款卖出';
+          submitBtn.style.background = '#ff6b6b';
+        }
+      }
+    }
+
+    // 提交交易
+    function submitTrade() {
+      if (currentPaymentMethod === 'balance') {
+        // 账户余额 -> 显示确认弹窗
+        document.getElementById('confirmModal').style.display = 'flex';
+      } else if (currentPaymentMethod === 'external') {
+        // 外部支付 -> 选择网络
+        showDemo('selectNetwork');
+      } else {
+        // 微信支付 -> 可以扩展
+        alert('微信支付流程');
+      }
     }
 
     function openConfirmSheet() {
@@ -1856,14 +2092,14 @@
 
     function confirmPay() {
       closeConfirmSheet();
-      document.getElementById('buyPage').classList.add('hidden');
+      document.getElementById('mainPage').classList.add('hidden');
       document.getElementById('successPage').classList.remove('hidden');
-      document.getElementById('demoTitle').textContent = '买入成功 - 内部转账即时完成';
+      document.getElementById('demoTitle').textContent = currentTradeType === 'buy' ? '买入成功 - 即时完成' : '卖出成功 - 即时完成';
 
       // 更新导航按钮
       document.querySelectorAll('.demo-nav button').forEach(function(btn) {
         btn.classList.remove('active');
-        if (btn.textContent === '买入成功') {
+        if (btn.textContent === '交易成功') {
           btn.classList.add('active');
         }
       });
