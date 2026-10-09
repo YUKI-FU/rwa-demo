@@ -1168,8 +1168,10 @@
     <button onclick="showDemo('confirm')">余额确认</button>
     <button onclick="showDemo('success')">交易成功</button>
     <button onclick="showDemo('selectNetwork')">选择网络</button>
-    <button onclick="showDemo('qrcode')">充币地址</button>
-    <button onclick="showDemo('orderDetail')">订单详情</button>
+    <button onclick="showDemo('qrcode')">买入-充币</button>
+    <button onclick="showDemo('sellTransfer')">卖出-转账</button>
+    <button onclick="showDemo('sellOrderDetail')">卖出-等待确认</button>
+  </div>
   </div>
 
   <div class="demo-title" id="demoTitle">C2C交易 - 点击顶部切换买入/卖出，选择支付方式</div>
@@ -1487,35 +1489,35 @@
       </div>
 
       <div class="network-list">
-        <div class="network-item" onclick="showDemo('qrcode')">
+        <div class="network-item" onclick="selectNetwork()">
           <div class="icon"></div>
           <div class="info">
             <div class="name">Tron（TRC20）</div>
             <div class="detail">最小充币量: 0.01USDT<br>预计: 10分钟 内到账</div>
           </div>
         </div>
-        <div class="network-item" onclick="showDemo('qrcode')">
+        <div class="network-item" onclick="selectNetwork()">
           <div class="icon"></div>
           <div class="info">
             <div class="name">Tron（TRC20）</div>
             <div class="detail">最小充币量: 0.01USDT<br>预计: 10分钟 内到账</div>
           </div>
         </div>
-        <div class="network-item" onclick="showDemo('qrcode')">
+        <div class="network-item" onclick="selectNetwork()">
           <div class="icon"></div>
           <div class="info">
             <div class="name">Tron（TRC20）</div>
             <div class="detail">最小充币量: 0.5USDT<br>预计: 10分钟 内到账</div>
           </div>
         </div>
-        <div class="network-item" onclick="showDemo('qrcode')">
+        <div class="network-item" onclick="selectNetwork()">
           <div class="icon"></div>
           <div class="info">
             <div class="name">Tron（TRC20）</div>
             <div class="detail">最小充币量: 0.01USDT<br>预计: 10分钟 内到账</div>
           </div>
         </div>
-        <div class="network-item" onclick="showDemo('qrcode')">
+        <div class="network-item" onclick="selectNetwork()">
           <div class="icon"></div>
           <div class="info">
             <div class="name">Tron（TRC20）</div>
@@ -1668,6 +1670,157 @@
 
       <div class="order-actions">
         <button class="btn-primary">我已完成付款</button>
+        <button class="btn-secondary">取消订单</button>
+      </div>
+    </div>
+
+    <!-- 卖出-转账给商家页面 -->
+    <div class="page hidden qrcode-page" id="sellTransferPage">
+      <div class="nav-bar">
+        <span class="back" onclick="showDemo('selectNetwork')">‹</span>
+        <div class="title">
+          <div class="title-text" style="color:#fff;">转账给商家</div>
+        </div>
+        <span class="icon-right" style="color:#fff;">⊞</span>
+      </div>
+
+      <div class="coin-type">
+        <div class="icon" style="background:#4cd964;">C</div>
+        <span class="name">CLD</span>
+        <span class="dropdown">▾</span>
+      </div>
+
+      <div class="qrcode-box">
+        <div class="qrcode-img">
+          [商家收款二维码]
+        </div>
+      </div>
+
+      <div class="address-section">
+        <div class="address-label">商家收款地址 ›</div>
+        <div class="address-box">
+          <div class="address-text">TXk8rQSA...vBJy6 (商家地址)</div>
+          <span class="copy-btn">📋 复制</span>
+        </div>
+      </div>
+
+      <div class="qrcode-warning">
+        <div class="text">
+          <span class="icon">●</span> 请将 CLD 转账到上方商家地址，转账完成后点击下方按钮通知商家。转错地址无法找回。
+        </div>
+      </div>
+
+      <div class="deposit-info">
+        <div class="deposit-row">
+          <span class="label">转账数量</span>
+          <span class="value">7.46 CLD</span>
+        </div>
+        <div class="deposit-row">
+          <span class="label">预计获得</span>
+          <span class="value">50.00 USDT</span>
+        </div>
+        <div class="deposit-row">
+          <span class="label">网络</span>
+          <span class="value">Tron (TRC20)</span>
+        </div>
+      </div>
+
+      <div class="save-btn">
+        <button style="background:#ff6b6b;" onclick="showDemo('sellOrderDetail')">我已转账</button>
+      </div>
+    </div>
+
+    <!-- 卖出-等待商家确认页面 -->
+    <div class="page hidden order-detail-page" id="sellOrderDetailPage">
+      <div class="order-header">
+        <span class="back" onclick="showDemo('main')">‹</span>
+        <span class="title">订单详情</span>
+        <span class="appeal">申诉</span>
+      </div>
+
+      <div class="order-status">
+        <div class="status-icon">
+          <span class="icon">⏱</span>
+          <span class="text">等待商家确认</span>
+        </div>
+        <div class="status-timer">商家确认剩余时间：<span>15:00</span></div>
+      </div>
+
+      <div class="seller-info">
+        <div class="seller-avatar">👤</div>
+        <div class="seller-name-row">
+          <div class="seller-name">C2 <span class="verified">✓</span></div>
+          <div class="seller-tag">买家</div>
+        </div>
+        <div class="chat-btn">聊天</div>
+      </div>
+
+      <div class="payment-step">
+        <div class="step-title">
+          <span class="num">1</span>
+          您已完成转账
+        </div>
+        <div class="payment-info-row">
+          <span class="label">转账数量</span>
+          <span class="value">7.46 CLD</span>
+        </div>
+        <div class="payment-info-row">
+          <span class="label">转账网络</span>
+          <span class="value">Tron (TRC20)</span>
+        </div>
+        <div class="payment-info-row">
+          <span class="label">转账状态</span>
+          <span class="value" style="color:#4cd964;">已完成 ✓</span>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
+        <div class="detail-header">
+          <span class="title">订单详情</span>
+          <span class="arrow">∨</span>
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row">
+            <span class="label">单号</span>
+            <span class="value copy">354329775211513985 📋</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">下单时间</span>
+            <span class="value">2026-10-09 11:20:21</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">卖出数量</span>
+            <span class="value">7.46 CLD</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">预计获得</span>
+            <span class="value">50.00 USDT</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">交易方式</span>
+            <span class="value">外部转账</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-warning">
+        <div class="title">⚠ 温馨提示</div>
+        <div class="text">
+          您的转账已完成，请等待商家确认收款并放币。如商家长时间未确认，可发起申诉。
+          <br><br>
+          遇到问题？ <span class="link">申诉商家</span>
+        </div>
+      </div>
+
+      <div class="step2-section">
+        <div class="step-title">
+          <span class="num">2</span>
+          等待商家确认收款并放币
+        </div>
+      </div>
+
+      <div class="order-actions">
+        <button class="btn-primary" onclick="showDemo('success')">商家已放币</button>
         <button class="btn-secondary">取消订单</button>
       </div>
     </div>
@@ -1932,6 +2085,8 @@
       document.getElementById('selectNetworkPage').classList.add('hidden');
       document.getElementById('qrcodePage').classList.add('hidden');
       document.getElementById('orderDetailPage').classList.add('hidden');
+      document.getElementById('sellTransferPage').classList.add('hidden');
+      document.getElementById('sellOrderDetailPage').classList.add('hidden');
       document.getElementById('confirmModal').style.display = 'none';
       document.getElementById('insufficientModal').style.display = 'none';
       document.getElementById('sellConfirmModal').style.display = 'none';
@@ -1944,19 +2099,27 @@
       } else if (type === 'confirm') {
         document.getElementById('demoTitle').textContent = '账户余额 - 确认弹窗';
         document.getElementById('mainPage').classList.remove('hidden');
+        updateConfirmModal();
         document.getElementById('confirmModal').style.display = 'flex';
       } else if (type === 'success') {
         document.getElementById('demoTitle').textContent = currentTradeType === 'buy' ? '买入成功 - 即时完成' : '卖出成功 - 即时完成';
+        updateSuccessPage();
         document.getElementById('successPage').classList.remove('hidden');
       } else if (type === 'selectNetwork') {
-        document.getElementById('demoTitle').textContent = '外部支付 - 选择充币网络';
+        document.getElementById('demoTitle').textContent = currentTradeType === 'buy' ? '买入 - 选择充币网络' : '卖出 - 选择转账网络';
         document.getElementById('selectNetworkPage').classList.remove('hidden');
       } else if (type === 'qrcode') {
-        document.getElementById('demoTitle').textContent = '外部支付 - 充币地址/二维码';
+        document.getElementById('demoTitle').textContent = '买入 - 充币地址/二维码';
         document.getElementById('qrcodePage').classList.remove('hidden');
       } else if (type === 'orderDetail') {
-        document.getElementById('demoTitle').textContent = '外部支付 - 等待付款';
+        document.getElementById('demoTitle').textContent = '买入 - 等待付款';
         document.getElementById('orderDetailPage').classList.remove('hidden');
+      } else if (type === 'sellTransfer') {
+        document.getElementById('demoTitle').textContent = '卖出 - 转账给商家';
+        document.getElementById('sellTransferPage').classList.remove('hidden');
+      } else if (type === 'sellOrderDetail') {
+        document.getElementById('demoTitle').textContent = '卖出 - 等待商家确认';
+        document.getElementById('sellOrderDetailPage').classList.remove('hidden');
       }
     }
 
@@ -1966,8 +2129,10 @@
         'confirm': '余额确认',
         'success': '交易成功',
         'selectNetwork': '选择网络',
-        'qrcode': '充币地址',
-        'orderDetail': '订单详情'
+        'qrcode': '买入-充币',
+        'orderDetail': '订单详情',
+        'sellTransfer': '卖出-转账',
+        'sellOrderDetail': '卖出-等待确认'
       };
       return map[type] || '';
     }
@@ -2069,6 +2234,17 @@
       } else {
         // 微信支付 -> 可以扩展
         alert('微信支付流程');
+      }
+    }
+
+    // 选择网络后跳转
+    function selectNetwork() {
+      if (currentTradeType === 'buy') {
+        // 买入 -> 显示充币地址
+        showDemo('qrcode');
+      } else {
+        // 卖出 -> 显示转账给商家页面
+        showDemo('sellTransfer');
       }
     }
 
