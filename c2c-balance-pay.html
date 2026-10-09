@@ -608,9 +608,11 @@
 
   <div class="demo-nav">
     <button class="active" onclick="showDemo('buy')">买入页面</button>
-    <button onclick="showDemo('confirm')">确认支付</button>
-    <button onclick="showDemo('success')">支付成功</button>
-    <button onclick="showDemo('insufficient')">余额不足</button>
+    <button onclick="showDemo('confirm')">买入确认</button>
+    <button onclick="showDemo('success')">买入成功</button>
+    <button onclick="showDemo('sell')">卖出页面</button>
+    <button onclick="showDemo('sellConfirm')">卖出确认</button>
+    <button onclick="showDemo('sellSuccess')">卖出成功</button>
   </div>
 
   <div class="demo-title" id="demoTitle">买入USDT - 选择账户余额支付</div>
@@ -745,6 +747,125 @@
         </div>
       </div>
     </div>
+
+    <!-- 卖出页面 -->
+    <div class="page hidden" id="sellPage">
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="title">
+          <span class="dot" style="background:#ff6b6b;"></span>
+          <div>
+            <div class="title-text">卖出USDT</div>
+            <div class="subtitle">参考单价 $6.70</div>
+          </div>
+        </div>
+        <div>
+          <span class="timer">00:38秒</span>
+          <span class="refresh">↻</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="amount-tabs">
+          <span class="amount-tab active">按数量</span>
+          <span class="amount-tab">按金额</span>
+        </div>
+
+        <div class="amount-input-row">
+          <input type="text" class="amount-input" value="7.46" placeholder="0.00">
+          <span class="currency">USDT</span>
+          <span class="max-btn">全部</span>
+        </div>
+
+        <div class="amount-info">可卖：100.00 USDT</div>
+        <div class="amount-info">我将收到　<strong>50.00 CNY</strong></div>
+
+        <div class="section-title">收款方式</div>
+
+        <div class="payment-option disabled">
+          <span class="icon">💬</span>
+          <span class="name">微信收款</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="payment-option disabled">
+          <span class="icon">🏦</span>
+          <span class="name">银行卡收款</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="payment-option selected">
+          <span class="icon">💰</span>
+          <span class="name">账户余额</span>
+          <span class="radio"></span>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title">买家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">15分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label">买家名称</span>
+            <span class="value link">C2 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          交易提醒：请确认收到付款后再释放币。使用账户余额收款将即时到账，无需等待。
+        </div>
+
+        <div class="bottom-btn">
+          <button class="submit-btn" style="background:#ff6b6b;" onclick="openSellConfirmSheet()">确认卖出</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 卖出成功页面 -->
+    <div class="page hidden" id="sellSuccessPage">
+      <div class="nav-bar">
+        <span class="back" onclick="showDemo('sell')">‹</span>
+        <div class="title">
+          <div class="title-text">交易完成</div>
+        </div>
+        <span class="placeholder" style="width:24px"></span>
+      </div>
+
+      <div class="success-page" style="display:block;">
+        <div class="success-icon" style="background:#ff6b6b;">✓</div>
+        <div class="success-title">卖出成功</div>
+        <div class="success-subtitle">CNY 已到账户余额</div>
+
+        <div class="success-detail">
+          <div class="row">
+            <span class="label">卖出数量</span>
+            <span class="value">7.46 USDT</span>
+          </div>
+          <div class="row">
+            <span class="label">获得金额</span>
+            <span class="value">50.00 CNY</span>
+          </div>
+          <div class="row">
+            <span class="label">收款方式</span>
+            <span class="value">账户余额</span>
+          </div>
+          <div class="row">
+            <span class="label">订单号</span>
+            <span class="value">354329775211513985</span>
+          </div>
+          <div class="row">
+            <span class="label">完成时间</span>
+            <span class="value">2026-10-09 10:45:12</span>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button class="btn-secondary" onclick="showDemo('sell')">继续卖出</button>
+          <button class="btn-primary">查看资产</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 确认支付弹窗 -->
@@ -782,6 +903,44 @@
       </div>
 
       <button class="confirm-btn" onclick="confirmPay()">确认支付</button>
+    </div>
+  </div>
+
+  <!-- 卖出确认弹窗 -->
+  <div class="modal-overlay" id="sellConfirmModal">
+    <div class="bottom-sheet">
+      <div class="sheet-header">
+        <span class="sheet-title">确认卖出</span>
+        <span class="sheet-close" onclick="closeSellConfirmSheet()">×</span>
+      </div>
+
+      <div class="user-info-box">
+        <div class="name">买家: C2</div>
+        <div class="uid">UID: 02452789</div>
+      </div>
+
+      <div class="confirm-row">
+        <span class="label">卖出数量</span>
+        <span class="value">7.46 USDT</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">预计获得</span>
+        <span class="value">50.00 CNY</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">收款方式</span>
+        <span class="value">账户余额</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">当前USDT余额</span>
+        <span class="value highlight">100.00 USDT</span>
+      </div>
+      <div class="confirm-row">
+        <span class="label">卖出后余额</span>
+        <span class="value">92.54 USDT</span>
+      </div>
+
+      <button class="confirm-btn" style="background:#ff6b6b;" onclick="confirmSell()">确认卖出</button>
     </div>
   </div>
 
@@ -834,24 +993,35 @@
       event.target.classList.add('active');
 
       // 隐藏所有页面和弹窗
-      document.getElementById('buyPage').classList.remove('hidden');
+      document.getElementById('buyPage').classList.add('hidden');
       document.getElementById('successPage').classList.add('hidden');
+      document.getElementById('sellPage').classList.add('hidden');
+      document.getElementById('sellSuccessPage').classList.add('hidden');
       document.getElementById('confirmModal').style.display = 'none';
       document.getElementById('insufficientModal').style.display = 'none';
+      document.getElementById('sellConfirmModal').style.display = 'none';
 
       // 根据类型显示对应内容
       if (type === 'buy') {
         document.getElementById('demoTitle').textContent = '买入USDT - 选择账户余额支付';
+        document.getElementById('buyPage').classList.remove('hidden');
       } else if (type === 'confirm') {
-        document.getElementById('demoTitle').textContent = '确认支付弹窗 - 带密码验证';
+        document.getElementById('demoTitle').textContent = '买入确认 - 显示余额变化';
+        document.getElementById('buyPage').classList.remove('hidden');
         document.getElementById('confirmModal').style.display = 'flex';
       } else if (type === 'success') {
-        document.getElementById('demoTitle').textContent = '支付成功 - 内部转账即时完成';
-        document.getElementById('buyPage').classList.add('hidden');
+        document.getElementById('demoTitle').textContent = '买入成功 - 内部转账即时完成';
         document.getElementById('successPage').classList.remove('hidden');
-      } else if (type === 'insufficient') {
-        document.getElementById('demoTitle').textContent = '余额不足状态';
-        document.getElementById('insufficientModal').style.display = 'flex';
+      } else if (type === 'sell') {
+        document.getElementById('demoTitle').textContent = '卖出USDT - 选择账户余额收款';
+        document.getElementById('sellPage').classList.remove('hidden');
+      } else if (type === 'sellConfirm') {
+        document.getElementById('demoTitle').textContent = '卖出确认 - 显示USDT余额变化';
+        document.getElementById('sellPage').classList.remove('hidden');
+        document.getElementById('sellConfirmModal').style.display = 'flex';
+      } else if (type === 'sellSuccess') {
+        document.getElementById('demoTitle').textContent = '卖出成功 - CNY即时到账';
+        document.getElementById('sellSuccessPage').classList.remove('hidden');
       }
     }
 
@@ -874,16 +1044,39 @@
       document.getElementById('insufficientModal').style.display = 'none';
     }
 
+    function openSellConfirmSheet() {
+      document.getElementById('sellConfirmModal').style.display = 'flex';
+    }
+
+    function closeSellConfirmSheet() {
+      document.getElementById('sellConfirmModal').style.display = 'none';
+    }
+
     function confirmPay() {
       closeConfirmSheet();
       document.getElementById('buyPage').classList.add('hidden');
       document.getElementById('successPage').classList.remove('hidden');
-      document.getElementById('demoTitle').textContent = '支付成功 - 内部转账即时完成';
+      document.getElementById('demoTitle').textContent = '买入成功 - 内部转账即时完成';
 
       // 更新导航按钮
       document.querySelectorAll('.demo-nav button').forEach(function(btn) {
         btn.classList.remove('active');
-        if (btn.textContent === '支付成功') {
+        if (btn.textContent === '买入成功') {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    function confirmSell() {
+      closeSellConfirmSheet();
+      document.getElementById('sellPage').classList.add('hidden');
+      document.getElementById('sellSuccessPage').classList.remove('hidden');
+      document.getElementById('demoTitle').textContent = '卖出成功 - CNY即时到账';
+
+      // 更新导航按钮
+      document.querySelectorAll('.demo-nav button').forEach(function(btn) {
+        btn.classList.remove('active');
+        if (btn.textContent === '卖出成功') {
           btn.classList.add('active');
         }
       });
